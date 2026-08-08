@@ -20,15 +20,23 @@ export const Route = createRootRoute({
         content:
           "Edukasi sistem produksi proyek konstruksi multi-moda: manual, near-site, dan far supply — diselaraskan lewat zonasi dan lima tuas PPM.",
       },
+      { name: "theme-color", content: "#141414" },
+      { name: "application-name", content: "MP2K" },
       ...(ogImage
         ? [
             { property: "og:image", content: ogImage },
             { property: "og:image:width", content: "1200" },
             { property: "og:image:height", content: "630" },
+            { property: "og:title", content: APP_NAME },
           ]
         : []),
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "apple-touch-icon", href: "/favicon.svg" },
+      { rel: "mask-icon", href: "/favicon.svg", color: "#141414" },
+    ],
   }),
   component: () => (
     <html lang="id" suppressHydrationWarning>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="MP2K">
+  <!-- Rounded tile -->
+  <rect width="32" height="32" rx="7" fill="#141414"/>
+  <!-- Geometric M -->
+  <path
+    d="M7.2 23.2V9.1h2.55l3.35 9.35L16.45 9.1H19V23.2h-2.35v-9.4l-2.95 8.05h-1.5L9.25 13.8v9.4H7.2z"
+    fill="#fafafa"
+  />
+  <!-- Flow wave / production arrow under monogram -->
+  <path
+    d="M8.2 25.6c1.6-.9 2.7-.9 4.2 0 1.5.9 2.6.9 4.2 0 1.5-.9 2.7-.9 4.2 0"
+    fill="none"
+    stroke="#fafafa"
+    stroke-width="1.35"
+    stroke-linecap="round"
+    opacity="0.9"
+  />
+  <!-- Small chevron = flow direction -->
+  <path d="M22.4 24.6l2.2 1.05-2.2 1.05" fill="none" stroke="#fafafa" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

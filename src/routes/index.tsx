@@ -6,6 +6,7 @@ import { MetricsPanel } from "@/components/mp2k/metrics-panel";
 import { DesLeversPanel } from "@/components/mp2k/des-levers";
 import { OpsPanel } from "@/components/mp2k/ops-panel";
 import { CasePanel } from "@/components/mp2k/case-panel";
+import { Mp2kLogo } from "@/components/mp2k/logo";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { BookOpen, Box, Calculator, ArrowRight } from "lucide-react";
@@ -36,17 +37,19 @@ function Mp2kApp() {
       <header className="border-b border-border bg-surface">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 sm:px-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="font-mono text-sm font-semibold tracking-tight text-fg">MP2K</span>
-                <Badge variant="default">Edukasi PPM</Badge>
+            <div className="flex min-w-0 items-start gap-3">
+              <Mp2kLogo />
+              <div className="min-w-0 border-l border-border pl-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant="default">Edukasi PPM</Badge>
+                </div>
+                <h1 className="mt-1 text-lg font-semibold tracking-tight sm:text-xl">
+                  Multi-Moda Produksi Proyek Konstruksi
+                </h1>
+                <p className="mt-1 max-w-xl text-sm text-muted leading-relaxed">
+                  Kasus (design fixed) → DES Capacity/Variability/Inventory → analitik 3 kurva.
+                </p>
               </div>
-              <h1 className="mt-1 text-xl font-semibold tracking-tight sm:text-2xl">
-                Multi-Moda Produksi Proyek Konstruksi
-              </h1>
-              <p className="mt-1 max-w-xl text-sm text-muted leading-relaxed">
-                Kasus (design fixed) → DES Capacity/Variability/Inventory → analitik 3 kurva.
-              </p>
             </div>
             <div className="hidden text-right text-xs text-faint sm:block">
               <p>Frame beton · grid 3×5 · 2 lantai</p>
@@ -102,9 +105,23 @@ function Mp2kApp() {
         {step === "analytics" && <AnalyticsStep />}
       </main>
 
-      <footer className="border-t border-border py-6 text-center text-xs text-faint">
-        MP2K · DES: Capacity · Variability · Inventory · Analitik: Little · Kingman · FR
+      <footer className="border-t border-border py-6">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 text-center sm:px-6">
+          <Mp2kMarkFooter />
+          <p className="text-xs text-faint">
+            MP2K · DES: Capacity · Variability · Inventory · Analitik: Little · Kingman · FR
+          </p>
+        </div>
       </footer>
+    </div>
+  );
+}
+
+function Mp2kMarkFooter() {
+  return (
+    <div className="flex items-center gap-2 text-muted">
+      <Mp2kLogo showWordmark={false} className="opacity-90" />
+      <span className="font-mono text-xs font-semibold tracking-wide text-fg">MP2K</span>
     </div>
   );
 }

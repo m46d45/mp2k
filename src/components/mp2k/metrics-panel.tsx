@@ -3,6 +3,7 @@ import { TOTALS } from "@/lib/mp2k/model";
 import { cn } from "@/lib/utils";
 import { formatNum, formatPct } from "@/lib/mp2k/ops-science";
 import { compareDesToTheory } from "@/lib/mp2k/des/compare";
+import { DesOperatingStrip } from "@/components/mp2k/des-operating-strip";
 
 export function MetricsPanel() {
   const metrics = useMp2k((s) => s.metrics);
@@ -66,6 +67,8 @@ export function MetricsPanel() {
           );
         })}
       </div>
+
+      <DesOperatingStrip variant="compact" />
 
       {/* DES ops-science empirics */}
       <div className="rounded-[var(--radius-md)] border border-border bg-surface p-4">
@@ -145,15 +148,26 @@ export function MetricsPanel() {
             <p className="mt-3 rounded-[var(--radius-sm)] border border-border bg-surface px-3 py-2 text-xs text-fg leading-relaxed">
               {compare.summary}
             </p>
-            <p className="mt-2 text-[11px] text-faint leading-relaxed">
-              Detail kurva & asumsi → langkah <strong className="text-muted">Analitik</strong>. Prediksi
-              di sini adalah pendekatan ajar (bottleneck + base-stock), bukan digital twin.
-            </p>
+            <div className="mt-3 space-y-1.5 text-[11px] text-faint leading-relaxed">
+              <p>
+                <strong className="text-muted">Cara membaca Δ:</strong> selisih relatif empiris vs
+                prediksi. Δ kecil pada Little = sistem relatif stabil (WIP ≈ TH×CT). Δ besar pada
+                Kingman sering wajar karena CT sistem multi-moda ≠ CT bottleneck murni. Δ pada FR
+                menunjuk ke buffer/L/CONWIP.
+              </p>
+              <p>
+                Detail kurva, marker oranye, dan asumsi → langkah{" "}
+                <strong className="text-muted">Analitik</strong>. Prediksi di sini adalah pendekatan
+                ajar (bottleneck + base-stock), bukan digital twin proyek nyata.
+              </p>
+            </div>
           </>
         ) : (
           <p className="mt-3 text-xs text-muted leading-relaxed">
-            Setelah <strong className="text-fg">Run all</strong>, tabel ini menampilkan WIP (Little),
-            CT bottleneck (Kingman), dan fill rate panel (Inventory) — empiris vs prediksi singkat.
+            Setelah <strong className="text-fg">Run all</strong>, tabel ini menampilkan tiga baris:
+            WIP (uji Little), CT bottleneck (prediksi Kingman/VUT), dan fill rate panel (model
+            inventory base-stock) — empiris DES vs prediksi teori singkat. Gunakan Δ dan catatan
+            per baris untuk diskusi mengapa angka bisa berbeda di model multi-moda.
           </p>
         )}
       </div>

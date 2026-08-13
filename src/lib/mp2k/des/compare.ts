@@ -101,8 +101,8 @@ export function compareDesToTheory(params: DesParams, des: DesMetrics): DesCompa
       theory: formatNum(wipLittle),
       delta: relDelta(wipEmp, wipLittle),
       note: littleOk
-        ? "DES konsisten: WIP ≈ TH × CT (rata-rata)."
-        : "Selisih ke TH×CT — cek horizon run / transient awal.",
+        ? "DES konsisten: WIP ≈ TH × CT (rata-rata). Identitas Little berlaku pada sistem stabil — titik oranye di kurva WIP–TH–CT harus dekat garis teori."
+        : "Selisih ke TH×CT — cek horizon run / transient awal. Perpanjang Run atau abaikan fase warm-up agar rata-rata mendekati steady state.",
     },
     {
       id: "kingman",
@@ -112,8 +112,8 @@ export function compareDesToTheory(params: DesParams, des: DesMetrics): DesCompa
       theory: formatNum(ctThy),
       delta: relDelta(ctEmp, ctThy),
       note: Number.isFinite(k.ct)
-        ? `Prediksi CT resource ${label}: ū=${formatPct(k.u)}, V=${formatNum(k.v)}. CT sistem DES = rata-rata semua job.`
-        : "Utilisasi prediksi tidak stabil (ū≈1).",
+        ? `Prediksi CT resource ${label}: ū=${formatPct(k.u)}, V=${formatNum(k.v)}. CT sistem DES = rata-rata semua job (multi-moda); Kingman fokus bottleneck saja — Δ besar sering wajar, bukan bug.`
+        : "Utilisasi prediksi tidak stabil (ū≈1). Turunkan TH atau naikkan m/te agar ū < 1 sebelum membandingkan.",
     },
     {
       id: "fillrate",
@@ -122,7 +122,7 @@ export function compareDesToTheory(params: DesParams, des: DesMetrics): DesCompa
       empiric: formatPct(des.fillRate),
       theory: formatPct(inv.fillRate),
       delta: relDelta(des.fillRate, inv.fillRate),
-      note: `Teori base-stock: L=${formatNum(params.panelLeadTime)} hari, buffer awal=${params.panelBufferInitial}, stockout DES=${des.panelStockouts}.`,
+      note: `Teori base-stock: L=${formatNum(params.panelLeadTime)} hari, buffer awal=${params.panelBufferInitial}, stockout DES=${des.panelStockouts}. FR rendah → longgarkan buffer/L/CONWIP di Simulasi lalu Run ulang.`,
     },
   ];
 
@@ -142,16 +142,16 @@ export function compareDesToTheory(params: DesParams, des: DesMetrics): DesCompa
     summary = "Jalankan DES (Run all) dulu untuk membandingkan empiris vs teori.";
   } else if (worst.id === "kingman" && worstAbs > 25) {
     summary =
-      "CT sistem vs Kingman bottleneck sering beda: DES merata-ratakan semua moda; Kingman fokus resource tersibuk. Variability tinggi membesarkan selisih.";
+      "CT sistem vs Kingman bottleneck sering beda: DES merata-ratakan kolom+balok+panel+stair; Kingman fokus resource tersibuk saja. Variability tinggi dan ū mendekati 1 membesarkan selisih — gunakan sebagai bahan diskusi, bukan indikasi error model.";
   } else if (worst.id === "fillrate" && worstAbs > 15) {
     summary =
-      "Fill rate empiris vs teori: lead time / buffer / CONWIP di DES mengatur stockout nyata; kurva FR adalah model base-stock ideal.";
+      "Fill rate empiris vs teori: lead time / buffer / CONWIP di DES mengatur stockout nyata; kurva FR adalah model base-stock ideal (kontinu). Coba naikkan buffer atau longgarkan L di Simulasi, Run ulang, lalu bandingkan lagi.";
   } else if (worst.id === "little" && !littleOk) {
     summary =
-      "Little belum rapat — perpanjang run atau abaikan fase awal (transient).";
+      "Little belum rapat (WIP ≉ TH×CT) — perpanjang run atau abaikan fase awal (transient). Setelah stabil, Δ Little biasanya kecil.";
   } else {
     summary =
-      "Empiris dekat prediksi pada skala lab ini. Selisih sisa = multi-moda, gate tangga, dan transient — wajar di model didaktik.";
+      "Empiris dekat prediksi pada skala lab ini. Selisih sisa = multi-moda, gate tangga Z6, dan transient — wajar di model didaktik (bukan digital twin). Lanjut ke Analitik untuk melihat marker oranye di ketiga kurva.";
   }
 
   return { rows, summary, bottleneck: bot, littleOk };

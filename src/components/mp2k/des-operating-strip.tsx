@@ -7,7 +7,7 @@ const BOT_LABEL = { column: "kolom", beam: "balok", panel: "panel" } as const;
 
 /**
  * Shared strip: DES numbers with same notation/colors as Analitik charts.
- * Includes detailed pedagogical explanations of the DES to theory flow.
+ * Includes detailed pedagogical explanations of the DES → theory flow.
  */
 export function DesOperatingStrip({
   variant = "full",
@@ -33,8 +33,10 @@ export function DesOperatingStrip({
         <p className="text-[11px] font-medium uppercase tracking-wide text-faint">Titik operasi DES</p>
         <p className="mt-1 text-sm text-muted leading-relaxed">
           Belum ada hasil simulasi. Di langkah <strong className="text-fg">Simulasi</strong>, pilih
-          preset lalu <strong className="text-fg">Run all</strong>. Angka TH, CT, WIP, FR, dan ū akan
-          muncul di sini dengan notasi yang sama di kurva Analitik.
+          preset (Dasar / Variability tinggi / Inventory ketat / Capacity longgar) lalu{" "}
+          <strong className="text-fg">Run all</strong>. Angka TH, CT, WIP, FR, dan ū akan muncul di
+          sini dengan notasi &amp; warna yang sama di kurva Analitik — supaya mahasiswa bisa
+          membandingkan empiris vs prediksi teori secara visual.
         </p>
       </div>
     );
@@ -53,7 +55,7 @@ export function DesOperatingStrip({
       value: formatNum(op.th),
       unit: "job/hari",
       explain:
-        "Throughput empiris = jumlah job selesai dibagi waktu simulasi T. Di kurva Little, TH adalah sumbu kiri. Di Kingman, TH masuk rumus utilisasi: ū = (TH × te) / m.",
+        "Throughput empiris = (jumlah job selesai) / T. Di kurva Little, TH adalah sumbu kiri; titik biru = (WIP, TH) dari parameter Analitik. Di Kingman, TH menentukan utilisasi bottleneck: ū = (TH × te) / m. Naikkan capacity (m) atau turunkan te → TH potensial naik, tetapi CONWIP dan variability membatasi realisasi.",
     },
     {
       key: "ct",
@@ -61,7 +63,7 @@ export function DesOperatingStrip({
       value: formatNum(op.ct),
       unit: "hari",
       explain:
-        "Cycle time rata-rata semua job (kolom, balok, panel, stair). Little: CT = WIP / TH. Kingman memprediksi CT di bottleneck saja — CT sistem DES sering berbeda karena merata-ratakan multi-moda.",
+        "Cycle time rata-rata semua job (kolom + balok + panel + stair). Little: CT = WIP / TH. Kingman memprediksi hanya CT di resource bottleneck (CT/te = 1 + V·ū/(1−ū)). CT sistem DES sering lebih besar/kecil dari prediksi Kingman karena merata-ratakan multi-moda M/N/F dan gate tangga Z6 — selisih itu bahan diskusi, bukan bug.",
     },
     {
       key: "wip",
@@ -69,7 +71,7 @@ export function DesOperatingStrip({
       value: formatNum(op.wip),
       unit: "job",
       explain:
-        "Work-in-process rata-rata (integral WIP sepanjang waktu). Little menguji konsistensi: WIP harus mendekati TH × CT. Titik (WIP, TH) dan (WIP, CT) dipetakan ke kurva WIP–TH–CT.",
+        "Work-in-process rata-rata = integral WIP(t) dt / T (job yang sudah dirilis tapi belum selesai). Little menguji konsistensi: pada sistem stabil WIP ≈ TH × CT. Titik (WIP, TH) dan (WIP, CT) dipetakan ke kurva WIP–TH–CT. CONWIP membatasi WIP maksimum; jika CONWIP ketat, TH turun sebelum utilisasi saturasi.",
     },
     {
       key: "fr",
@@ -77,7 +79,7 @@ export function DesOperatingStrip({
       value: formatPct(op.fillRate),
       unit: "panel",
       explain:
-        "Fill rate panel = 1 − (stockout / percobaan ambil stok). Terkait tuas Inventory: buffer awal, lead time L, dan CONWIP. Di kurva FR vs inventory, FR empiris dibanding model base-stock ideal.",
+        "Fill rate panel = 1 − (jumlah stockout / percobaan ambil stok). Tuas Inventory: buffer awal, lead time L panel far-supply, dan CONWIP. Di kurva FR vs inventory, titik oranye = FR empiris DES; titik hitam = prediksi base-stock ideal. FR rendah = buffer/L/CONWIP belum cukup untuk variability demand.",
     },
     {
       key: "util",
@@ -85,7 +87,7 @@ export function DesOperatingStrip({
       value: formatPct(op.utilBot),
       unit: `bot. ${BOT_LABEL[op.bottleneck]}`,
       explain:
-        "Utilisasi resource tersibuk (bottleneck empiris). Kingman: CT naik tajam saat ū mendekati 1, diperparah V = (ca² + ce²) / 2. Titik operasi di kurva multi-V adalah (ū, CT/te).",
+        "Utilisasi resource tersibuk (bottleneck empiris dari DES). Kingman: CT/te naik tajam saat ū → 1, diperparah V = (ca² + ce²)/2. Marker oranye di kurva multi-V = (ū_bot, CT_sistem/te_bot). Bandingkan dengan titik hitam (parameter Analitik) untuk melihat seberapa dekat empiris ke prediksi VUT.",
     },
   ];
 
@@ -132,30 +134,39 @@ export function DesOperatingStrip({
 
       {variant === "full" ? (
         <div className="mt-3 space-y-3 border-t border-border pt-3">
-          <p className="text-xs font-medium text-fg">Alur angka: DES → hukum → kurva</p>
-          <ol className="list-decimal space-y-2 pl-4 text-xs text-muted leading-relaxed">
+          <p className="text-xs font-medium text-fg">Alur angka: DES → hukum → kurva Analitik</p>
+          <ol className="list-decimal space-y-2.5 pl-4 text-xs text-muted leading-relaxed">
             <li>
-              <strong className="text-fg">DES</strong> menghasilkan TH, CT, WIP, FR, ū dari event
-              (start / end / arrive) pada multi-moda M/N/F dengan CONWIP dan buffer panel.
+              <strong className="text-fg">DES (empiris)</strong> menghasilkan TH, CT, WIP, FR, ū dari
+              event start/end/arrive pada multi-moda M (kolom manual), N (balok near-site), F (panel
+              far-supply) dengan CONWIP, buffer panel, dan gate tangga di Z6. Angka ini adalah
+              &quot;kenyataan&quot; lab — bukan asumsi rumus tertutup.
             </li>
             <li>
-              <strong className="text-fg">Little</strong> mengikat tiga metrik: WIP = TH × CT pada
-              sistem stabil. Jika selisih besar, cek transient awal atau run belum selesai.
+              <strong className="text-fg">Little&apos;s Law</strong> mengikat tiga metrik pada sistem
+              stabil: <span className="font-mono">WIP = TH × CT</span>. Uji konsistensi: hitung
+              TH×CT dari chip di atas; jika jauh dari WIP empiris, horizon run terlalu pendek atau
+              masih ada transient awal. Di kurva WIP–TH–CT, titik oranye = (WIP_DES, TH_DES) dan
+              (WIP_DES, CT_DES).
             </li>
             <li>
-              <strong className="text-fg">Kingman</strong> memakai ū bottleneck dan V dari ca/ce
-              untuk memprediksi CT antrian. Marker oranye di kurva = titik DES, bukan titik parameter
-              manual Analitik.
+              <strong className="text-fg">Kingman / VUT</strong> memakai ū bottleneck dan V = (ca² +
+              ce²)/2 untuk memprediksi CT antrian di resource tersibuk:{" "}
+              <span className="font-mono">CT/te ≈ 1 + V·ū/(1−ū)</span>. Marker oranye = (ū_bot,
+              CT_sistem/te_bot) dari DES. Titik hitam = parameter yang Anda set di Analitik. CT
+              sistem ≠ CT bottleneck murni karena DES merata-ratakan semua moda.
             </li>
             <li>
-              <strong className="text-fg">Inventory / FR</strong> membandingkan fill rate empiris
-              panel dengan kurva base-stock (L, CV demand, service level). Stockout DES = gejala buffer
-              atau lead time ketat.
+              <strong className="text-fg">Inventory / Fill rate</strong> membandingkan FR empiris
+              panel dengan kurva base-stock ideal (lead time L, CV demand, service level). Stockout
+              di DES = gejala buffer atau L terlalu ketat relatif terhadap variability. Titik oranye
+              di kurva FR vs inventory = posisi DES; geser buffer/L di Simulasi lalu Run ulang untuk
+              melihat pergeseran.
             </li>
           </ol>
 
           <p className="text-xs font-medium text-fg">Arti tiap notasi (dari run ini)</p>
-          <ul className="space-y-2 text-xs text-muted leading-relaxed">
+          <ul className="space-y-2.5 text-xs text-muted leading-relaxed">
             {chips.map((c) => (
               <li key={`ex-${c.symbol}`}>
                 <span
@@ -171,17 +182,38 @@ export function DesOperatingStrip({
             ))}
           </ul>
 
-          <p className="rounded-[var(--radius-sm)] border border-border bg-surface px-3 py-2 text-[11px] text-muted leading-relaxed">
-            <strong className="text-fg">Catatan ajar:</strong> warna chip di atas sama dengan warna
-            garis/marker di kurva Analitik (biru TH, merah CT, ungu WIP, teal FR, oranye = titik DES).
-            Selisih DES vs teori wajar: multi-moda, gate tangga, dan fase awal simulasi tidak ada di
-            rumus tertutup.
-          </p>
+          <div className="rounded-[var(--radius-sm)] border border-border bg-surface px-3 py-2.5 space-y-2">
+            <p className="text-[11px] font-medium text-fg">Mengapa angka DES bisa berbeda dari teori?</p>
+            <ul className="list-disc space-y-1.5 pl-4 text-[11px] text-muted leading-relaxed">
+              <li>
+                <strong className="text-fg">Multi-moda:</strong> Kingman fokus satu bottleneck;
+                DES merata-ratakan kolom + balok + panel + stair.
+              </li>
+              <li>
+                <strong className="text-fg">Gate tangga Z6:</strong> ketergantungan urutan yang
+                tidak ada di rumus VUT sederhana.
+              </li>
+              <li>
+                <strong className="text-fg">Transient awal:</strong> fase warm-up sebelum sistem
+                stabil; run pendek membesarkan bias.
+              </li>
+              <li>
+                <strong className="text-fg">CONWIP + buffer diskrit:</strong> batasan stok integer
+                dan kebijakan release yang tidak kontinu seperti model base-stock ideal.
+              </li>
+            </ul>
+            <p className="text-[11px] text-muted leading-relaxed">
+              <strong className="text-fg">Catatan ajar:</strong> warna chip sama dengan garis/marker
+              di kurva Analitik (biru TH, merah CT, ungu WIP, teal FR, oranye = titik DES). Selisih
+              adalah bahan diskusi magister, bukan kesalahan model didaktik.
+            </p>
+          </div>
         </div>
       ) : (
         <p className="mt-2 text-[11px] text-faint leading-relaxed">
-          Warna notasi sama di Analitik. Buka strip lengkap di langkah Analitik untuk penjelasan alur
-          DES → Little / Kingman / FR.
+          Warna notasi sama di Analitik. Buka strip lengkap di langkah{" "}
+          <strong className="text-muted">Analitik</strong> untuk penjelasan alur DES → Little /
+          Kingman / FR dan alasan selisih empiris vs teori.
         </p>
       )}
     </div>

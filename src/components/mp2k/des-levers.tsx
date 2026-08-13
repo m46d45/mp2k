@@ -2,16 +2,31 @@ import { useMp2k } from "@/lib/mp2k/store";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import {
+  DES_PRESETS,
+  matchPresetId,
+  type DesPresetId,
+} from "@/lib/mp2k/des/presets";
 
 /**
  * Three live PPM levers for DES:
  * Capacity · Variability · Inventory
  * (Product & Process design fixed in Kasus)
+ *
+ * Priority 2: guided experiment presets + one question each.
  */
 export function DesLeversPanel() {
   const p = useMp2k((s) => s.desParams);
   const setDesParams = useMp2k((s) => s.setDesParams);
   const desComplete = useMp2k((s) => s.desComplete);
+  const activeId = matchPresetId(p);
+  const active = DES_PRESETS.find((x) => x.id === activeId) ?? null;
+
+  function applyPreset(id: DesPresetId) {
+    const preset = DES_PRESETS.find((x) => x.id === id);
+    if (!preset) return;
+    setDesParams({ ...preset.params });
+  }
 
   return (
     <div className="space-y-3">
@@ -23,9 +38,66 @@ export function DesLeversPanel() {
         {desComplete && <Badge variant="success">run selesai</Badge>}
       </div>
       <p className="text-xs text-muted leading-relaxed">
-        Product & process design sudah dikunci di Kasus. Ubah parameter di bawah → DES di-reset
-        dengan seed & tuas baru.
+        Product & process design sudah dikunci di Kasus. Pilih <strong className="text-fg">preset eksperimen</strong>{\" \"}
+        dulu (disarankan), atau ubah parameter manual — DES di-reset dengan seed & tuas baru.
       </p>
+
+      {/* Guided presets */}
+      <Card className="border-fg/20 bg-elevated/40">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">Eksperimen berpemandu</CardTitle>
+          <CardDescription>
+            Empat skenario lab · pilih → Run all → jawab pertanyaan · bandingkan ke Dasar
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {DES_PRESETS.map((preset) => {
+              const on = activeId === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  onClick={() => applyPreset(preset.id)}
+                  className={cn(
+                    "min-h-11 rounded-[var(--radius-sm)] border px-2.5 py-2 text-left transition-colors",
+                    on
+                      ? "border-fg bg-primary text-primary-fg"
+                      : "border-border bg-surface text-fg hover:bg-subtle",
+                  )}
+                >
+                  <span className="block text-xs font-semibold leading-tight">{preset.label}</span>
+                  <span
+                    className={cn(
+                      "mt-0.5 block text-[10px] leading-snug",
+                      on ? "text-primary-fg/75" : "text-faint",
+                    )}
+                  >
+                    {preset.short}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {active ? (
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface px-3 py-2.5">
+              <p className="text-[10px] font-medium uppercase tracking-wide text-faint">
+                Pertanyaan · {active.label}
+              </p>
+              <p className="mt-1 text-sm font-medium text-fg leading-snug">{active.question}</p>
+              <p className="mt-1.5 text-xs text-muted leading-relaxed">{active.hint}</p>
+            </div>
+          ) : (
+            <div className="rounded-[var(--radius-sm)] border border-dashed border-border px-3 py-2.5">
+              <p className="text-xs text-muted leading-relaxed">
+                Parameter custom (bukan preset). Pilih salah satu skenario di atas untuk pertanyaan
+                panduan, atau lanjut eksperimen bebas.
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <div className="grid gap-3">
         <Card>

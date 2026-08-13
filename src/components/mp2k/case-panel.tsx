@@ -28,7 +28,9 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
             <Badge variant="default">Lab PPM</Badge>
             <Badge variant="default">bukan penjadwalan CPM</Badge>
           </div>
-          <CardTitle className="text-base">CPM menjawab <em>kapan</em> · PPM menjawab <em>mengapa workface macet</em></CardTitle>
+          <CardTitle className="text-base">
+            CPM menjawab <em>kapan</em> · PPM menjawab <em>mengapa workface macet</em>
+          </CardTitle>
           <CardDescription>
             Model didaktik frame 2 lantai — bukan digital twin proyek nyata.
           </CardDescription>
@@ -71,8 +73,8 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
                 satu workface
               </li>
               <li>
-                Menghubungkan tuas <strong className="text-fg">Capacity · Variability · Inventory</strong>{\" \"}
-                ke metrik TH, CT, WIP, dan fill rate
+                Menghubungkan tuas <strong className="text-fg">Capacity · Variability · Inventory</strong> ke
+                metrik TH, CT, WIP, dan fill rate
               </li>
             </ul>
           </div>
@@ -186,19 +188,24 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
           <CardContent>
             <ol className="space-y-1.5 font-mono text-xs text-muted">
               <li>
-                <span className="text-fg">1.</span> Product design <span className="text-faint">(dikunci di kasus)</span>
+                <span className="text-fg">1.</span> Product design{" "}
+                <span className="text-faint">(dikunci di kasus)</span>
               </li>
               <li>
-                <span className="text-fg">2.</span> Process design <span className="text-faint">(dikunci di kasus)</span>
+                <span className="text-fg">2.</span> Process design{" "}
+                <span className="text-faint">(dikunci di kasus)</span>
               </li>
               <li>
-                <span className="text-fg">3.</span> Capacity <span className="text-faint">(hidup di DES)</span>
+                <span className="text-fg">3.</span> Capacity{" "}
+                <span className="text-faint">(hidup di DES)</span>
               </li>
               <li>
-                <span className="text-fg">4.</span> Inventory <span className="text-faint">(hidup di DES)</span>
+                <span className="text-fg">4.</span> Inventory{" "}
+                <span className="text-faint">(hidup di DES)</span>
               </li>
               <li>
-                <span className="text-fg">5.</span> Variability <span className="text-faint">(hidup di DES)</span>
+                <span className="text-fg">5.</span> Variability{" "}
+                <span className="text-faint">(hidup di DES)</span>
               </li>
             </ol>
             <p className="mt-3 text-xs text-muted leading-relaxed">

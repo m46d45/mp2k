@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BuildingView } from "@/components/mp2k/building-view";
-import { Hammer, Factory, Truck, ArrowRight, Layers, GitBranch } from "lucide-react";
+import { Hammer, Factory, Truck, ArrowRight, Layers, GitBranch, CalendarClock, Workflow } from "lucide-react";
 
 /**
  * Step 1 — Introduce the MP2K case (before sim & analytics).
@@ -20,6 +20,64 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
           siap — kita fokus ke struktur atas.
         </p>
       </div>
+
+      {/* Priority 1: CPM vs PPM + lab objectives */}
+      <Card className="border-fg/25 bg-elevated/50">
+        <CardHeader className="pb-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="default">Lab PPM</Badge>
+            <Badge variant="default">bukan penjadwalan CPM</Badge>
+          </div>
+          <CardTitle className="text-base">CPM menjawab <em>kapan</em> · PPM menjawab <em>mengapa workface macet</em></CardTitle>
+          <CardDescription>
+            Model didaktik frame 2 lantai — bukan digital twin proyek nyata.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface p-3">
+              <div className="mb-1.5 flex items-center gap-2 text-sm font-medium text-fg">
+                <CalendarClock className="size-4 shrink-0 text-muted" strokeWidth={1.75} />
+                CPM / bar chart
+              </div>
+              <p className="text-xs text-muted leading-relaxed">
+                Urutan aktivitas, durasi, jalur kritis, dan target tanggal. Berguna untuk
+                perencanaan waktu — tetapi tidak menjelaskan antrian, WIP, atau mengapa satu moda
+                idle sementara moda lain menumpuk.
+              </p>
+            </div>
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface p-3">
+              <div className="mb-1.5 flex items-center gap-2 text-sm font-medium text-fg">
+                <Workflow className="size-4 shrink-0 text-muted" strokeWidth={1.75} />
+                PPM (lab ini)
+              </div>
+              <p className="text-xs text-muted leading-relaxed">
+                Proyek sebagai <strong className="text-fg">sistem produksi</strong>: throughput (TH),
+                cycle time (CT), WIP, utilisasi, dan fill rate. Menjelaskan macet di workface meski
+                jadwal "on track".
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-faint">Setelah lab ini Anda mampu</p>
+            <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm text-muted leading-relaxed">
+              <li>
+                Membedakan pertanyaan penjadwalan (<strong className="text-fg">kapan</strong>) dari
+                pertanyaan produksi (<strong className="text-fg">mengapa aliran macet</strong>)
+              </li>
+              <li>
+                Mengenali tiga moda (M / N / F) yang harus <strong className="text-fg">match</strong> di
+                satu workface
+              </li>
+              <li>
+                Menghubungkan tuas <strong className="text-fg">Capacity · Variability · Inventory</strong>{\" \"}
+                ke metrik TH, CT, WIP, dan fill rate
+              </li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Three production modes */}
       <div className="grid gap-3 sm:grid-cols-3">
@@ -128,23 +186,23 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
           <CardContent>
             <ol className="space-y-1.5 font-mono text-xs text-muted">
               <li>
-                <span className="text-fg">1.</span> Product design
+                <span className="text-fg">1.</span> Product design <span className="text-faint">(dikunci di kasus)</span>
               </li>
               <li>
-                <span className="text-fg">2.</span> Process design
+                <span className="text-fg">2.</span> Process design <span className="text-faint">(dikunci di kasus)</span>
               </li>
               <li>
-                <span className="text-fg">3.</span> Capacity
+                <span className="text-fg">3.</span> Capacity <span className="text-faint">(hidup di DES)</span>
               </li>
               <li>
-                <span className="text-fg">4.</span> Inventory
+                <span className="text-fg">4.</span> Inventory <span className="text-faint">(hidup di DES)</span>
               </li>
               <li>
-                <span className="text-fg">5.</span> Variability
+                <span className="text-fg">5.</span> Variability <span className="text-faint">(hidup di DES)</span>
               </li>
             </ol>
             <p className="mt-3 text-xs text-muted leading-relaxed">
-              Tuas diuji lewat simulasi (perilaku) dan analitik (kurva hukum produksi).
+              Tuas 3–5 diuji lewat simulasi (perilaku) dan analitik (kurva hukum produksi).
             </p>
           </CardContent>
         </Card>
@@ -167,8 +225,7 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
               <li className="flex items-start gap-2">
                 <Badge variant="default">2</Badge>
                 <span>
-                  <strong className="text-fg">Simulasi</strong> — jalankan / DES (didefinisikan
-                  berikutnya)
+                  <strong className="text-fg">Simulasi</strong> — DES: Capacity · Variability · Inventory
                 </span>
               </li>
               <li className="flex items-start gap-2">

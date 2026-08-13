@@ -6,6 +6,7 @@ import { MetricsPanel } from "@/components/mp2k/metrics-panel";
 import { DesLeversPanel } from "@/components/mp2k/des-levers";
 import { OpsPanel } from "@/components/mp2k/ops-panel";
 import { CasePanel } from "@/components/mp2k/case-panel";
+import { GlossaryPanel } from "@/components/mp2k/glossary-panel";
 import { Mp2kLogo } from "@/components/mp2k/logo";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -42,6 +43,7 @@ function Mp2kApp() {
               <div className="min-w-0 border-l border-border pl-3">
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge variant="default">Edukasi PPM</Badge>
+                  <Badge variant="default">model didaktik</Badge>
                 </div>
                 <h1 className="mt-1 text-lg font-semibold tracking-tight sm:text-xl">
                   Multi-Moda Produksi Proyek Konstruksi
@@ -53,7 +55,7 @@ function Mp2kApp() {
             </div>
             <div className="hidden text-right text-xs text-faint sm:block">
               <p>Frame beton · grid 3×5 · 2 lantai</p>
-              <p className="mt-0.5">DES event-driven · seedable</p>
+              <p className="mt-0.5">Bukan digital twin · DES seedable</p>
             </div>
           </div>
 
@@ -109,7 +111,8 @@ function Mp2kApp() {
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 text-center sm:px-6">
           <Mp2kMarkFooter />
           <p className="text-xs text-faint">
-            MP2K · DES: Capacity · Variability · Inventory · Analitik: Little · Kingman · FR
+            MP2K · model didaktik · DES: Capacity · Variability · Inventory · Analitik: Little ·
+            Kingman · FR
           </p>
         </div>
       </footer>
@@ -156,6 +159,7 @@ function SimStep({ onNext }: { onNext: () => void }) {
         <section className="space-y-4">
           <BuildingView />
           <DesLeversPanel />
+          <GlossaryPanel />
         </section>
         <section className="space-y-4">
           <MetricsPanel />
@@ -189,6 +193,7 @@ function AnalyticsStep() {
           <strong className="text-fg">fill rate vs inventory</strong>.
         </p>
       </div>
+      <GlossaryPanel />
       <OpsPanel />
     </div>
   );

@@ -38,8 +38,9 @@ export function DesLeversPanel() {
         {desComplete && <Badge variant="success">run selesai</Badge>}
       </div>
       <p className="text-xs text-muted leading-relaxed">
-        Product & process design sudah dikunci di Kasus. Pilih <strong className="text-fg">preset eksperimen</strong>{\" \"}
-        dulu (disarankan), atau ubah parameter manual — DES di-reset dengan seed & tuas baru.
+        Product & process design sudah dikunci di Kasus. Pilih{" "}
+        <strong className="text-fg">preset eksperimen</strong> dulu (disarankan), atau ubah parameter
+        manual — DES di-reset dengan seed & tuas baru.
       </p>
 
       {/* Guided presets */}

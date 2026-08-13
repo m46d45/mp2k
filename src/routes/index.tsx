@@ -56,7 +56,7 @@ function Mp2kApp() {
                   Multi-Moda Produksi Proyek Konstruksi
                 </h1>
                 <p className="mt-1 max-w-xl text-sm text-muted leading-relaxed">
-                  Kasus (design fixed) → DES Capacity/Variability/Inventory → analitik 3 kurva.
+                  Laboratorium Interaktif Pengelolaan Produksi di Proyek Konstruksi dan Sains Operasi.
                 </p>
               </div>
             </div>

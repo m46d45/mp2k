@@ -20,19 +20,30 @@ export const Route = createFileRoute("/")({
 type StepId = "case" | "sim" | "analytics" | "manual";
 
 const STEPS: {
-  id: Exclude<StepId, "manual">;
-  n: number;
+  id: StepId;
+  n: string;
   label: string;
   short: string;
   icon: typeof BookOpen;
 }[] = [
-  { id: "case", n: 1, label: "Kasus", short: "Product & process fixed", icon: BookOpen },
-  { id: "sim", n: 2, label: "Simulasi", short: "DES · 3 tuas", icon: Box },
-  { id: "analytics", n: 3, label: "Analitik", short: "Tiga kurva OS", icon: Calculator },
+  { id: "case", n: "1", label: "Kasus", short: "Product & process fixed", icon: BookOpen },
+  { id: "sim", n: "2", label: "Simulasi", short: "DES · 3 tuas", icon: Box },
+  { id: "analytics", n: "3", label: "Analitik", short: "Tiga kurva OS", icon: Calculator },
+  { id: "manual", n: "i", label: "Manual", short: "Panduan lab", icon: ScrollText },
 ];
+
+function goTop() {
+  if (typeof window === "undefined") return;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
 function Mp2kApp() {
   const [step, setStep] = useState<StepId>("case");
+
+  function open(id: StepId) {
+    setStep(id);
+    goTop();
+  }
 
   return (
     <div className="min-h-[calc(100dvh-var(--grok-banner-h,0px))] bg-bg text-fg">
@@ -54,43 +65,34 @@ function Mp2kApp() {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col items-end gap-2">
-              <div className="hidden text-right text-xs text-faint sm:block">
-                <p>Frame beton · grid 3×5 · 2 lantai</p>
-                <p className="mt-0.5">Bukan digital twin · DES seedable</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setStep("manual")}
-                className={cn(
-                  "inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-sm)] border px-3 text-xs font-medium",
-                  step === "manual"
-                    ? "border-fg bg-primary text-primary-fg"
-                    : "border-border bg-surface text-fg hover:bg-elevated",
-                )}
-              >
-                <ScrollText className="size-3.5" strokeWidth={1.75} />
-                Manual lab
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => open("manual")}
+              className={cn(
+                "inline-flex min-h-10 shrink-0 items-center gap-2 rounded-[var(--radius-sm)] border px-3 text-sm font-medium",
+                step === "manual"
+                  ? "border-fg bg-primary text-primary-fg"
+                  : "border-border bg-surface text-fg hover:bg-elevated",
+              )}
+            >
+              <ScrollText className="size-3.5" strokeWidth={1.75} />
+              Manual
+            </button>
           </div>
 
-          <nav aria-label="Alur belajar" className="grid grid-cols-3 gap-1 rounded-[var(--radius-md)] border border-border bg-elevated p-1">
-            {STEPS.map(({ id, n, label, short, icon: Icon }, i) => {
+          <nav aria-label="Alur belajar" className="grid grid-cols-4 gap-1 rounded-[var(--radius-md)] border border-border bg-elevated p-1">
+            {STEPS.map(({ id, n, label, short, icon: Icon }) => {
               const active = step === id;
-              const done = STEPS.findIndex((s) => s.id === step) > i;
               return (
                 <button
                   key={id}
                   type="button"
-                  onClick={() => setStep(id)}
+                  onClick={() => open(id)}
                   className={cn(
-                    "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-[calc(var(--radius-md)-2px)] px-2 py-2 text-center transition-colors sm:flex-row sm:gap-2 sm:px-3",
+                    "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-[calc(var(--radius-md)-2px)] px-1 py-2 text-center transition-colors sm:flex-row sm:gap-2 sm:px-3",
                     active
                       ? "bg-primary text-primary-fg"
-                      : done
-                        ? "bg-subtle text-fg hover:bg-subtle"
-                        : "text-muted hover:bg-subtle/80 hover:text-fg",
+                      : "text-muted hover:bg-subtle/80 hover:text-fg",
                   )}
                 >
                   <span
@@ -118,10 +120,10 @@ function Mp2kApp() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
-        {step === "case" && <CasePanel onNext={() => setStep("sim")} />}
-        {step === "sim" && <SimStep onNext={() => setStep("analytics")} />}
+        {step === "case" && <CasePanel onNext={() => open("sim")} />}
+        {step === "sim" && <SimStep onNext={() => open("analytics")} />}
         {step === "analytics" && <AnalyticsStep />}
-        {step === "manual" && <ManualPanel onBack={() => setStep("case")} />}
+        {step === "manual" && <ManualPanel onBack={() => open("case")} />}
       </main>
 
       <footer className="border-t border-border py-6">
@@ -133,10 +135,10 @@ function Mp2kApp() {
           </p>
           <button
             type="button"
-            onClick={() => setStep("manual")}
+            onClick={() => open("manual")}
             className="text-xs font-medium text-muted underline underline-offset-2 hover:text-fg"
           >
-            Buka manual lab
+            Manual
           </button>
         </div>
       </footer>

@@ -42,7 +42,9 @@ export function Mp2kLogo({ className, showWordmark = true }: { className?: strin
       {showWordmark ? (
         <div className="min-w-0 leading-tight">
           <div className="font-mono text-sm font-semibold tracking-tight text-fg">MP2K</div>
-          <div className="hidden text-[11px] text-muted sm:block">Multi-Moda Produksi</div>
+          <div className="hidden max-w-[12.5rem] text-[11px] leading-snug text-muted sm:block">
+            Multi-Moda Produksi Proyek Konstruksi
+          </div>
         </div>
       ) : null}
     </div>

@@ -63,6 +63,7 @@ export function compareDesToTheory(params: DesParams, des: DesMetrics): DesCompa
   const th = Math.max(des.th, 1e-9);
   const ctEmp = des.avgCt;
   const wipEmp = des.avgWip;
+  const runReady = des.completed > 0 && des.simTime > 1e-6;
 
   // Little identity on DES averages: WIP ≟ TH × CT
   const wipLittle = th * ctEmp;
@@ -73,8 +74,6 @@ export function compareDesToTheory(params: DesParams, des: DesMetrics): DesCompa
   // Kingman on empirical bottleneck resource
   const bot = bottleneckOf(des);
   const { te, m, label } = teMFor(bot, params);
-  // Share of throughput roughly at this resource — use full system TH as demand rate
-  // (teaching approximation for multi-stage line)
   const k = kingmanVut({
     te,
     th: Math.min(th, (m / te) * 0.98),
@@ -127,7 +126,6 @@ export function compareDesToTheory(params: DesParams, des: DesMetrics): DesCompa
     },
   ];
 
-  // Summary: pick largest absolute relative gap among finite rows
   let worst = rows[0];
   let worstAbs = 0;
   for (const r of rows) {
@@ -140,7 +138,7 @@ export function compareDesToTheory(params: DesParams, des: DesMetrics): DesCompa
   }
 
   let summary: string;
-  if (!des.completed || des.simTime < 1e-6) {
+  if (!runReady) {
     summary = "Jalankan DES (Run all) dulu untuk membandingkan empiris vs teori.";
   } else if (worst.id === "kingman" && worstAbs > 25) {
     summary =

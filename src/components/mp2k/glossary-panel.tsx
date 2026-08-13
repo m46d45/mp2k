@@ -28,8 +28,9 @@ export function GlossaryPanel({ defaultOpen = false }: { defaultOpen?: boolean }
       {open ? (
         <div className="border-t border-border px-4 pb-4 pt-3">
           <p className="mb-3 text-xs text-muted leading-relaxed">
-            Istilah yang dipakai di Simulasi & Analitik. Model ini <strong className="text-fg">didaktik</strong>{\" \"}
-            (frame 2 lantai) — bukan digital twin proyek nyata.
+            Istilah yang dipakai di Simulasi & Analitik. Model ini{" "}
+            <strong className="text-fg">didaktik</strong> (frame 2 lantai) — bukan digital twin proyek
+            nyata.
           </p>
           <div className="space-y-4">
             {GLOSSARY_GROUPS.map((g) => {

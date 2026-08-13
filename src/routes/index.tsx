@@ -7,19 +7,20 @@ import { DesLeversPanel } from "@/components/mp2k/des-levers";
 import { OpsPanel } from "@/components/mp2k/ops-panel";
 import { CasePanel } from "@/components/mp2k/case-panel";
 import { GlossaryPanel } from "@/components/mp2k/glossary-panel";
+import { ManualPanel } from "@/components/mp2k/manual-panel";
 import { Mp2kLogo } from "@/components/mp2k/logo";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { BookOpen, Box, Calculator, ArrowRight } from "lucide-react";
+import { BookOpen, Box, Calculator, ArrowRight, ScrollText } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Mp2kApp,
 });
 
-type StepId = "case" | "sim" | "analytics";
+type StepId = "case" | "sim" | "analytics" | "manual";
 
 const STEPS: {
-  id: StepId;
+  id: Exclude<StepId, "manual">;
   n: number;
   label: string;
   short: string;
@@ -53,9 +54,24 @@ function Mp2kApp() {
                 </p>
               </div>
             </div>
-            <div className="hidden text-right text-xs text-faint sm:block">
-              <p>Frame beton · grid 3×5 · 2 lantai</p>
-              <p className="mt-0.5">Bukan digital twin · DES seedable</p>
+            <div className="flex flex-col items-end gap-2">
+              <div className="hidden text-right text-xs text-faint sm:block">
+                <p>Frame beton · grid 3×5 · 2 lantai</p>
+                <p className="mt-0.5">Bukan digital twin · DES seedable</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setStep("manual")}
+                className={cn(
+                  "inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-sm)] border px-3 text-xs font-medium",
+                  step === "manual"
+                    ? "border-fg bg-primary text-primary-fg"
+                    : "border-border bg-surface text-fg hover:bg-elevated",
+                )}
+              >
+                <ScrollText className="size-3.5" strokeWidth={1.75} />
+                Manual lab
+              </button>
             </div>
           </div>
 
@@ -105,6 +121,7 @@ function Mp2kApp() {
         {step === "case" && <CasePanel onNext={() => setStep("sim")} />}
         {step === "sim" && <SimStep onNext={() => setStep("analytics")} />}
         {step === "analytics" && <AnalyticsStep />}
+        {step === "manual" && <ManualPanel onBack={() => setStep("case")} />}
       </main>
 
       <footer className="border-t border-border py-6">
@@ -114,6 +131,13 @@ function Mp2kApp() {
             MP2K · model didaktik · DES: Capacity · Variability · Inventory · Analitik: Little ·
             Kingman · FR
           </p>
+          <button
+            type="button"
+            onClick={() => setStep("manual")}
+            className="text-xs font-medium text-muted underline underline-offset-2 hover:text-fg"
+          >
+            Buka manual lab
+          </button>
         </div>
       </footer>
     </div>

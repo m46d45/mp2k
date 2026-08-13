@@ -24,16 +24,10 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
       {/* Priority 1: CPM vs PPM + lab objectives */}
       <Card className="border-fg/25 bg-elevated/50">
         <CardHeader className="pb-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="default">Lab PPM</Badge>
-            <Badge variant="default">bukan penjadwalan CPM</Badge>
-          </div>
-          <CardTitle className="text-base">
-            CPM menjawab <em>kapan</em> · PPM menjawab <em>mengapa workface macet</em>
+          <CardTitle className="text-base leading-snug">
+            Apa bedanya praktek yang selama ini dilakukan dalam manajemen proyek menggunakan
+            CPM/BarChart dengan Pengelolaan Produksi atau Project Production Management (PPM)?
           </CardTitle>
-          <CardDescription>
-            Model didaktik frame 2 lantai — bukan digital twin proyek nyata.
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2">

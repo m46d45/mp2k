@@ -9,7 +9,6 @@ import { CasePanel } from "@/components/mp2k/case-panel";
 import { GlossaryPanel } from "@/components/mp2k/glossary-panel";
 import { ManualPanel } from "@/components/mp2k/manual-panel";
 import { Mp2kLogo } from "@/components/mp2k/logo";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { BookOpen, Box, Calculator, ArrowRight, ScrollText } from "lucide-react";
 
@@ -53,11 +52,7 @@ function Mp2kApp() {
             <div className="flex min-w-0 items-start gap-3">
               <Mp2kLogo />
               <div className="min-w-0 border-l border-border pl-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant="default">Edukasi PPM</Badge>
-                  <Badge variant="default">model didaktik</Badge>
-                </div>
-                <h1 className="mt-1 text-lg font-semibold tracking-tight sm:text-xl">
+                <h1 className="text-lg font-semibold tracking-tight sm:text-xl">
                   Multi-Moda Produksi Proyek Konstruksi
                 </h1>
                 <p className="mt-1 max-w-xl text-sm text-muted leading-relaxed">

@@ -79,8 +79,8 @@ export function SimControls() {
           <Badge variant={desComplete ? "success" : "default"}>
             t = {simTime.toFixed(2)} hari
           </Badge>
-          <Badge variant="default">burst #{stepCount}</Badge>
-          <span className="text-xs text-faint uppercase tracking-wide">Discrete event</span>
+          <Badge variant="default">langkah #{stepCount}</Badge>
+          <span className="text-xs text-faint uppercase tracking-wide">DES</span>
         </div>
         <p className="text-sm leading-relaxed text-fg">{lastMessage}</p>
       </div>

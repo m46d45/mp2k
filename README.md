@@ -1,29 +1,28 @@
 # MP2K — Multi-Moda Produksi Proyek Konstruksi
 
-**Situs live:** [https://mp2k.vercel.app/](https://mp2k.vercel.app/)  
-**Model:** didaktik (lab magister, bukan digital twin proyek nyata)
+**Situs live:** [https://mp2k.vercel.app/](https://mp2k.vercel.app/)
 
-Lab interaktif untuk pengenalan **Project Production Management (PPM)** / Operations Science pada sistem produksi konstruksi multi-moda. Alur belajar mengikuti tiga langkah:
+Pengelolaan produksi proyek konstruksi multi-moda (**PPM**) dan sains operasi. Alur: Kasus → Simulasi DES → Analitik.
 
 | Langkah | Fokus |
 |--------|--------|
 | **1. Kasus** | Product & process design (sudah ditetapkan) |
 | **2. Simulasi** | DES pada 3 tuas: Capacity · Variability · Inventory |
-| **3. Analitik** | Tiga kurva OS + marker titik operasi DES |
+| **3. Analitik** | Tiga kurva + marker titik operasi DES |
 
 Konsep diilhami **Project Production Institute (PPI)** dan Factory Physics (Little, Kingman/VUT, base-stock inventory).
 
 ---
 
-## 1. Tujuan pembelajaran
+## 1. Tujuan
 
-Setelah memakai lab ini, mahasiswa diharapkan mampu:
+Di MP2K dikerjakan:
 
-1. Membedakan **CPM/scheduling** vs **PPM/operations science** (aliran, antrian, stok).
-2. Mengenali **tiga moda produksi** dalam satu sistem: manual (M), near-site/offsite dekat (N), far-supply (F).
-3. Mengoperasikan **tiga tuas terakhir PPM** (Capacity, Variability, Inventory) lewat DES.
+1. Membandingkan **CPM / bar chart** dengan **PPM** (aliran, antrian, stok).
+2. Mengenali **tiga moda produksi** dalam satu sistem: manual (M), near-site (N), far-supply (F).
+3. Mengoperasikan **tiga tuas** Capacity, Variability, Inventory lewat DES.
 4. Membaca **Little’s Law**, **Kingman (VUT)**, dan **fill rate vs inventory**, serta membandingkan empiris DES dengan prediksi teori.
-5. Menjelaskan mengapa angka DES dan teori bisa berbeda (multi-moda, gate urutan, transient, buffer diskrit).
+5. Menjelaskan mengapa angka DES dan teori bisa berbeda (multi-moda, urutan tangga, fase awal run, buffer diskrit).
 
 ---
 
@@ -40,25 +39,25 @@ Setelah memakai lab ini, mahasiswa diharapkan mampu:
 
 | Moda | Elemen | Karakter |
 |------|--------|----------|
-| **M — Manual (onsite)** | Kolom beton bertulang | Dikerjakan di workface; butuh kapasitas crew onsite |
-| **N — Near-site / offsite dekat** | Balok beton | Diproduksi dekat lokasi, lalu diangkat; buffer/lead relatif pendek |
+| **M — Manual di lokasi** | Kolom beton bertulang | Dikerjakan di workface; butuh kapasitas kru |
+| **N — Near-site (dekat lokasi)** | Balok beton | Diproduksi dekat lokasi, lalu diangkat; buffer/lead time relatif pendek |
 | **F — Far-supply** | Panel lantai | Datang dari luar ("sudah tinggal pasang"); lead time L & buffer stok menentukan fill rate |
 
 Urutan workface harus **match**: kolom → balok (bertumpu minimal dua kolom) → panel (bertumpu pada balok). Tangga Z6 menunggu kolom C3 + balok terkait selesai.
 
-### Lima tuas PPM di lab ini
+### Lima tuas PPM
 
 - **Product design** & **Process design** → sudah ditetapkan di langkah Kasus (tidak diubah di DES).
 - **Capacity**, **Variability**, **Inventory** → yang disimulasikan dan dianalisis.
 
 ---
 
-## 3. Cara memakai situs
+## 3. Cara memakai
 
 ### Langkah 1 — Kasus
 
-- Baca kartu **CPM vs PPM** dan tujuan lab.
-- Pahami denah/elevasi, moda M/N/F, dan batasan urutan zona.
+- Baca kartu **CPM vs PPM**.
+- Lihat denah/elevasi, moda M/N/F, dan urutan zona.
 - Tidak ada parameter yang diubah di sini; ini menetapkan sistem yang akan disimulasikan.
 
 ### Langkah 2 — Simulasi (DES)
@@ -74,7 +73,7 @@ Urutan workface harus **match**: kolom → balok (bertumpu minimal dua kolom) �
    - Progress instalasi (kolom, balok, panel, zona).
    - **Strip titik operasi DES** (TH, CT, WIP, FR, ū bottleneck).
    - Tabel **Banding DES ↔ teori** (Little WIP, Kingman CT bottleneck, FR panel) beserta **Δ** dan catatan.
-5. Buka **Glossarium** jika istilah belum familiar.
+5. Buka **Glosarium** jika istilah belum familiar.
 
 **Cara membaca Δ**
 
@@ -111,15 +110,15 @@ Urutan workface harus **match**: kolom → balok (bertumpu minimal dua kolom) �
 | **CONWIP** | Batas WIP sistem | job |
 
 **Little:** $\mathrm{WIP} = \mathrm{TH} \times \mathrm{CT}$ (sistem stabil).  
-**Kingman (bentuk ajar):** $\mathrm{CT}/t_e \approx 1 + V \cdot \bar{u}/(1-\bar{u})$.  
+**Kingman:** $\mathrm{CT}/t_e \approx 1 + V \cdot \bar{u}/(1-\bar{u})$.  
 **FR:** mendekati $1 -$ (stockout / percobaan ambil stok) di DES; teori = model base-stock.
 
 ---
 
-## 5. Saran latihan lab (30–90 menit)
+## 5. Saran latihan (30–90 menit)
 
-1. **Baseline** — preset Dasar, Run all. Catat TH, CT, WIP, FR, ū. Cek konsistensi Little.
-2. **Shock variability** — preset Variability tinggi. Apa yang terjadi pada CT dan Δ Kingman?
+1. **Dasar** — preset Dasar, Run all. Catat TH, CT, WIP, FR, ū. Cek konsistensi Little.
+2. **Variability tinggi** — preset yang sama. Apa yang terjadi pada CT dan Δ Kingman?
 3. **Inventory ketat** — preset Inventory ketat. Amati stockout & FR; longgarkan buffer/L sekali, Run ulang, bandingkan marker FR di Analitik.
 4. **Capacity** — preset Capacity longgar vs Dasar. Apakah TH naik proporsional? Di mana bottleneck bergeser?
 5. **Sinkronisasi** — Isi dari DES → Mulai perhitungan. Jelaskan dalam 5–7 kalimat mengapa titik oranye tidak selalu menempel prediksi tertutup.
@@ -129,9 +128,9 @@ Urutan workface harus **match**: kolom → balok (bertumpu minimal dua kolom) �
 ## 6. Batasan model (penting untuk diskusi)
 
 - Frame 2 lantai, grid tetap, urutan zona & tangga disederhanakan.
-- DES seedable; run pendek masih membawa bias transient.
-- Prediksi teori = pendekatan ajar (bottleneck tunggal + base-stock), **bukan** digital twin.
-- Match score visual di UI **bukan** metrik operations science; fokus pada TH, CT, WIP, FR, ū.
+- Hasil DES dapat diulang dengan seed yang sama; run pendek masih membawa bias fase awal.
+- Prediksi teori memakai pendekatan bottleneck tunggal dan model base-stock.
+- Skor match visual **bukan** metrik produksi; fokus pada TH, CT, WIP, FR, ū.
 
 ---
 
@@ -161,10 +160,10 @@ npx vercel --prod
 ```
 
 Build: `npm run build`.  
-Tidak wajib `DATABASE_URL` untuk lab edukasi (PGLite fallback).
+Tidak wajib `DATABASE_URL` (PGLite fallback).
 
 ---
 
 ## Lisensi & sumber konsep
 
-Demo edukasi. Konsep PPM / operations science terinspirasi **Project Production Institute (PPI)** dan literatur Factory Physics (Little, Kingman/VUT, inventory fill rate).
+Konsep PPM / sains operasi terinspirasi **Project Production Institute (PPI)** dan literatur Factory Physics (Little, Kingman/VUT, inventory fill rate).

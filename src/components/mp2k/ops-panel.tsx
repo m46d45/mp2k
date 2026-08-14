@@ -176,7 +176,7 @@ export function OpsPanel() {
           <div className="flex flex-wrap items-center gap-2">
             <CardTitle className="text-base">Parameter operasi</CardTitle>
             <Badge variant="default">{op.mode}</Badge>
-            {dirty ? <Badge variant="warn">belum dihitung</Badge> : <Badge variant="success">snapshot aktif</Badge>}
+            {dirty ? <Badge variant="warn">belum dihitung</Badge> : <Badge variant="success">sudah dihitung</Badge>}
           </div>
           <CardDescription>
             te · stations · TH · m · ca/ce · CONWIP — selaraskan dengan DES lewat tombol di atas
@@ -189,8 +189,8 @@ export function OpsPanel() {
             <NumField label="TH demand" unit="unit/hari" value={op.th} min={0} step={0.05} onChange={(v) => updateOp({ th: v })} />
             <NumField label="m resource" unit="paralel" value={op.m} min={1} step={1} integer onChange={(v) => updateOp({ m: v })} />
             <NumField label="CONWIP" unit="0=auto W_opt" value={op.conwip} min={0} step={0.5} onChange={(v) => updateOp({ conwip: v })} />
-            <NumField label="ca" unit="CV arrival" value={op.ca} min={0} step={0.05} onChange={(v) => updateOp({ ca: v })} />
-            <NumField label="ce" unit="CV process" value={op.ce} min={0} step={0.05} onChange={(v) => updateOp({ ce: v })} />
+            <NumField label="ca" unit="CV kedatangan" value={op.ca} min={0} step={0.05} onChange={(v) => updateOp({ ca: v })} />
+            <NumField label="ce" unit="CV proses" value={op.ce} min={0} step={0.05} onChange={(v) => updateOp({ ce: v })} />
             <NumField label="CV demand" unit="inventory" value={op.demandCv} min={0} step={0.05} onChange={(v) => updateOp({ demandCv: v })} />
             <NumField label="Lead time L" unit="hari" value={op.leadTime} min={0.1} step={0.5} onChange={(v) => updateOp({ leadTime: v })} />
             <NumField label="Service level" unit="Type I" value={op.serviceLevel} min={0.5} max={0.999} step={0.01} onChange={(v) => updateOp({ serviceLevel: v })} />
@@ -350,7 +350,7 @@ function InventoryChart({ snap, desPoint }: { snap: CalcSnapshot; desPoint: DesP
             <YAxis tick={{ fill: MUTED, fontSize: 11 }} label={{ value: "Inventory", angle: -90, position: "insideLeft", fill: MUTED, fontSize: 11 }} />
             <Tooltip />
             <Legend verticalAlign="top" height={32} wrapperStyle={{ fontSize: 11 }} />
-            <Area type="monotone" dataKey="inv" name="Kurva teoritis" stroke={DES_METRIC_COLORS.fr} fill="#0f766e22" strokeWidth={2.5} dot={false} isAnimationActive={false} />
+            <Area type="monotone" dataKey="inv" name="Kurva teori" stroke={DES_METRIC_COLORS.fr} fill="#0f766e22" strokeWidth={2.5} dot={false} isAnimationActive={false} />
             <ReferenceDot x={Math.min(104, Math.max(70, invChart.point.fr))} y={invChart.point.inv} r={7} fill="#111" stroke="#fff" strokeWidth={2} />
             {desPoint.ready ? (
               <ReferenceDot x={Math.min(104, Math.max(70, desPoint.fillRate * 100))} y={desPoint.invProxy} r={7} fill={DES_METRIC_COLORS.des} stroke="#fff" strokeWidth={2} />

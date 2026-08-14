@@ -45,18 +45,18 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
             <div className="rounded-[var(--radius-sm)] border border-border bg-surface p-3">
               <div className="mb-1.5 flex items-center gap-2 text-sm font-medium text-fg">
                 <Workflow className="size-4 shrink-0 text-muted" strokeWidth={1.75} />
-                PPM (lab ini)
+                PPM
               </div>
               <p className="text-xs text-muted leading-relaxed">
                 Proyek sebagai <strong className="text-fg">sistem produksi</strong>: throughput (TH),
                 cycle time (CT), WIP, utilisasi, dan fill rate. Menjelaskan macet di workface meski
-                jadwal "on track".
+                jadwal sesuai target.
               </p>
             </div>
           </div>
 
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-faint">Setelah lab ini Anda mampu</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-faint">Yang dibandingkan di sini</p>
             <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm text-muted leading-relaxed">
               <li>
                 Membedakan pertanyaan penjadwalan (<strong className="text-fg">kapan</strong>) dari
@@ -80,21 +80,21 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
         <ModeCard
           icon={Hammer}
           mode="M"
-          title="Manual / craft onsite"
+          title="Manual di lokasi"
           item="Kolom beton"
-          detail="Dibentuk & dicor di lokasi. Variability proses tinggi (cuaca, kru, formwork)."
+          detail="Dibentuk dan dicor di lokasi. Variability proses tinggi (cuaca, kru, bekisting)."
         />
         <ModeCard
           icon={Factory}
           mode="N"
-          title="Near-site offsite"
+          title="Near-site (dekat lokasi)"
           item="Balok beton"
-          detail="Yard di dekat site. Lead time menengah, kualitas lebih terkendali."
+          detail="Diproduksi di yard dekat lokasi. Lead time menengah, mutu lebih terkendali."
         />
         <ModeCard
           icon={Truck}
           mode="F"
-          title="Far supply & install"
+          title="Far supply (dari luar)"
           item="Panel lantai"
           detail="Datang dari luar, tinggal pasang. Lead time panjang — inventory & FR kritis."
         />
@@ -139,7 +139,7 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Mengapa multi-moda rumit?</CardTitle>
-            <CardDescription>Matching tiga ritme produksi di satu workface</CardDescription>
+            <CardDescription>Menyelaraskan tiga ritme produksi di satu workface</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted leading-relaxed">
             <p>
@@ -147,13 +147,12 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
               variability, dan inventory</strong> berbeda. Kalau urutan/zona tidak match:
             </p>
             <ul className="list-disc space-y-1.5 pl-5">
-              <li>WIP menumpuk di satu moda, moda lain idle</li>
+              <li>WIP menumpuk di satu moda, moda lain menganggur</li>
               <li>Utilisasi tinggi di bottleneck → CT meledak (Kingman)</li>
               <li>Panel terlambat → fill rate turun, zona kosong</li>
             </ul>
             <p className="text-fg font-medium">
-              MP2K memakai kasus ini untuk belajar Project Production Management (PPI): 5 tuas +
-              Operations Science.
+              Kasus ini memakai lima tuas PPM dan sains operasi (Project Production Institute).
             </p>
           </CardContent>
         </Card>
@@ -162,8 +161,8 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
       {/* Preview of building */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Pratinjau denah & elevasi</CardTitle>
-          <CardDescription>Ilustrasi frame — detail dinamis di langkah Simulasi</CardDescription>
+          <CardTitle className="text-base">Denah dan elevasi</CardTitle>
+          <CardDescription>Frame tampak di sini; status berubah di langkah Simulasi</CardDescription>
         </CardHeader>
         <CardContent>
           <BuildingView />
@@ -212,7 +211,7 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
               <Layers className="size-4 text-muted" />
-              <CardTitle className="text-base">Alur belajar MP2K</CardTitle>
+              <CardTitle className="text-base">Alur MP2K</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -220,7 +219,7 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
               <li className="flex items-start gap-2">
                 <Badge variant="default">1</Badge>
                 <span>
-                  <strong className="text-fg">Kasus</strong> — pahami sistem multi-moda
+                  <strong className="text-fg">Kasus</strong> — sistem multi-moda
                 </span>
               </li>
               <li className="flex items-start gap-2">

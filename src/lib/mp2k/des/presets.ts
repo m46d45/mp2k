@@ -21,7 +21,7 @@ export const DES_PRESETS: DesPreset[] = [
   {
     id: "dasar",
     label: "Dasar",
-    short: "Baseline seimbang",
+    short: "Titik acuan seimbang",
     lever: "baseline",
     question: "Catat TH, CT rata-rata, WIP rata-rata, dan fill rate panel sebagai titik acuan.",
     hint: "Jalankan Run all, lalu bandingkan skenario lain ke angka ini.",

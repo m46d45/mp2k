@@ -35,8 +35,7 @@ export function DesOperatingStrip({
           Belum ada hasil simulasi. Di langkah <strong className="text-fg">Simulasi</strong>, pilih
           preset (Dasar / Variability tinggi / Inventory ketat / Capacity longgar) lalu{" "}
           <strong className="text-fg">Run all</strong>. Angka TH, CT, WIP, FR, dan ū akan muncul di
-          sini dengan notasi &amp; warna yang sama di kurva Analitik — supaya mahasiswa bisa
-          membandingkan empiris vs prediksi teori secara visual.
+          sini dengan notasi dan warna yang sama di kurva Analitik.
         </p>
       </div>
     );
@@ -63,7 +62,7 @@ export function DesOperatingStrip({
       value: formatNum(op.ct),
       unit: "hari",
       explain:
-        "Cycle time rata-rata semua job (kolom + balok + panel + stair). Little: CT = WIP / TH. Kingman memprediksi hanya CT di resource bottleneck (CT/te = 1 + V·ū/(1−ū)). CT sistem DES sering lebih besar/kecil dari prediksi Kingman karena merata-ratakan multi-moda M/N/F dan gate tangga Z6 — selisih itu bahan diskusi, bukan bug.",
+        "Cycle time rata-rata semua job (kolom + balok + panel + tangga). Little: CT = WIP / TH. Kingman memprediksi hanya CT di resource bottleneck (CT/te = 1 + V·ū/(1−ū)). CT sistem DES sering berbeda dari prediksi Kingman karena merata-ratakan multi-moda M/N/F dan urutan tangga Z6.",
     },
     {
       key: "wip",
@@ -139,8 +138,8 @@ export function DesOperatingStrip({
             <li>
               <strong className="text-fg">DES (empiris)</strong> menghasilkan TH, CT, WIP, FR, ū dari
               event start/end/arrive pada multi-moda M (kolom manual), N (balok near-site), F (panel
-              far-supply) dengan CONWIP, buffer panel, dan gate tangga di Z6. Angka ini adalah
-              &quot;kenyataan&quot; lab — bukan asumsi rumus tertutup.
+              far-supply) dengan CONWIP, buffer panel, dan urutan tangga di Z6. Angka ini adalah
+              hasil run DES — bukan asumsi rumus tertutup.
             </li>
             <li>
               <strong className="text-fg">Little&apos;s Law</strong> mengikat tiga metrik pada sistem
@@ -187,25 +186,25 @@ export function DesOperatingStrip({
             <ul className="list-disc space-y-1.5 pl-4 text-[11px] text-muted leading-relaxed">
               <li>
                 <strong className="text-fg">Multi-moda:</strong> Kingman fokus satu bottleneck;
-                DES merata-ratakan kolom + balok + panel + stair.
+                DES merata-ratakan kolom + balok + panel + tangga.
               </li>
               <li>
-                <strong className="text-fg">Gate tangga Z6:</strong> ketergantungan urutan yang
+                <strong className="text-fg">Urutan tangga Z6:</strong> ketergantungan urutan yang
                 tidak ada di rumus VUT sederhana.
               </li>
               <li>
-                <strong className="text-fg">Transient awal:</strong> fase warm-up sebelum sistem
+                <strong className="text-fg">Fase awal:</strong> sebelum sistem
                 stabil; run pendek membesarkan bias.
               </li>
               <li>
                 <strong className="text-fg">CONWIP + buffer diskrit:</strong> batasan stok integer
-                dan kebijakan release yang tidak kontinu seperti model base-stock ideal.
+                dan kebijakan pelepasan yang tidak kontinu seperti model base-stock ideal.
               </li>
             </ul>
             <p className="text-[11px] text-muted leading-relaxed">
-              <strong className="text-fg">Catatan ajar:</strong> warna chip sama dengan garis/marker
+              <strong className="text-fg">Catatan:</strong> warna chip sama dengan garis/marker
               di kurva Analitik (biru TH, merah CT, ungu WIP, teal FR, oranye = titik DES). Selisih
-              adalah bahan diskusi magister, bukan kesalahan model didaktik.
+              berasal dari multi-moda, urutan tangga, dan fase awal run — bukan kesalahan perhitungan.
             </p>
           </div>
         </div>

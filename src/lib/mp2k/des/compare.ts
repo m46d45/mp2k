@@ -102,7 +102,7 @@ export function compareDesToTheory(params: DesParams, des: DesMetrics): DesCompa
       delta: relDelta(wipEmp, wipLittle),
       note: littleOk
         ? "DES konsisten: WIP ≈ TH × CT (rata-rata). Identitas Little berlaku pada sistem stabil — titik oranye di kurva WIP–TH–CT harus dekat garis teori."
-        : "Selisih ke TH×CT — cek horizon run / transient awal. Perpanjang Run atau abaikan fase warm-up agar rata-rata mendekati steady state.",
+        : "Selisih ke TH×CT — periksa lama run atau fase awal. Perpanjang Run atau abaikan fase awal agar rata-rata mendekati kondisi stabil.",
     },
     {
       id: "kingman",
@@ -142,7 +142,7 @@ export function compareDesToTheory(params: DesParams, des: DesMetrics): DesCompa
     summary = "Jalankan DES (Run all) dulu untuk membandingkan empiris vs teori.";
   } else if (worst.id === "kingman" && worstAbs > 25) {
     summary =
-      "CT sistem vs Kingman bottleneck sering beda: DES merata-ratakan kolom+balok+panel+stair; Kingman fokus resource tersibuk saja. Variability tinggi dan ū mendekati 1 membesarkan selisih — gunakan sebagai bahan diskusi, bukan indikasi error model.";
+      "CT sistem vs Kingman bottleneck sering berbeda: DES merata-ratakan kolom, balok, panel, dan tangga; Kingman fokus pada resource tersibuk saja. Variability tinggi dan ū mendekati 1 membesarkan selisih — itu wajar, bukan kesalahan perhitungan.";
   } else if (worst.id === "fillrate" && worstAbs > 15) {
     summary =
       "Fill rate empiris vs teori: lead time / buffer / CONWIP di DES mengatur stockout nyata; kurva FR adalah model base-stock ideal (kontinu). Coba naikkan buffer atau longgarkan L di Simulasi, Run ulang, lalu bandingkan lagi.";
@@ -151,7 +151,7 @@ export function compareDesToTheory(params: DesParams, des: DesMetrics): DesCompa
       "Little belum rapat (WIP ≉ TH×CT) — perpanjang run atau abaikan fase awal (transient). Setelah stabil, Δ Little biasanya kecil.";
   } else {
     summary =
-      "Empiris dekat prediksi pada skala lab ini. Selisih sisa = multi-moda, gate tangga Z6, dan transient — wajar di model didaktik (bukan digital twin). Lanjut ke Analitik untuk melihat marker oranye di ketiga kurva.";
+      "Empiris dekat prediksi. Selisih sisa berasal dari multi-moda, urutan tangga Z6, dan fase awal run. Lanjut ke Analitik untuk melihat marker oranye di ketiga kurva.";
   }
 
   return { rows, summary, bottleneck: bot, littleOk };

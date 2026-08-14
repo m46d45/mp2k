@@ -25,10 +25,10 @@ const STEPS: {
   short: string;
   icon: typeof BookOpen;
 }[] = [
-  { id: "case", n: "1", label: "Kasus", short: "Product & process fixed", icon: BookOpen },
+  { id: "case", n: "1", label: "Kasus", short: "Desain produk & proses", icon: BookOpen },
   { id: "sim", n: "2", label: "Simulasi", short: "DES · 3 tuas", icon: Box },
-  { id: "analytics", n: "3", label: "Analitik", short: "Tiga kurva OS", icon: Calculator },
-  { id: "manual", n: "i", label: "Manual", short: "Panduan lab", icon: ScrollText },
+  { id: "analytics", n: "3", label: "Analitik", short: "Tiga kurva", icon: Calculator },
+  { id: "manual", n: "i", label: "Manual", short: "Cara memakai", icon: ScrollText },
 ];
 
 function goTop() {
@@ -75,7 +75,7 @@ function Mp2kApp() {
             </button>
           </div>
 
-          <nav aria-label="Alur belajar" className="grid grid-cols-4 gap-1 rounded-[var(--radius-md)] border border-border bg-elevated p-1">
+          <nav aria-label="Alur" className="grid grid-cols-4 gap-1 rounded-[var(--radius-md)] border border-border bg-elevated p-1">
             {STEPS.map(({ id, n, label, short, icon: Icon }) => {
               const active = step === id;
               return (
@@ -125,8 +125,7 @@ function Mp2kApp() {
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 text-center sm:px-6">
           <Mp2kMarkFooter />
           <p className="text-xs text-faint">
-            MP2K · model didaktik · DES: Capacity · Variability · Inventory · Analitik: Little ·
-            Kingman · FR
+            MP2K · Capacity · Variability · Inventory · Little · Kingman · FR
           </p>
           <button
             type="button"
@@ -157,13 +156,14 @@ function SimStep({ onNext }: { onNext: () => void }) {
         <div className="max-w-2xl">
           <p className="text-xs font-medium uppercase tracking-wider text-faint">Langkah 2 · Simulasi DES</p>
           <h2 className="mt-1 text-xl font-semibold tracking-tight">
-            Discrete event · tiga tuas produksi
+            Simulasi DES · tiga tuas produksi
           </h2>
           <p className="mt-2 text-sm text-muted leading-relaxed">
-            Product & process design fixed. Putar <strong className="text-fg">Capacity</strong>,{" "}
+            Product design dan Process design sudah ditetapkan. Ubah{" "}
+            <strong className="text-fg">Capacity</strong>,{" "}
             <strong className="text-fg">Variability</strong>, dan{" "}
-            <strong className="text-fg">Inventory</strong> — engine event menggerakkan denah dan
-            menghitung TH, CT, WIP, utilisasi, fill rate.
+            <strong className="text-fg">Inventory</strong> — mesin event menggerakkan denah dan
+            menghitung TH, CT, WIP, utilisasi, serta fill rate.
           </p>
         </div>
         <button
@@ -207,7 +207,7 @@ function AnalyticsStep() {
     <div className="space-y-4">
       <div className="max-w-2xl">
         <p className="text-xs font-medium uppercase tracking-wider text-faint">Langkah 3 · Analitik</p>
-        <h2 className="mt-1 text-xl font-semibold tracking-tight">Tiga kurva Operations Science</h2>
+        <h2 className="mt-1 text-xl font-semibold tracking-tight">Tiga kurva sains operasi</h2>
         <p className="mt-2 text-sm text-muted leading-relaxed">
           Hukum di balik hasil DES: <strong className="text-fg">WIP–TH–CT</strong> (capacity/inventory),{" "}
           <strong className="text-fg">Kingman</strong> (variability × utilisasi),{" "}

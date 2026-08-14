@@ -38,9 +38,9 @@ export function DesLeversPanel() {
         {desComplete && <Badge variant="success">run selesai</Badge>}
       </div>
       <p className="text-xs text-muted leading-relaxed">
-        Product & process design sudah dikunci di Kasus. Pilih{" "}
-        <strong className="text-fg">preset eksperimen</strong> dulu (disarankan), atau ubah parameter
-        manual — DES di-reset dengan seed & tuas baru.
+        Product design dan Process design sudah ditetapkan di Kasus. Pilih{" "}
+        <strong className="text-fg">preset</strong>, atau ubah parameter sendiri — DES diulang dari
+        awal dengan tuas yang baru.
       </p>
 
       {/* Guided presets */}
@@ -48,7 +48,7 @@ export function DesLeversPanel() {
         <CardHeader className="pb-2">
           <CardTitle className="text-sm">Eksperimen berpemandu</CardTitle>
           <CardDescription>
-            Empat skenario lab · pilih → Run all → jawab pertanyaan · bandingkan ke Dasar
+            Empat skenario · pilih → Run all → bandingkan ke Dasar
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -92,8 +92,8 @@ export function DesLeversPanel() {
           ) : (
             <div className="rounded-[var(--radius-sm)] border border-dashed border-border px-3 py-2.5">
               <p className="text-xs text-muted leading-relaxed">
-                Parameter custom (bukan preset). Pilih salah satu skenario di atas untuk pertanyaan
-                panduan, atau lanjut eksperimen bebas.
+                Parameter diubah sendiri (bukan preset). Pilih salah satu skenario di atas, atau
+                lanjutkan dengan pengaturan bebas.
               </p>
             </div>
           )}
@@ -110,11 +110,11 @@ export function DesLeversPanel() {
             <Num label="m kolom" value={p.mColumn} min={1} max={6} step={1} onChange={(v) => setDesParams({ mColumn: v })} />
             <Num label="m balok" value={p.mBeam} min={1} max={6} step={1} onChange={(v) => setDesParams({ mBeam: v })} />
             <Num label="m panel" value={p.mPanel} min={1} max={4} step={1} onChange={(v) => setDesParams({ mPanel: v })} />
-            <Num label="m stair" value={p.mStair} min={1} max={3} step={1} onChange={(v) => setDesParams({ mStair: v })} />
+            <Num label="m tangga" value={p.mStair} min={1} max={3} step={1} onChange={(v) => setDesParams({ mStair: v })} />
             <Num label="te kolom" value={p.teColumn} min={0.05} step={0.05} onChange={(v) => setDesParams({ teColumn: v })} />
             <Num label="te balok" value={p.teBeam} min={0.05} step={0.05} onChange={(v) => setDesParams({ teBeam: v })} />
             <Num label="te panel" value={p.tePanel} min={0.05} step={0.05} onChange={(v) => setDesParams({ tePanel: v })} />
-            <Num label="te stair" value={p.teStair} min={0.5} step={0.5} onChange={(v) => setDesParams({ teStair: v })} />
+            <Num label="te tangga" value={p.teStair} min={0.5} step={0.5} onChange={(v) => setDesParams({ teStair: v })} />
           </CardContent>
         </Card>
 

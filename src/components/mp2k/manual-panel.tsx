@@ -16,14 +16,13 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="max-w-2xl">
-          <p className="text-xs font-medium uppercase tracking-wider text-faint">Manual lab</p>
+          <p className="text-xs font-medium uppercase tracking-wider text-faint">Manual</p>
           <h2 className="mt-1 text-xl font-semibold tracking-tight">
             Panduan MP2K · PPM multi-moda
           </h2>
           <p className="mt-2 text-sm text-muted leading-relaxed">
-            Lab interaktif Project Production Management / Operations Science. Model{" "}
-            <strong className="text-fg">didaktik</strong> — bukan digital twin proyek nyata. Konsep
-            diilhami Project Production Institute (PPI) dan Factory Physics.
+            Pengelolaan produksi proyek konstruksi multi-moda (PPM) dan sains operasi. Alur:
+            Kasus → Simulasi DES → Analitik (Little, Kingman, fill rate).
           </p>
         </div>
         <button
@@ -31,7 +30,7 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
           onClick={onBack}
           className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] border border-border bg-surface px-4 text-sm font-medium text-fg hover:bg-elevated"
         >
-          Kembali ke lab
+          Kembali ke Kasus
           <ArrowRight className="size-4" />
         </button>
       </div>
@@ -54,8 +53,8 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
       <section id="manual-tujuan" className="scroll-mt-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">1. Tujuan pembelajaran</CardTitle>
-            <CardDescription>Setelah lab ini, mahasiswa diharapkan mampu</CardDescription>
+            <CardTitle className="text-base">1. Tujuan</CardTitle>
+            <CardDescription>Yang dikerjakan di MP2K</CardDescription>
           </CardHeader>
           <CardContent>
             <ol className="list-decimal space-y-2 pl-5 text-sm text-muted leading-relaxed">
@@ -88,7 +87,7 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
         <Card>
           <CardHeader>
             <CardTitle className="text-base">2. Kasus: frame beton 2 lantai</CardTitle>
-            <CardDescription>Product & process design sudah ditetapkan</CardDescription>
+            <CardDescription>Product design dan Process design sudah ditetapkan</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-muted leading-relaxed">
             <div>
@@ -118,12 +117,12 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
                   <tr className="border-b border-border/60">
                     <td className="py-2 pr-3 font-medium text-fg">M · Manual</td>
                     <td className="py-2 pr-3">Kolom beton</td>
-                    <td className="py-2">Workface onsite · kapasitas kru</td>
+                    <td className="py-2">Workface di lokasi · kapasitas kru</td>
                   </tr>
                   <tr className="border-b border-border/60">
                     <td className="py-2 pr-3 font-medium text-fg">N · Near-site</td>
                     <td className="py-2 pr-3">Balok beton</td>
-                    <td className="py-2">Offsite dekat · lead/buffer pendek</td>
+                    <td className="py-2">Offsite dekat · lead time dan buffer pendek</td>
                   </tr>
                   <tr>
                     <td className="py-2 pr-3 font-medium text-fg">F · Far-supply</td>
@@ -141,7 +140,7 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
             </p>
             <p>
               Lima tuas PPM: <strong className="text-fg">Product</strong> &{" "}
-              <strong className="text-fg">Process design</strong> fixed di Kasus.{" "}
+              <strong className="text-fg">Process design</strong> ditetapkan di Kasus.{" "}
               <strong className="text-fg">Capacity, Variability, Inventory</strong> disimulasikan.
             </p>
           </CardContent>
@@ -151,7 +150,7 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
       <section id="manual-pakai" className="scroll-mt-6 space-y-3">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">3. Cara memakai situs</CardTitle>
+            <CardTitle className="text-base">3. Cara memakai</CardTitle>
             <CardDescription>Kasus → Simulasi → Analitik</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5 text-sm text-muted leading-relaxed">
@@ -177,7 +176,7 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
                   Amati progress, strip titik operasi (TH, CT, WIP, FR, ū), dan tabel Banding DES ↔
                   teori beserta Δ
                 </li>
-                <li>Buka Glossarium jika istilah belum familiar</li>
+                <li>Buka Glosarium jika istilah belum familiar</li>
               </ol>
               <div className="mt-3 space-y-1.5 rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2.5 text-xs">
                 <p className="font-medium text-fg">Cara membaca Δ</p>
@@ -266,7 +265,7 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
       <section id="manual-latihan" className="scroll-mt-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">5. Saran latihan lab (30–90 menit)</CardTitle>
+            <CardTitle className="text-base">5. Saran latihan (30–90 menit)</CardTitle>
           </CardHeader>
           <CardContent>
             <ol className="list-decimal space-y-2.5 pl-5 text-sm text-muted leading-relaxed">
@@ -275,7 +274,7 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
                 WIP, FR, ū. Cek konsistensi Little.
               </li>
               <li>
-                <strong className="text-fg">Shock variability</strong> — preset Variability tinggi.
+                <strong className="text-fg">Variability tinggi</strong> — preset yang sama.
                 Apa yang terjadi pada CT dan Δ Kingman?
               </li>
               <li>
@@ -306,14 +305,13 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
           <CardContent>
             <ul className="list-disc space-y-1.5 pl-5 text-sm text-muted leading-relaxed">
               <li>Frame 2 lantai, grid tetap, urutan zona & tangga disederhanakan.</li>
-              <li>DES seedable; run pendek masih membawa bias transient.</li>
+              <li>Hasil DES dapat diulang dengan seed yang sama; run pendek masih membawa bias fase awal.</li>
               <li>
-                Prediksi teori = pendekatan ajar (bottleneck tunggal + base-stock),{" "}
-                <strong className="text-fg">bukan</strong> digital twin.
+                Prediksi teori memakai pendekatan bottleneck tunggal dan model base-stock.
               </li>
               <li>
-                Match score visual di UI <strong className="text-fg">bukan</strong> metrik operations
-                science — fokus pada TH, CT, WIP, FR, ū.
+                Skor match visual <strong className="text-fg">bukan</strong> metrik produksi
+                — fokus pada TH, CT, WIP, FR, ū.
               </li>
             </ul>
           </CardContent>

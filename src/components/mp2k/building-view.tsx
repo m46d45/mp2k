@@ -237,7 +237,7 @@ export function BuildingView() {
           <Legend swatch="var(--color-column)" label="Kolom M" />
           <Legend swatch="var(--color-beam)" label="Balok N" />
           <Legend swatch="var(--color-panel)" label="Panel F" />
-          <Legend swatch="var(--color-void)" label="Void L1 only" border />
+          <Legend swatch="var(--color-void)" label="Void hanya L1" border />
           <Legend swatch="var(--color-stair)" label="Tangga L1→L2" />
         </div>
       </div>
@@ -278,7 +278,7 @@ export function BuildingView() {
         <div className="mx-auto w-full max-w-lg">
           <p className="mb-1 text-[10px] font-medium uppercase tracking-wider text-faint">
             Denah · L{viewFloor}
-            {viewFloor === 2 ? " (penutup / ke atap — Z6 = 3 panel)" : " (Z6 = 2 panel + void tangga)"}
+            {viewFloor === 2 ? " (penutup lantai 2 — Z6 = 3 panel)" : " (Z6 = 2 panel + void tangga)"}
           </p>
           <svg
             viewBox={`0 0 ${SVG_W} ${PLAN_H + 22}`}
@@ -513,7 +513,7 @@ export function BuildingView() {
           </svg>
 
           <p className="mb-1 mt-1 text-[10px] font-medium uppercase tracking-wider text-faint">
-            Elevasi · baris {elevRow + 1} · tangga hanya di band L1 (L1→L2), L2 ke atap = panel
+            Elevasi · baris {elevRow + 1} · tangga hanya di L1 (L1→L2); L2 ke atap = panel
           </p>
           <svg
             viewBox={`0 0 ${SVG_W} ${ELEV_H}`}

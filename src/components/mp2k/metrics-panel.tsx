@@ -31,7 +31,7 @@ export function MetricsPanel() {
       total: TOTALS.panels,
     },
     {
-      label: "Zone closed",
+      label: "Zona selesai",
       value: metrics.zonesClosed,
       total: TOTALS.zones,
     },
@@ -76,11 +76,11 @@ export function MetricsPanel() {
           Hasil DES · 3 tuas (empiris)
         </p>
         <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <Stat label="Sim time T" value={`${formatNum(simTime)} hari`} />
+          <Stat label="Waktu T" value={`${formatNum(simTime)} hari`} />
           <Stat label="TH empiris" value={des ? formatNum(des.th) : "—"} hint="job/hari" />
           <Stat label="CT rata-rata" value={des ? formatNum(des.avgCt) : "—"} hint="hari" />
           <Stat label="WIP rata-rata" value={des ? formatNum(des.avgWip) : "—"} hint="Little" />
-          <Stat label="WIP now" value={des ? String(des.wip) : "—"} />
+          <Stat label="WIP saat ini" value={des ? String(des.wip) : "—"} />
           <Stat
             label="Fill rate panel"
             value={des ? formatPct(des.fillRate) : "—"}
@@ -90,7 +90,7 @@ export function MetricsPanel() {
           <Stat label="u balok" value={des ? formatPct(des.utilBeam) : "—"} />
           <Stat label="u panel" value={des ? formatPct(des.utilPanel) : "—"} />
           <Stat label="Buffer panel" value={String(panelBuffer)} />
-          <Stat label="In-transit F" value={String(panelInTransit)} />
+          <Stat label="Panel dalam perjalanan" value={String(panelInTransit)} />
           <Stat label="Stockout" value={des ? String(des.panelStockouts) : "—"} />
         </div>
       </div>
@@ -156,9 +156,9 @@ export function MetricsPanel() {
                 menunjuk ke buffer/L/CONWIP.
               </p>
               <p>
-                Detail kurva, marker oranye, dan asumsi → langkah{" "}
-                <strong className="text-muted">Analitik</strong>. Prediksi di sini adalah pendekatan
-                ajar (bottleneck + base-stock), bukan digital twin proyek nyata.
+                Detail kurva, marker oranye, dan asumsi ada di langkah{" "}
+                <strong className="text-muted">Analitik</strong>. Prediksi di sini memakai pendekatan
+                bottleneck tunggal dan model base-stock.
               </p>
             </div>
           </>
@@ -181,7 +181,7 @@ export function MetricsPanel() {
         </div>
         <div className="rounded-[var(--radius-md)] border border-border/60 bg-elevated/30 p-3">
           <p className="text-[10px] font-medium uppercase tracking-wide text-faint">
-            Indikator visual (bukan OS)
+            Indikator visual (bukan metrik produksi)
           </p>
           <p className="mt-1 font-mono text-sm tabular-nums text-muted">
             match {metrics.matchScore}

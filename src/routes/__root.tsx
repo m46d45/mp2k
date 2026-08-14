@@ -18,7 +18,7 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "Edukasi sistem produksi proyek konstruksi multi-moda: manual, near-site, dan far supply — diselaraskan lewat zonasi dan lima tuas PPM.",
+          "Sistem produksi proyek konstruksi multi-moda: manual, near-site, dan far supply — diselaraskan lewat zonasi dan lima tuas PPM.",
       },
       { name: "theme-color", content: "#141414" },
       { name: "application-name", content: "MP2K" },

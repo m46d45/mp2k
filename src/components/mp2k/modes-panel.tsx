@@ -15,11 +15,11 @@ const EXAMPLES: Record<ProductionMode, string[]> = {
     "Tangga hanya L1→L2 di void Z6 / C3",
     "Tidak ada tangga dari L2 ke atap",
   ],
-  N: ["Balok precast di yard project", "Batch cetak per gelombang zone", "Angkat ke workface (delivery pendek)"],
+  N: ["Balok precast di yard dekat lokasi", "Batch cetak per gelombang zona", "Angkat ke workface (pengiriman pendek)"],
   F: [
     "Panel lantai dari pabrik",
     "Z6 L1: 2 panel + void tangga",
-    "Z6 L2: 3 panel penuh (penutup ke atap)",
+    "Z6 L2: 3 panel penuh (penutup lantai 2)",
   ],
 };
 

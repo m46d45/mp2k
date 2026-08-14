@@ -47,7 +47,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "m",
     unit: "unit",
-    def: "Jumlah resource paralel (crew / bay / crane slot).",
+    def: "Jumlah resource paralel (kru / bay / slot alat).",
     group: "tuas",
   },
   {
@@ -97,22 +97,22 @@ export const GLOSSARY: GlossaryEntry[] = [
   },
   {
     term: "M",
-    def: "Manual / craft onsite — di kasus ini: kolom (dan tangga).",
+    def: "Manual di lokasi — di kasus ini: kolom (dan tangga).",
     group: "moda",
   },
   {
     term: "N",
-    def: "Near-site offsite — di kasus ini: balok dari yard dekat site.",
+    def: "Near-site — di kasus ini: balok dari yard dekat lokasi.",
     group: "moda",
   },
   {
     term: "F",
-    def: "Far supply & install — di kasus ini: panel lantai dari luar.",
+    def: "Far supply — di kasus ini: panel lantai dari luar, dipasang di workface.",
     group: "moda",
   },
   {
     term: "Workface",
-    def: "Lokasi fisik di mana pekerjaan dipasang / dipasangkan antar moda.",
+    def: "Lokasi fisik tempat pekerjaan dipasang dan ketiga moda bertemu.",
     group: "lain",
   },
   {

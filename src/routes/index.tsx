@@ -56,7 +56,7 @@ function Mp2kApp() {
                   Multi-Moda Produksi Proyek Konstruksi
                 </h1>
                 <p className="mt-1 max-w-xl text-sm text-muted leading-relaxed">
-                  Laboratorium Interaktif Pengelolaan Produksi di Proyek Konstruksi dan Sains Operasi.
+                  Laboratorium Virtual Pengelolaan Produksi di Proyek Konstruksi dan Sains Operasi.
                 </p>
               </div>
             </div>

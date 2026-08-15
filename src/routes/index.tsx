@@ -8,15 +8,16 @@ import { OpsPanel } from "@/components/mp2k/ops-panel";
 import { CasePanel } from "@/components/mp2k/case-panel";
 import { GlossaryPanel } from "@/components/mp2k/glossary-panel";
 import { ManualPanel } from "@/components/mp2k/manual-panel";
+import { StatsPanel, StatsTracker, StatsStrip } from "@/components/mp2k/stats-panel";
 import { Mp2kLogo } from "@/components/mp2k/logo";
 import { cn } from "@/lib/utils";
-import { BookOpen, Box, Calculator, ArrowRight, ScrollText } from "lucide-react";
+import { BookOpen, Box, Calculator, ArrowRight, ScrollText, BarChart3 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Mp2kApp,
 });
 
-type StepId = "case" | "sim" | "analytics" | "manual";
+type StepId = "case" | "sim" | "analytics" | "manual" | "stats";
 
 const STEPS: {
   id: StepId;
@@ -46,6 +47,7 @@ function Mp2kApp() {
 
   return (
     <div className="min-h-[calc(100dvh-var(--grok-banner-h,0px))] bg-bg text-fg">
+      <StatsTracker />
       <header className="border-b border-border bg-surface">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 sm:px-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
@@ -60,19 +62,34 @@ function Mp2kApp() {
                 </p>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => open("manual")}
-              className={cn(
-                "inline-flex min-h-10 shrink-0 items-center gap-2 rounded-[var(--radius-sm)] border px-3 text-sm font-medium",
-                step === "manual"
-                  ? "border-fg bg-primary text-primary-fg"
-                  : "border-border bg-surface text-fg hover:bg-elevated",
-              )}
-            >
-              <ScrollText className="size-3.5" strokeWidth={1.75} />
-              Manual
-            </button>
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => open("stats")}
+                className={cn(
+                  "inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-sm)] border px-3 text-sm font-medium",
+                  step === "stats"
+                    ? "border-fg bg-primary text-primary-fg"
+                    : "border-border bg-surface text-fg hover:bg-elevated",
+                )}
+              >
+                <BarChart3 className="size-3.5" strokeWidth={1.75} />
+                Statistik
+              </button>
+              <button
+                type="button"
+                onClick={() => open("manual")}
+                className={cn(
+                  "inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-sm)] border px-3 text-sm font-medium",
+                  step === "manual"
+                    ? "border-fg bg-primary text-primary-fg"
+                    : "border-border bg-surface text-fg hover:bg-elevated",
+                )}
+              >
+                <ScrollText className="size-3.5" strokeWidth={1.75} />
+                Manual
+              </button>
+            </div>
           </div>
 
           <nav aria-label="Alur" className="grid grid-cols-4 gap-1 rounded-[var(--radius-md)] border border-border bg-elevated p-1">
@@ -119,6 +136,7 @@ function Mp2kApp() {
         {step === "sim" && <SimStep onNext={() => open("analytics")} />}
         {step === "analytics" && <AnalyticsStep />}
         {step === "manual" && <ManualPanel onBack={() => open("case")} />}
+        {step === "stats" && <StatsPanel />}
       </main>
 
       <footer className="border-t border-border py-6">
@@ -127,6 +145,7 @@ function Mp2kApp() {
           <p className="text-xs text-faint">
             MP2K · Capacity · Variability · Inventory · Little · Kingman · FR
           </p>
+          <StatsStrip onOpen={() => open("stats")} />
           <button
             type="button"
             onClick={() => open("manual")}

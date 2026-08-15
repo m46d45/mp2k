@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useMp2k } from "@/lib/mp2k/store";
+import { trackSimulation } from "@/lib/mp2k/stats-client";
 import { Pause, Play, RotateCcw, SkipForward, FastForward } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +20,8 @@ export function SimControls() {
   const runAll = useMp2k((s) => s.runAll);
   const setPlaying = useMp2k((s) => s.setPlaying);
   const setSpeed = useMp2k((s) => s.setSpeed);
+  const howRef = useRef<"run_all" | "play" | "step">("run_all");
+  const wasComplete = useRef(false);
 
   useEffect(() => {
     if (!playing || desComplete || phase === "complete") return;
@@ -30,23 +33,49 @@ export function SimControls() {
     return () => window.clearInterval(id);
   }, [playing, speed, phase, desComplete]);
 
+  useEffect(() => {
+    if (desComplete && !wasComplete.current) {
+      void trackSimulation(howRef.current);
+    }
+    wasComplete.current = desComplete;
+  }, [desComplete]);
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
         <Button
           variant={playing ? "secondary" : "default"}
-          onClick={() => setPlaying(!playing)}
+          onClick={() => {
+            howRef.current = "play";
+            setPlaying(!playing);
+          }}
           disabled={desComplete || speed === "manual"}
           aria-label={playing ? "Jeda" : "Putar DES"}
         >
           {playing ? <Pause /> : <Play />}
           {playing ? "Jeda" : "Jalankan DES"}
         </Button>
-        <Button variant="secondary" onClick={() => step()} disabled={desComplete} aria-label="Event berikutnya">
+        <Button
+          variant="secondary"
+          onClick={() => {
+            howRef.current = "step";
+            step();
+          }}
+          disabled={desComplete}
+          aria-label="Event berikutnya"
+        >
           <SkipForward />
           Step event
         </Button>
-        <Button variant="secondary" onClick={() => runAll()} disabled={desComplete} aria-label="Jalankan sampai selesai">
+        <Button
+          variant="secondary"
+          onClick={() => {
+            howRef.current = "run_all";
+            runAll();
+          }}
+          disabled={desComplete}
+          aria-label="Jalankan sampai selesai"
+        >
           <FastForward />
           Run all
         </Button>

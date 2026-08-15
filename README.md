@@ -91,6 +91,10 @@ Urutan workface harus **match**: kolom → balok (bertumpu minimal dua kolom) �
    - **Inventory / Fill rate** — FR vs inventory (base-stock ideal). **Oranye = FR empiris DES**.
 4. Diskusikan selisih marker oranye vs prediksi teori (lihat kotak “Mengapa angka DES bisa berbeda dari teori?” di strip).
 
+### Statistik
+
+Tombol **Statistik** menampilkan jumlah pengunjung unik, kunjungan, dan simulasi DES yang selesai. Identitas acak disimpan di peramban (tanpa nama). Kunjungan dihitung ulang setelah 30 menit tidak aktif.
+
 ---
 
 ## 4. Notasi singkat

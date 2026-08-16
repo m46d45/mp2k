@@ -61,7 +61,8 @@ export function StatsPanel() {
           <p className="mt-2 text-sm text-muted leading-relaxed">
             Angka agregat, tanpa nama. Setiap peramban mendapat identitas acak di perangkatnya.
             Kunjungan dihitung ulang setelah 30 menit tidak aktif. Simulasi dihitung saat DES
-            selesai (Run all atau jalankan sampai akhir).
+            selesai (Run all atau jalankan sampai akhir). Pencatatan dimulai ulang — data uji
+            sebelumnya sudah dihapus.
           </p>
         </div>
         <button

@@ -1,5 +1,5 @@
-import { getMp2kStats, recordSimulation, recordVisit } from "@/lib/mp2k/stats.server";
-import type { Mp2kStats } from "@/lib/mp2k/stats.server";
+import { getMp2kStats, recordSimulation, recordVisit } from "@/lib/mp2k/stats-fn";
+import type { Mp2kStats } from "@/lib/mp2k/stats-fn";
 
 const VID_KEY = "mp2k_visitor_id";
 

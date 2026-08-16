@@ -196,7 +196,13 @@ export function StatsStrip({ onOpen }: { onOpen: () => void }) {
     };
   }, []);
 
-  if (!stats) return null;
+  if (!stats) {
+    return (
+      <button type="button" onClick={onOpen} className="text-xs text-faint hover:text-muted">
+        Statistik
+      </button>
+    );
+  }
 
   return (
     <button

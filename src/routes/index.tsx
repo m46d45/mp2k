@@ -9,6 +9,7 @@ import { CasePanel } from "@/components/mp2k/case-panel";
 import { GlossaryPanel } from "@/components/mp2k/glossary-panel";
 import { ManualPanel } from "@/components/mp2k/manual-panel";
 import { StatsPanel, StatsTracker, StatsStrip } from "@/components/mp2k/stats-panel";
+import { IntroPanel } from "@/components/mp2k/intro-panel";
 import { Mp2kLogo } from "@/components/mp2k/logo";
 import { cn } from "@/lib/utils";
 import { BookOpen, Box, Calculator, ArrowRight, ScrollText, BarChart3 } from "lucide-react";
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/")({
   component: Mp2kApp,
 });
 
+type Door = "intro" | "lab";
 type StepId = "case" | "sim" | "analytics" | "manual" | "stats";
 
 const STEPS: {
@@ -38,12 +40,28 @@ function goTop() {
 }
 
 function Mp2kApp() {
+  const [door, setDoor] = useState<Door>("intro");
   const [step, setStep] = useState<StepId>("case");
 
-  function open(id: StepId) {
+  function go(next: StepId) {
+    setStep(next);
+    goTop();
+  }
+
+  function openIntro() {
+    setDoor("intro");
+    setStep("case");
+    goTop();
+  }
+
+  function openLab(id: StepId = "case") {
+    setDoor("lab");
     setStep(id);
     goTop();
   }
+
+  const onUtility = step === "manual" || step === "stats";
+  const showLabNav = door === "lab" && !onUtility;
 
   return (
     <div className="min-h-[calc(100dvh-var(--grok-banner-h,0px))] bg-bg text-fg">
@@ -65,7 +83,7 @@ function Mp2kApp() {
             <div className="flex shrink-0 flex-wrap items-center gap-2">
               <button
                 type="button"
-                onClick={() => open("stats")}
+                onClick={() => go("stats")}
                 className={cn(
                   "inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-sm)] border px-3 text-sm font-medium",
                   step === "stats"
@@ -78,7 +96,7 @@ function Mp2kApp() {
               </button>
               <button
                 type="button"
-                onClick={() => open("manual")}
+                onClick={() => go("manual")}
                 className={cn(
                   "inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-sm)] border px-3 text-sm font-medium",
                   step === "manual"
@@ -92,51 +110,96 @@ function Mp2kApp() {
             </div>
           </div>
 
-          <nav aria-label="Alur" className="grid grid-cols-4 gap-1 rounded-[var(--radius-md)] border border-border bg-elevated p-1">
-            {STEPS.map(({ id, n, label, short, icon: Icon }) => {
-              const active = step === id;
+          <nav
+            aria-label="Putaran"
+            className="grid grid-cols-2 gap-1 rounded-[var(--radius-md)] border border-border bg-elevated p-1"
+          >
+            {(
+              [
+                { id: "intro" as const, label: "Pengenalan", short: "Tiga kurva · if–then" },
+                { id: "lab" as const, label: "Kasus", short: "Gedung · DES · analitik" },
+              ] as const
+            ).map((d) => {
+              const active = !onUtility && door === d.id;
               return (
                 <button
-                  key={id}
+                  key={d.id}
                   type="button"
-                  onClick={() => open(id)}
+                  onClick={() => (d.id === "intro" ? openIntro() : openLab("case"))}
                   className={cn(
-                    "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-[calc(var(--radius-md)-2px)] px-1 py-2 text-center transition-colors sm:flex-row sm:gap-2 sm:px-3",
+                    "flex min-h-12 flex-col items-center justify-center rounded-[calc(var(--radius-md)-2px)] px-3 py-2 sm:flex-row sm:gap-2",
                     active
                       ? "bg-primary text-primary-fg"
                       : "text-muted hover:bg-subtle/80 hover:text-fg",
                   )}
                 >
-                  <span
-                    className={cn(
-                      "flex size-6 shrink-0 items-center justify-center rounded-full font-mono text-[11px] font-semibold",
-                      active ? "bg-primary-fg/15 text-primary-fg" : "bg-border/80 text-fg",
-                    )}
-                  >
-                    {n}
-                  </span>
-                  <span className="min-w-0">
-                    <span className="flex items-center justify-center gap-1.5 text-sm font-medium">
-                      <Icon className="hidden size-3.5 sm:inline" strokeWidth={1.75} />
-                      {label}
-                    </span>
-                    <span className={cn("hidden text-[11px] sm:block", active ? "text-primary-fg/70" : "text-faint")}>
-                      {short}
-                    </span>
+                  <span className="text-sm font-medium">{d.label}</span>
+                  <span className={cn("hidden text-[11px] sm:inline", active ? "text-primary-fg/70" : "text-faint")}>
+                    {d.short}
                   </span>
                 </button>
               );
             })}
           </nav>
+
+          {showLabNav ? (
+            <nav aria-label="Alur kasus" className="grid grid-cols-4 gap-1 rounded-[var(--radius-md)] border border-border bg-elevated p-1">
+              {STEPS.map(({ id, n, label, short, icon: Icon }) => {
+                const active = step === id;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => go(id)}
+                    className={cn(
+                      "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-[calc(var(--radius-md)-2px)] px-1 py-2 text-center transition-colors sm:flex-row sm:gap-2 sm:px-3",
+                      active
+                        ? "bg-primary text-primary-fg"
+                        : "text-muted hover:bg-subtle/80 hover:text-fg",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "flex size-6 shrink-0 items-center justify-center rounded-full font-mono text-[11px] font-semibold",
+                        active ? "bg-primary-fg/15 text-primary-fg" : "bg-border/80 text-fg",
+                      )}
+                    >
+                      {n}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="flex items-center justify-center gap-1.5 text-sm font-medium">
+                        <Icon className="hidden size-3.5 sm:inline" strokeWidth={1.75} />
+                        {label}
+                      </span>
+                      <span className={cn("hidden text-[11px] sm:block", active ? "text-primary-fg/70" : "text-faint")}>
+                        {short}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </nav>
+          ) : null}
         </div>
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
-        {step === "case" && <CasePanel onNext={() => open("sim")} />}
-        {step === "sim" && <SimStep onNext={() => open("analytics")} />}
-        {step === "analytics" && <AnalyticsStep />}
-        {step === "manual" && <ManualPanel onBack={() => open("case")} />}
         {step === "stats" && <StatsPanel />}
+        {step === "manual" && (
+          <ManualPanel onBack={() => (door === "intro" ? openIntro() : openLab("case"))} />
+        )}
+        {step !== "stats" && step !== "manual" && door === "intro" && (
+          <IntroPanel onOpenLab={() => openLab("case")} />
+        )}
+        {step !== "stats" && step !== "manual" && door === "lab" && step === "case" && (
+          <CasePanel onNext={() => go("sim")} />
+        )}
+        {step !== "stats" && step !== "manual" && door === "lab" && step === "sim" && (
+          <SimStep onNext={() => go("analytics")} />
+        )}
+        {step !== "stats" && step !== "manual" && door === "lab" && step === "analytics" && (
+          <AnalyticsStep onOpenIntro={openIntro} />
+        )}
       </main>
 
       <footer className="border-t border-border py-6">
@@ -145,10 +208,10 @@ function Mp2kApp() {
           <p className="text-xs text-faint">
             MP2K · Capacity · Variability · Inventory · Little · Kingman · FR
           </p>
-          <StatsStrip onOpen={() => open("stats")} />
+          <StatsStrip onOpen={() => go("stats")} />
           <button
             type="button"
-            onClick={() => open("manual")}
+            onClick={() => go("manual")}
             className="text-xs font-medium text-muted underline underline-offset-2 hover:text-fg"
           >
             Manual
@@ -221,17 +284,25 @@ function SimStep({ onNext }: { onNext: () => void }) {
   );
 }
 
-function AnalyticsStep() {
+function AnalyticsStep({ onOpenIntro }: { onOpenIntro: () => void }) {
   return (
     <div className="space-y-4">
-      <div className="max-w-2xl">
-        <p className="text-xs font-medium uppercase tracking-wider text-faint">Langkah 3 · Analitik</p>
-        <h2 className="mt-1 text-xl font-semibold tracking-tight">Tiga kurva sains operasi</h2>
-        <p className="mt-2 text-sm text-muted leading-relaxed">
-          Hukum di balik hasil DES: <strong className="text-fg">WIP–TH–CT</strong> (capacity/inventory),{" "}
-          <strong className="text-fg">Kingman</strong> (variability × utilisasi),{" "}
-          <strong className="text-fg">fill rate vs inventory</strong>.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="max-w-2xl">
+          <p className="text-xs font-medium uppercase tracking-wider text-faint">Langkah 3 · Analitik</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight">Tiga kurva sains operasi</h2>
+          <p className="mt-2 text-sm text-muted leading-relaxed">
+            Kurva yang sama dengan Pengenalan. Titik oranye = run DES.
+            Little (WIP–TH–CT), Kingman (variability × utilisasi), fill rate vs inventory.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onOpenIntro}
+          className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] border border-border bg-surface px-4 text-sm font-medium text-fg hover:bg-elevated"
+        >
+          Kembali ke pengenalan
+        </button>
       </div>
       <GlossaryPanel />
       <OpsPanel />

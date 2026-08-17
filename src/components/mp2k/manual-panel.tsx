@@ -4,14 +4,15 @@ import { ArrowRight, BookOpen } from "lucide-react";
 
 const TOC = [
   { id: "tujuan", label: "1. Tujuan" },
-  { id: "kasus", label: "2. Kasus" },
-  { id: "pakai", label: "3. Cara memakai" },
-  { id: "notasi", label: "4. Notasi" },
-  { id: "latihan", label: "5. Latihan" },
-  { id: "batas", label: "6. Batasan" },
+  { id: "putaran", label: "2. Dua putaran" },
+  { id: "kasus", label: "3. Kasus" },
+  { id: "pakai", label: "4. Cara memakai" },
+  { id: "notasi", label: "5. Notasi" },
+  { id: "latihan", label: "6. Latihan" },
+  { id: "batas", label: "7. Batasan" },
 ] as const;
 
-export function ManualPanel({ onBack }: { onBack: () => void }) {
+export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => void; backLabel?: string }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -21,8 +22,8 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
             Panduan MP2K · PPM multi-moda
           </h2>
           <p className="mt-2 text-sm text-muted leading-relaxed">
-            Pengelolaan produksi proyek konstruksi multi-moda (PPM) dan sains operasi. Alur:
-            Kasus → Simulasi DES → Analitik (Little, Kingman, fill rate).
+            Pengelolaan produksi proyek konstruksi multi-moda (PPM) dan sains operasi. Dua
+            putaran: Pengenalan tiga kurva, lalu Kasus (DES dan analitik).
           </p>
         </div>
         <button
@@ -30,7 +31,7 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
           onClick={onBack}
           className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] border border-border bg-surface px-4 text-sm font-medium text-fg hover:bg-elevated"
         >
-          Kembali ke Kasus
+          {backLabel}
           <ArrowRight className="size-4" />
         </button>
       </div>
@@ -64,6 +65,9 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
                 stok).
               </li>
               <li>
+                Meramal arah pada Little, Kingman, dan fill rate (if–then dulu, rumus kemudian).
+              </li>
+              <li>
                 Mengenali tiga moda produksi: manual (M), near-site (N), far-supply (F).
               </li>
               <li>
@@ -71,14 +75,34 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
                 <strong className="text-fg">Capacity · Variability · Inventory</strong> — lewat DES.
               </li>
               <li>
-                Membaca Little&apos;s Law, Kingman (VUT), dan fill rate vs inventory, serta
-                membandingkan empiris DES dengan prediksi teori.
-              </li>
-              <li>
-                Menjelaskan mengapa angka DES dan teori bisa berbeda (multi-moda, gate urutan,
-                transient, buffer diskrit).
+                Menempelkan titik operasi DES pada kurva yang sama, lalu menjelaskan selisih
+                empiris vs teori (multi-moda, gate urutan, transient, buffer diskrit).
               </li>
             </ol>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section id="manual-putaran" className="scroll-mt-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">2. Dua putaran</CardTitle>
+            <CardDescription>Pengenalan dulu, kasus kemudian</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm text-muted leading-relaxed">
+            <p>
+              <strong className="text-fg">Putaran 1 · Pengenalan.</strong> Tanpa denah. Satu kurva,
+              dua–tiga if–then berangka tetap, ramalan arah, baru rumus. Little → Kingman →
+              Inventory/FR.
+            </p>
+            <p>
+              <strong className="text-fg">Putaran 2 · Kasus.</strong> Kerangka beton 3×5, dua lantai,
+              tiga moda. Simulasi DES (Capacity, Variability, Inventory) lalu Analitik — kurva yang
+              sama, titik oranye = run DES. If–then tidak diulang kecuali kembali ke Pengenalan.
+            </p>
+            <p>
+              Notasi dan rumus satu baris sama di kedua putaran: TH, CT, WIP, ū, V, FR.
+            </p>
           </CardContent>
         </Card>
       </section>
@@ -86,7 +110,7 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
       <section id="manual-kasus" className="scroll-mt-6 space-y-3">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">2. Kasus: frame beton 2 lantai</CardTitle>
+            <CardTitle className="text-base">3. Kasus: frame beton 2 lantai</CardTitle>
             <CardDescription>Product design dan Process design sudah ditetapkan</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-muted leading-relaxed">
@@ -150,10 +174,20 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
       <section id="manual-pakai" className="scroll-mt-6 space-y-3">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">3. Cara memakai</CardTitle>
-            <CardDescription>Kasus → Simulasi → Analitik</CardDescription>
+            <CardTitle className="text-base">4. Cara memakai</CardTitle>
+            <CardDescription>Pengenalan → Kasus → Simulasi → Analitik</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5 text-sm text-muted leading-relaxed">
+            <div>
+              <p className="font-medium text-fg">Putaran 1 — Pengenalan</p>
+              <ol className="mt-1.5 list-decimal space-y-1 pl-5">
+                <li>Buka pintu Pengenalan</li>
+                <li>Ramalkan arah, lalu tekan if–then (satu tombol, satu napas)</li>
+                <li>Setelah ketiga skenario, baca rumus</li>
+                <li>Ulangi untuk Kingman dan Inventory/FR</li>
+                <li>Kartu jembatan → Lanjut ke kasus</li>
+              </ol>
+            </div>
             <div>
               <p className="font-medium text-fg">Langkah 1 — Kasus</p>
               <p className="mt-1">
@@ -218,7 +252,7 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
       <section id="manual-notasi" className="scroll-mt-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">4. Notasi singkat</CardTitle>
+            <CardTitle className="text-base">5. Notasi singkat</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="overflow-x-auto">
@@ -265,13 +299,17 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
       <section id="manual-latihan" className="scroll-mt-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">5. Saran latihan (30–90 menit)</CardTitle>
+            <CardTitle className="text-base">6. Saran latihan</CardTitle>
           </CardHeader>
           <CardContent>
             <ol className="list-decimal space-y-2.5 pl-5 text-sm text-muted leading-relaxed">
               <li>
+                <strong className="text-fg">Pengenalan</strong> — ketiga if–then tiap kurva. Yang
+                dinilai: arah (naik / turun / meledak / mendatar / tidak boleh), bukan angka.
+              </li>
+              <li>
                 <strong className="text-fg">Baseline</strong> — preset Dasar, Run all. Catat TH, CT,
-                WIP, FR, ū. Cek konsistensi Little.
+                WIP, FR, ū. Cek konsistensi Little. Tempel titik oranye.
               </li>
               <li>
                 <strong className="text-fg">Variability tinggi</strong> — preset yang sama.
@@ -298,7 +336,7 @@ export function ManualPanel({ onBack }: { onBack: () => void }) {
         <Card>
           <CardHeader>
             <div className="flex flex-wrap items-center gap-2">
-              <CardTitle className="text-base">6. Batasan model</CardTitle>
+              <CardTitle className="text-base">7. Batasan model</CardTitle>
               <Badge variant="default">penting untuk diskusi</Badge>
             </div>
           </CardHeader>

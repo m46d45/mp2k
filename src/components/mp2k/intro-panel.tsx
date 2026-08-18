@@ -100,7 +100,22 @@ export function IntroPanel({ onOpenLab }: Props) {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold tracking-tight">Tiga kurva</h2>
+      <div className="max-w-3xl space-y-3">
+        <h2 className="text-xl font-semibold tracking-tight">Tiga kurva</h2>
+        <p className="text-sm text-muted leading-relaxed">
+          Di Project Production Management (PPM), kinerja aliran diatur lewat lima tuas —
+          terutama <strong className="text-fg">Capacity</strong>,{" "}
+          <strong className="text-fg">Inventory</strong>, dan{" "}
+          <strong className="text-fg">Variability</strong>
+          (ditambah desain produk dan desain proses).
+          Ketiga kurva berikut adalah cara melihat tuas itu secara kuantitatif:
+          <strong className="text-fg"> Little's Law</strong> mengikat Inventory (WIP) dengan Throughput dan Cycle Time;
+          <strong className="text-fg"> Kingman</strong> menunjukkan bagaimana Capacity (utilisasi) dan Variability
+          membuat CT meledak dekat kapasitas;
+          <strong className="text-fg"> Inventory & Fill Rate</strong> menjelaskan berapa buffer yang dibutuhkan
+          agar permintaan tetap terpenuhi saat lead time dan permintaan tidak pasti.
+        </p>
+      </div>
 
       <nav
         aria-label="Tiga kurva"
@@ -205,7 +220,6 @@ function LittleLesson({
       onNext={onNext}
       nextLabel="Lanjut ke Kingman"
     >
-      {/* If–Then first, after formula */}
       <ScenarioButtons
         items={LITTLE_SCENARIOS.map((s) => ({ id: s.id, label: s.label }))}
         active={active}
@@ -676,7 +690,6 @@ function LessonShell({
 }) {
   return (
     <div className="space-y-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
-      {/* Title + formula first */}
       <div>
         <p className="text-xs font-medium uppercase tracking-wider text-faint">{kicker}</p>
         <h3 className="mt-1 text-lg font-semibold tracking-tight">{question}</h3>
@@ -688,7 +701,6 @@ function LessonShell({
         <p className="text-sm text-muted">{reverse}</p>
       </div>
 
-      {/* If–Then, chart, numbers */}
       {children}
 
       {ready && onNext && nextLabel ? (

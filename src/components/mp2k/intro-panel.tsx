@@ -78,15 +78,6 @@ function InvalidX(props: {
   );
 }
 
-/** Clean number for tooltips: max 1–2 decimals */
-function cleanNum(v: number, decimals = 1): string {
-  if (!Number.isFinite(v)) return "–";
-  return v.toLocaleString("id-ID", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: decimals,
-  });
-}
-
 type Props = {
   onOpenLab: () => void;
 };
@@ -517,7 +508,6 @@ function InventoryLesson({
   const basePt = invPoint(INV_BASE.leadTime, INV_BASE.demandCv, INV_BASE.z);
 
   const steps = INV_Z_STEPS.map((z) => invPoint(INV_BASE.leadTime, INV_BASE.demandCv, z));
-
   const showBase = !!sc;
 
   return (
@@ -528,22 +518,24 @@ function InventoryLesson({
       formula={
         <div className="space-y-3">
           <p className="font-mono text-base">
-            <span className="font-semibold">FR</span> naik jika buffer / (σ√L) naik
+            <span className="font-semibold">FR</span> ≈ 1 − ES / DDLT
+          </p>
+          <p className="text-xs text-muted leading-relaxed">
+            ES = expected shortfall, DDLT = demand during lead time.
+            Buffer (safety stock) = z · σ√L. Makin besar buffer relatif terhadap ketidakpastian, makin tinggi FR.
           </p>
           <div className="grid gap-2 text-xs sm:grid-cols-2">
             <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
               <span className="font-semibold text-fg">FR (Fill Rate)</span>
-              <span className="text-muted"> — proporsi permintaan yang terpenuhi dari stok (tanpa stockout)</span>
+              <span className="text-muted"> — proporsi permintaan yang terpenuhi dari stok</span>
             </div>
             <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
               <span className="font-semibold text-fg">Buffer</span>
-              <span className="text-muted"> — safety stock, stok ekstra untuk melindungi dari ketidakpastian</span>
+              <span className="text-muted"> — safety stock, stok ekstra untuk ketidakpastian</span>
             </div>
           </div>
           <p className="text-xs text-muted leading-relaxed">
-            Inventory di sini = cycle stock + <strong className="text-fg">buffer (safety stock)</strong>.
-            Buffer melindungi terhadap variabilitas permintaan dan lead time.
-            Makin tinggi target FR, makin banyak buffer yang dibutuhkan — tapi diminishing returns.
+            Inventory di grafik = cycle stock + buffer. Target FR tinggi (mis. 95%) butuh buffer lebih besar, tapi dengan diminishing returns.
           </p>
         </div>
       }
@@ -558,14 +550,13 @@ function InventoryLesson({
 
       <div className="h-[280px] w-full sm:h-[320px]">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={curveNow} margin={{ top: 12, right: 16, left: 8, bottom: 20 }}>
+          <ComposedChart data={curveNow} margin={{ top: 12, right: 16, left: 4, bottom: 20 }}>
             <CartesianGrid stroke={GRID} strokeDasharray="3 3" />
             <XAxis
               dataKey="fr"
               type="number"
               domain={[50, 100]}
               tick={{ fill: MUTED, fontSize: 11 }}
-              tickFormatter={(v) => cleanNum(v, 0)}
               label={{ value: "FR (%)", position: "insideBottom", offset: -8, fill: MUTED, fontSize: 12 }}
             />
             <YAxis
@@ -573,26 +564,11 @@ function InventoryLesson({
               type="number"
               domain={[0, "auto"]}
               tick={{ fill: MUTED, fontSize: 11 }}
-              tickFormatter={(v) => cleanNum(v, 1)}
               label={{ value: "Inventory", angle: -90, position: "insideLeft", fill: MUTED, fontSize: 11 }}
             />
             <Tooltip
-              content={({ active, payload }) => {
-                if (!active || !payload || payload.length === 0) return null;
-                const d = payload[0].payload as { fr: number; inv: number };
-                return (
-                  <div className="rounded border border-border bg-surface px-3 py-2 text-sm shadow-sm">
-                    <p className="font-mono">
-                      <span className="text-muted">FR</span>{" "}
-                      <span className="font-semibold">{cleanNum(d.fr, 1)}%</span>
-                    </p>
-                    <p className="font-mono">
-                      <span className="text-muted">Inventory</span>{" "}
-                      <span className="font-semibold">{cleanNum(d.inv, 1)}</span>
-                    </p>
-                  </div>
-                );
-              }}
+              formatter={(value: number) => [formatNum(value), "Inventory"]}
+              labelFormatter={(fr: number) => `FR ${formatNum(fr)}%`}
             />
             {sameStock ? (
               <Line

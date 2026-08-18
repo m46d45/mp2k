@@ -64,8 +64,8 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
                 <strong className="text-fg">PPM / operations science</strong> (aliran, antrian, stok).
               </li>
               <li>
-                Meramal arah pada Little, Kingman, Inventory/FR, dan operating curve (if–then dulu,
-                rumus kemudian).
+                Meramal arah pada Little, Kingman, <strong className="text-fg">CT vs WIP</strong>,
+                Inventory/FR, dan operating curve (if–then dulu, rumus kemudian).
               </li>
               <li>
                 Mengenali <strong className="text-fg">Control</strong> (mekanisme arah sistem) vs{" "}
@@ -95,9 +95,9 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted leading-relaxed">
             <p>
-              <strong className="text-fg">Pengenalan Tiga Kurva (+ Control).</strong> Tanpa denah.
-              Empat modul memakai <strong className="text-fg">satu sistem demo</strong> (angka oranye
-              sama di semua tab): Little → Kingman → Inventory/FR → Control & CONWIP.
+              <strong className="text-fg">Pengenalan</strong> (tiga kurva PPI + Inventory/FR + Control).
+              Tanpa denah. Lima modul memakai <strong className="text-fg">satu sistem demo</strong>{" "}
+              (angka oranye sama di semua tab): Little → Kingman → CT vs WIP → Inventory/FR → Control & CONWIP.
             </p>
             <p>
               <strong className="text-fg">Penerapan di kasus Gedung.</strong> Tiga langkah:{" "}
@@ -115,12 +115,12 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
       <section id="manual-pengenalan" className="scroll-mt-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">3. Pengenalan — empat modul</CardTitle>
+            <CardTitle className="text-base">3. Pengenalan — lima modul</CardTitle>
             <CardDescription>Teori dulu, angka sama, warna oranye menghubungkan</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-muted leading-relaxed">
             <div>
-              <p className="font-medium text-fg">1 · Little&apos;s Law</p>
+              <p className="font-medium text-fg">1 · Little's Law</p>
               <p className="mt-1">WIP = TH × CT. If–then: naiknya WIP atau turunnya TH mengubah CT.</p>
             </div>
             <div>
@@ -131,14 +131,21 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
               </p>
             </div>
             <div>
-              <p className="font-medium text-fg">3 · Inventory & Fill Rate</p>
+              <p className="font-medium text-fg">3 · CT vs WIP</p>
+              <p className="mt-1">
+                Kurva ketiga PPI. Best-case: CT = T0 jika WIP ≤ W0; CT = WIP/rb jika WIP > W0.
+                Dengan variabilitas, CT naik lebih cepat. Acuan: W0 (critical) dan Wopt.
+              </p>
+            </div>
+            <div>
+              <p className="font-medium text-fg">4 · Inventory & Fill Rate</p>
               <p className="mt-1">
                 FR vs stock buffer. Inventory (WIP, buffer stok, time buffer) terkait fill rate
                 supply panel.
               </p>
             </div>
             <div>
-              <p className="font-medium text-fg">4 · Control & CONWIP</p>
+              <p className="font-medium text-fg">5 · Control & CONWIP</p>
               <p className="mt-1">
                 <strong className="text-fg">Control</strong> = mekanisme yang mengarahkan aliran
                 (bukan sekadar measurement). CONWIP membatasi total WIP: job baru masuk hanya jika
@@ -226,10 +233,13 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
             <div>
               <p className="font-medium text-fg">Pengenalan</p>
               <ol className="mt-1.5 list-decimal space-y-1 pl-5">
-                <li>Buka pintu Pengenalan Tiga Kurva</li>
+                <li>Buka pintu Pengenalan</li>
                 <li>Perhatikan chip sistem demo (angka oranye) di header</li>
                 <li>Per modul: baca rumus → if–then → amati grafik & titik oranye</li>
-                <li>Little → Kingman → Inventory/FR → Control & CONWIP (W0, Wopt, CONWIP)</li>
+                <li>
+                  Little → Kingman → <strong className="text-fg">CT vs WIP</strong> → Inventory/FR →
+                  Control & CONWIP (W0, Wopt, CONWIP)
+                </li>
                 <li>Kartu jembatan → Lanjut ke kasus</li>
               </ol>
             </div>
@@ -288,7 +298,7 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
                 </li>
               </ol>
               <ul className="mt-1.5 list-disc space-y-1 pl-8 text-xs">
-                <li>Little&apos;s Law</li>
+                <li>Little's Law</li>
                 <li>Kingman</li>
                 <li>Inventory / FR</li>
                 <li>
@@ -345,6 +355,7 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
             <div className="space-y-1 rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2.5 font-mono text-xs text-fg">
               <p>Little: WIP = TH × CT (sistem stabil)</p>
               <p>Kingman: CT/te ≈ 1 + V · ū / (1 − ū)</p>
+              <p>CT vs WIP (best): CT = T0 jika WIP ≤ W0; CT = WIP/rb jika WIP > W0</p>
               <p>W0 = rb × T0 · Wopt ≈ W0 (1 + √V)</p>
               <p>FR DES ≈ 1 − (stockout / percobaan ambil stok)</p>
             </div>
@@ -360,8 +371,9 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
           <CardContent>
             <ol className="list-decimal space-y-2.5 pl-5 text-sm text-muted leading-relaxed">
               <li>
-                <strong className="text-fg">Pengenalan</strong> — if–then tiap modul termasuk
-                Control (C1 di bawah W0, C2 ≈ Wopt, C3 berlebih). Yang dinilai: arah, bukan angka.
+                <strong className="text-fg">Pengenalan</strong> — if–then tiap modul termasuk CT vs
+                WIP (W1 di bawah W0, W2 ≈ Wopt, W3 berlebih) dan Control (C1–C3). Yang dinilai: arah,
+                bukan angka.
               </li>
               <li>
                 <strong className="text-fg">Baseline</strong> — preset Dasar, Run all. Catat TH, CT,

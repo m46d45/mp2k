@@ -47,6 +47,35 @@ export function IntroPanel({ onOpenLab }: Props) {
     <div className="space-y-6">
       <div className="max-w-3xl space-y-3">
         <h2 className="text-xl font-semibold tracking-tight">Pengenalan</h2>
+
+        {/* 4 Verbs (PPI) — sebelum 5 levers */}
+        <p className="text-sm text-muted leading-relaxed">
+          Apa yang mengalir di proyek? Empat verb produksi:{" "}
+          <strong className="text-fg">Design</strong>,{" "}
+          <strong className="text-fg">Make</strong>,{" "}
+          <strong className="text-fg">Transport</strong>, dan{" "}
+          <strong className="text-fg">Build</strong>.
+          Dari desain ke fabrikasi, pengiriman, hingga pemasangan di workface — semuanya adalah aliran yang harus diatur.
+        </p>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 text-xs">
+          {(
+            [
+              ["Design", "Merancang produk & proses"],
+              ["Make", "Membuat di pabrik / yard"],
+              ["Transport", "Mengirim ke lokasi"],
+              ["Build", "Memasang di workface"],
+            ] as const
+          ).map(([v, d]) => (
+            <div
+              key={v}
+              className="rounded-[var(--radius-sm)] border border-border bg-elevated px-2.5 py-2 text-center"
+            >
+              <p className="font-semibold text-fg">{v}</p>
+              <p className="mt-0.5 text-muted leading-snug">{d}</p>
+            </div>
+          ))}
+        </div>
+
         <p className="text-sm text-muted leading-relaxed">
           Di Project Production Management (PPM), kinerja aliran diatur lewat lima tuas:{" "}
           <strong className="text-fg">Product Design</strong>,{" "}

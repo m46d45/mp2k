@@ -261,9 +261,7 @@ function LittleLesson({
               dot={false}
               isAnimationActive={false}
             />
-            {/* Titik saat ini (solid) */}
             <ReferenceDot x={point.wip} y={point.ct} r={7} fill={POINT} stroke="#fff" strokeWidth={2} />
-            {/* Titik awal (hollow) — tetap terlihat untuk perbandingan */}
             {showBaseDot ? (
               <ReferenceDot
                 x={LITTLE_BASE.wip}
@@ -274,7 +272,6 @@ function LittleLesson({
                 strokeWidth={1.75}
               />
             ) : null}
-            {/* Percobaan invalid — diberi X */}
             {broken ? (
               <ReferenceDot
                 x={LITTLE_ATTEMPT.wip}
@@ -351,34 +348,38 @@ function KingmanLesson({
       question={INTRO_CURVES[1].question}
       ready={ready}
       formula={
-        <>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <div className="rounded-[var(--radius-sm)] border border-border bg-surface px-2 py-2.5 text-center">
-              <p className="text-[10px] font-medium uppercase tracking-wide text-faint">CT</p>
-              <p className="mt-0.5 text-sm font-semibold">cycle time</p>
+        <div className="space-y-3">
+          <p className="font-mono text-base">
+            <span className="font-semibold">CT</span>
+            {" ≈ "}
+            <span className="font-semibold">te</span>
+            {" × (1 + "}
+            <span className="font-semibold">V</span>
+            {" · "}
+            <span className="font-semibold">ū/(1−ū)</span>
+            {")"}
+          </p>
+          <div className="grid gap-2 text-xs sm:grid-cols-2">
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
+              <span className="font-semibold text-fg">CT</span>
+              <span className="text-muted"> — cycle time (waktu di sistem)</span>
             </div>
-            <div className="rounded-[var(--radius-sm)] border border-border bg-surface px-2 py-2.5 text-center">
-              <p className="text-[10px] font-medium uppercase tracking-wide text-faint">te</p>
-              <p className="mt-0.5 text-sm font-semibold">process time</p>
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
+              <span className="font-semibold text-fg">te</span>
+              <span className="text-muted"> — waktu proses efektif</span>
             </div>
-            <div className="rounded-[var(--radius-sm)] border border-border bg-surface px-2 py-2.5 text-center">
-              <p className="text-[10px] font-medium uppercase tracking-wide text-faint">1 + V</p>
-              <p className="mt-0.5 text-sm font-semibold">variability</p>
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
+              <span className="font-semibold text-fg">V</span>
+              <span className="text-muted"> — variability ≈ (ca² + ce²)/2</span>
             </div>
-            <div className="rounded-[var(--radius-sm)] border border-border bg-surface px-2 py-2.5 text-center">
-              <p className="text-[10px] font-medium uppercase tracking-wide text-faint">ū / (1 − ū)</p>
-              <p className="mt-0.5 text-sm font-semibold">utilisasi</p>
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
+              <span className="font-semibold text-fg">ū/(1−ū)</span>
+              <span className="text-muted"> — pengganda utilisasi (meledak dekat 1)</span>
             </div>
           </div>
-          <p className="mt-3 font-mono text-sm leading-relaxed">
-            CT / te ≈ 1 + V · ū / (1 − ū)
-          </p>
-          <p className="text-muted text-sm leading-relaxed">
-            Empat fenomena: CT yang diamati, te dasar, multiplier variability (1+V), dan pengganda utilisasi yang meledak dekat kapasitas.
-          </p>
-        </>
+        </div>
       }
-      reverse="Kalau lawannya: V turun, atau ū mundur dari 1 — CT/te mereda."
+      reverse="Kalau lawannya: V turun, atau ū mundur dari 1 — CT mereda."
       onNext={onNext}
       nextLabel="Lanjut ke Inventory / FR"
     >
@@ -423,11 +424,9 @@ function KingmanLesson({
                 isAnimationActive={false}
               />
             ))}
-            {/* Titik awal (hollow) */}
             {sc ? (
               <ReferenceDot x={from.u} y={from.ratio} r={6} fill="#fff" stroke={POINT} strokeWidth={1.75} />
             ) : null}
-            {/* Titik baru (solid) */}
             <ReferenceDot x={to.u} y={to.ratio} r={7} fill={POINT} stroke="#fff" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
@@ -563,11 +562,9 @@ function InventoryLesson({
                 ))
               : (
                 <>
-                  {/* Titik awal (hollow) */}
                   {sc ? (
                     <ReferenceDot x={basePt.inv} y={basePt.fr} r={6} fill="#fff" stroke={POINT} strokeWidth={1.75} />
                   ) : null}
-                  {/* Titik baru (solid) */}
                   <ReferenceDot x={pt.inv} y={pt.fr} r={7} fill={POINT} stroke="#fff" strokeWidth={2} />
                   {sameStock ? (
                     <ReferenceLine x={pt.inv} stroke="#a3a3a3" strokeDasharray="4 3" />

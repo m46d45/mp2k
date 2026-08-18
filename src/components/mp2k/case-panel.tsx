@@ -172,6 +172,46 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
         />
       </div>
 
+      {/* Process map notation (PPI) */}
+      <Card className="border-fg/20">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Notasi process map</CardTitle>
+          <CardDescription>
+            Bahasa visual untuk membaca alur — bukan bar chart aktivitas
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid gap-2 sm:grid-cols-3">
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface p-3 text-center">
+              <p className="font-mono text-2xl text-fg">□</p>
+              <p className="mt-1 text-sm font-medium text-fg">Operasi</p>
+              <p className="mt-0.5 text-[11px] text-muted leading-snug">
+                Proses yang mengerjakan (PT) — kolom dicor, balok dicetak, panel dipasang
+              </p>
+            </div>
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface p-3 text-center">
+              <p className="font-mono text-2xl text-fg">△</p>
+              <p className="mt-1 text-sm font-medium text-fg">Antrian</p>
+              <p className="mt-0.5 text-[11px] text-muted leading-snug">
+                WIP menunggu (QT) — menumpuk sebelum bottleneck; yang meledak di Kingman
+              </p>
+            </div>
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface p-3 text-center">
+              <p className="font-mono text-2xl text-fg">○</p>
+              <p className="mt-1 text-sm font-medium text-fg">Stok</p>
+              <p className="mt-0.5 text-[11px] text-muted leading-snug">
+                Inventory buffer — panel di yard, material siap; terkait Fill Rate
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-muted leading-relaxed">
+            Alur tipikal: <span className="font-mono text-fg">○ → △ → □ → △ → □</span>.
+            Stok dan antrian sama-sama "mengendap", tetapi peran berbeda — stok disengaja sebagai
+            buffer; antrian sering akibat ū tinggi atau mismatch moda.
+          </p>
+        </CardContent>
+      </Card>
+
       {/* Geometry */}
       <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         <Card>

@@ -78,6 +78,15 @@ function InvalidX(props: {
   );
 }
 
+/** Clean number for tooltips: max 1–2 decimals */
+function cleanNum(v: number, decimals = 1): string {
+  if (!Number.isFinite(v)) return "–";
+  return v.toLocaleString("id-ID", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals,
+  });
+}
+
 type Props = {
   onOpenLab: () => void;
 };
@@ -532,9 +541,9 @@ function InventoryLesson({
             </div>
           </div>
           <p className="text-xs text-muted leading-relaxed">
-            Inventory di sini mencakup cycle stock + <strong className="text-fg">buffer (safety stock)</strong>.
+            Inventory di sini = cycle stock + <strong className="text-fg">buffer (safety stock)</strong>.
             Buffer melindungi terhadap variabilitas permintaan dan lead time.
-            Makin tinggi target FR, makin banyak buffer yang dibutuhkan — tapi dengan diminishing returns.
+            Makin tinggi target FR, makin banyak buffer yang dibutuhkan — tapi diminishing returns.
           </p>
         </div>
       }
@@ -549,13 +558,14 @@ function InventoryLesson({
 
       <div className="h-[280px] w-full sm:h-[320px]">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={curveNow} margin={{ top: 12, right: 16, left: 4, bottom: 20 }}>
+          <ComposedChart data={curveNow} margin={{ top: 12, right: 16, left: 8, bottom: 20 }}>
             <CartesianGrid stroke={GRID} strokeDasharray="3 3" />
             <XAxis
               dataKey="fr"
               type="number"
               domain={[50, 100]}
               tick={{ fill: MUTED, fontSize: 11 }}
+              tickFormatter={(v) => cleanNum(v, 0)}
               label={{ value: "FR (%)", position: "insideBottom", offset: -8, fill: MUTED, fontSize: 12 }}
             />
             <YAxis
@@ -563,21 +573,22 @@ function InventoryLesson({
               type="number"
               domain={[0, "auto"]}
               tick={{ fill: MUTED, fontSize: 11 }}
+              tickFormatter={(v) => cleanNum(v, 1)}
               label={{ value: "Inventory", angle: -90, position: "insideLeft", fill: MUTED, fontSize: 11 }}
             />
             <Tooltip
               content={({ active, payload }) => {
-                if (!active || !payload || !payload.length) return null;
+                if (!active || !payload || payload.length === 0) return null;
                 const d = payload[0].payload as { fr: number; inv: number };
                 return (
                   <div className="rounded border border-border bg-surface px-3 py-2 text-sm shadow-sm">
                     <p className="font-mono">
-                      <span className="text-faint">FR</span>{" "}
-                      <span className="font-semibold">{formatNum(d.fr)}%</span>
+                      <span className="text-muted">FR</span>{" "}
+                      <span className="font-semibold">{cleanNum(d.fr, 1)}%</span>
                     </p>
                     <p className="font-mono">
-                      <span className="text-faint">Inventory</span>{" "}
-                      <span className="font-semibold">{formatNum(d.inv)}</span>
+                      <span className="text-muted">Inventory</span>{" "}
+                      <span className="font-semibold">{cleanNum(d.inv, 1)}</span>
                     </p>
                   </div>
                 );
@@ -670,7 +681,6 @@ function InventoryLesson({
       ) : (
         <p className="text-sm text-muted">
           Titik acuan: FR {formatPct(basePt.fr / 100)} · Ī ≈ {formatNum(basePt.inv)}. Pilih satu if–then.
-          Sumbu X = FR (%), Y = Inventory.
         </p>
       )}
     </LessonShell>

@@ -3,6 +3,7 @@ import {
   INTRO_CURVES,
   LITTLE_SCENARIOS,
   KINGMAN_SCENARIOS,
+  CTWIP_SCENARIOS,
   INV_SCENARIOS,
   CONTROL_SCENARIOS,
   LITTLE_BASE,
@@ -26,29 +27,37 @@ export function IntroPanel({ onOpenLab }: Props) {
   const [done, setDone] = useState<Record<IntroCurve, string[]>>({
     little: [],
     kingman: [],
+    ctwip: [],
     inventory: [],
     control: [],
   });
 
   function mark(id: IntroCurve, sid: string) {
-    setDone((prev) => (prev[id].includes(sid) ? prev : { ...prev, [id]: [...prev[id], sid] }));
+    setDone((prev) => {
+      const list = prev[id] ?? [];
+      return list.includes(sid) ? prev : { ...prev, [id]: [...list, sid] };
+    });
   }
 
   function needFor(id: IntroCurve) {
     if (id === "little") return LITTLE_SCENARIOS;
     if (id === "kingman") return KINGMAN_SCENARIOS;
+    if (id === "ctwip") return CTWIP_SCENARIOS;
     if (id === "inventory") return INV_SCENARIOS;
     return CONTROL_SCENARIOS;
   }
 
-  const allReady = INTRO_CURVES.every((c) => needFor(c.id).every((s) => done[c.id].includes(s.id)));
+  // Chart CT vs WIP belum ada — jangan blok jembatan lab
+  const allReady = INTRO_CURVES.filter((c) => c.id !== "ctwip").every((c) => {
+    const seen = done[c.id] ?? [];
+    return needFor(c.id).every((s) => seen.includes(s.id));
+  });
 
   return (
     <div className="space-y-6">
       <div className="max-w-3xl space-y-3">
         <h2 className="text-xl font-semibold tracking-tight">Pengenalan</h2>
 
-        {/* 4 Verbs (PPI) — sebelum 5 levers */}
         <p className="text-sm text-muted leading-relaxed">
           Apa yang mengalir di proyek? Empat verb produksi:{" "}
           <strong className="text-fg">Design</strong>,{" "}
@@ -118,18 +127,20 @@ export function IntroPanel({ onOpenLab }: Props) {
           operating WIP–TH–CT.
         </p>
         <p className="text-sm text-muted leading-relaxed">
-          Empat modul memakai <strong className="text-fg">satu sistem demo yang sama</strong>.
-          Angka dan warna oranye mengikuti dari Little → Kingman → Inventory → Control.
+          Modul memakai <strong className="text-fg">satu sistem demo yang sama</strong>.
+          Angka dan warna oranye mengikuti dari Little → Kingman → CT vs WIP → Inventory → Control.
         </p>
         <SystemChip />
       </div>
 
       <nav
         aria-label="Modul pengenalan"
-        className="grid grid-cols-2 gap-1 rounded-[var(--radius-md)] border border-border bg-elevated p-1 sm:grid-cols-4"
+        className="grid grid-cols-2 gap-1 rounded-[var(--radius-md)] border border-border bg-elevated p-1 sm:grid-cols-3 lg:grid-cols-5"
       >
         {INTRO_CURVES.map((c) => {
-          const ready = needFor(c.id).every((s) => done[c.id].includes(s.id));
+          const seen = done[c.id] ?? [];
+          const ready =
+            c.id === "ctwip" ? false : needFor(c.id).every((s) => seen.includes(s.id));
           const active = curve === c.id;
           return (
             <button
@@ -166,8 +177,27 @@ export function IntroPanel({ onOpenLab }: Props) {
         <KingmanLesson
           seen={done.kingman}
           onSee={(id) => mark("kingman", id)}
-          onNext={() => setCurve("inventory")}
+          onNext={() => setCurve("ctwip")}
         />
+      )}
+      {curve === "ctwip" && (
+        <div className="rounded-[var(--radius-xl)] border border-dashed border-border bg-surface p-5">
+          <p className="text-xs font-medium uppercase tracking-wider text-faint">Grafik CT vs WIP</p>
+          <h3 className="mt-1 text-lg font-semibold tracking-tight">
+            Bagaimana CT berubah saat WIP naik — dan di mana W0 / Wopt?
+          </h3>
+          <p className="mt-3 text-sm text-muted leading-relaxed">
+            Modul chart (kurva ketiga PPI) akan ditambahkan di langkah berikutnya. Data dan skenario sudah
+            disiapkan dengan sistem demo yang sama (W0={DEMO_SYSTEM.W0}, Wopt≈{DEMO_SYSTEM.Wopt}).
+          </p>
+          <button
+            type="button"
+            onClick={() => setCurve("inventory")}
+            className="mt-4 min-h-11 rounded-[var(--radius-sm)] border border-border bg-elevated px-4 text-sm font-medium text-fg hover:bg-subtle"
+          >
+            Lanjut ke Inventory & Fill Rate →
+          </button>
+        </div>
       )}
       {curve === "inventory" && (
         <InventoryLesson
@@ -184,7 +214,7 @@ export function IntroPanel({ onOpenLab }: Props) {
         <BridgeCard onOpenLab={onOpenLab} />
       ) : (
         <p className="text-xs text-faint">
-          Setelah semua skenario dijelajahi (tiga kurva + Control), jembatan ke kasus muncul di sini.
+          Setelah skenario Little · Kingman · Inventory · Control dijelajahi, jembatan ke kasus muncul di sini.
         </p>
       )}
     </div>

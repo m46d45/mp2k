@@ -75,8 +75,7 @@ export function IntroPanel({ onOpenLab }: Props) {
         <h2 className="mt-1 text-xl font-semibold tracking-tight">Tiga kurva</h2>
         <p className="mt-2 text-sm text-muted leading-relaxed">
           Rumus ditampilkan dari awal agar kaitan if–then dengan persamaan jelas.
-          Ramalkan arah sebelum menekan tombol. Belum ada denah — itu putaran
-          berikutnya.
+          Ramalkan arah sebelum menekan tombol. Belum ada denah — itu putaran berikutnya.
         </p>
       </div>
 

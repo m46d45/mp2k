@@ -134,13 +134,34 @@ export function ControlLesson({ seen, onSee }: { seen: string[]; onSee: (id: str
             bagaimana kerja <em>dirilis</em> dan <em>dibatasi</em>.
             Bukan sekadar <em>controls</em> (laporan masa lalu).
           </p>
-          <p className="text-xs text-muted leading-relaxed">
-            <strong className="text-fg">Push</strong> merilis menurut jadwal luar (kontrol rate, amati WIP).{" "}
-            <strong className="text-fg">Pull</strong> mengotorisasi rilis menurut status sistem (kontrol WIP, amati TH).
-            <strong className="text-fg"> CONWIP</strong> = batas total WIP: job baru masuk hanya bila ada slot kosong.
-          </p>
+
+          {/* Push vs Pull vs CONWIP */}
+          <div className="grid gap-2 sm:grid-cols-3 text-xs">
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-2">
+              <p className="font-semibold text-fg">Push</p>
+              <p className="mt-1 text-muted leading-snug">
+                Rilis menurut <strong className="text-fg">jadwal luar</strong>.
+                Kontrol rate → amati WIP. WIP bisa menumpuk tanpa batas.
+              </p>
+            </div>
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-2">
+              <p className="font-semibold text-fg">Pull</p>
+              <p className="mt-1 text-muted leading-snug">
+                Rilis menurut <strong className="text-fg">status sistem</strong>
+                (slot/kanban hilir). Kontrol WIP → amati TH.
+              </p>
+            </div>
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-2">
+              <p className="font-semibold text-fg">CONWIP</p>
+              <p className="mt-1 text-muted leading-snug">
+                Pull sederhana: <strong className="text-fg">batas total WIP</strong>.
+                Job baru masuk hanya bila ada slot kosong di sistem.
+              </p>
+            </div>
+          </div>
+
           <p className="font-mono text-base">
-            <span className="font-semibold">W0</span> = rb x T0
+            <span className="font-semibold">W0</span> = rb × T0
           </p>
           <p className="text-xs text-muted leading-relaxed">
             Critical WIP = WIP terkecil agar TH penuh dan CT minimal <em>tanpa variabilitas</em>.

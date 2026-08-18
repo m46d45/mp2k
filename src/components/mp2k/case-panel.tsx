@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BuildingView } from "@/components/mp2k/building-view";
-import { Hammer, Factory, Truck, ArrowRight, Layers, GitBranch, CalendarClock, Workflow } from "lucide-react";
+import { Hammer, Factory, Truck, ArrowRight, Layers, GitBranch, CalendarClock, Workflow, UserRound, HardHat } from "lucide-react";
 
 /**
  * Step 1 — Introduce the MP2K case (before sim & analytics).
@@ -20,6 +20,46 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
           siap — kita fokus ke struktur atas.
         </p>
       </div>
+
+      {/* Owner vs Builder framing (PPI) */}
+      <Card className="border-fg/20">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Dua perspektif yang harus nyambung</CardTitle>
+          <CardDescription>
+            Owner di sisi demand · Builder di sisi supply — operasi berbeda, tetapi satu proyek
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface p-3">
+              <div className="mb-1.5 flex items-center gap-2 text-sm font-medium text-fg">
+                <UserRound className="size-4 shrink-0 text-muted" strokeWidth={1.75} />
+                Owner (demand)
+              </div>
+              <p className="text-xs text-muted leading-relaxed">
+                Bahasa yang sering diajarkan: <strong className="text-fg">scope · cost · quality · schedule</strong>.
+                Owner membuat target dan jadwal — "apa" dan "kapan" yang diinginkan dari proyek.
+              </p>
+            </div>
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface p-3">
+              <div className="mb-1.5 flex items-center gap-2 text-sm font-medium text-fg">
+                <HardHat className="size-4 shrink-0 text-muted" strokeWidth={1.75} />
+                Builder (supply)
+              </div>
+              <p className="text-xs text-muted leading-relaxed">
+                Bahasa produksi: <strong className="text-fg">product · process · capacity · inventory · variability</strong>.
+                Builder merancang dan mengoperasikan <em>sistem produksi</em> yang harus memenuhi demand owner.
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-muted leading-relaxed">
+            Selama ini pendidikan dan praktek lebih condong ke sisi owner. MP2K fokus ke sisi builder:
+            bagaimana aliran di workface diatur agar TH, CT, WIP, dan fill rate terjaga — bukan hanya agar
+            bar chart terlihat hijau. Owner membuat jadwal; builder membuat production system.
+            (Tier-1 builder menjadi "owner" bagi tier-2 — rantai yang sama berulang.)
+          </p>
+        </CardContent>
+      </Card>
 
       {/* Priority 1: CPM vs PPM + lab objectives */}
       <Card className="border-fg/25 bg-elevated/50">
@@ -162,15 +202,14 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Denah dan elevasi</CardTitle>
-          <CardDescription>Frame tampak di sini; status berubah di langkah Simulasi</CardDescription>
+          <CardDescription>Pratinjau geometri kasus — zona, moda, dan urutan gelombang</CardDescription>
         </CardHeader>
         <CardContent>
           <BuildingView />
         </CardContent>
       </Card>
 
-      {/* 5 levers + link forward */}
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
@@ -179,14 +218,14 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
             </div>
           </CardHeader>
           <CardContent>
-            <ol className="space-y-1.5 font-mono text-xs text-muted">
+            <ol className="space-y-1.5 text-sm text-muted">
               <li>
                 <span className="text-fg">1.</span> Product design{" "}
-                <span className="text-faint">(dikunci di kasus)</span>
+                <span className="text-faint">(sudah ditetapkan di Kasus)</span>
               </li>
               <li>
                 <span className="text-fg">2.</span> Process design{" "}
-                <span className="text-faint">(dikunci di kasus)</span>
+                <span className="text-faint">(sudah ditetapkan di Kasus)</span>
               </li>
               <li>
                 <span className="text-fg">3.</span> Capacity{" "}

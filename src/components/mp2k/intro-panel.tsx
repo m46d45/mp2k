@@ -79,25 +79,27 @@ export function IntroPanel({ onOpenLab }: Props) {
         <h2 className="text-xl font-semibold tracking-tight">Tiga kurva</h2>
         <p className="text-sm text-muted leading-relaxed">
           Di Project Production Management (PPM), kinerja aliran diatur lewat lima tuas:
-          <strong className="text-fg"> Capacity</strong>,{" "}
-          <strong className="text-fg">Inventory</strong>,{" "}
-          <strong className="text-fg">Variability</strong>,{" "}
-          <strong className="text-fg">Product Design</strong>, dan{" "}
-          <strong className="text-fg">Process Design</strong>.
-          Ketiga kurva berikut adalah cara melihat tuas itu secara kuantitatif:
-          <strong className="text-fg"> Little's Law</strong> mengikat Inventory (WIP) dengan Throughput dan Cycle Time;
-          <strong className="text-fg"> Kingman</strong> menunjukkan bagaimana Capacity (utilisasi) dan Variability
-          membuat CT meledak dekat kapasitas;
-          <strong className="text-fg"> Inventory &amp; Fill Rate</strong> menjelaskan berapa buffer yang dibutuhkan
-          agar permintaan tetap terpenuhi saat lead time dan permintaan tidak pasti.
+          <strong className="text-fg">Product Design</strong>,{" "}
+          <strong className="text-fg">Process Design</strong>,{" "}
+          <strong className="text-fg">Capacity</strong>,{" "}
+          <strong className="text-fg">Inventory</strong>, dan{" "}
+          <strong className="text-fg">Variability</strong>.
         </p>
         <p className="text-sm text-muted leading-relaxed">
           <strong className="text-fg">Product Design</strong> dan{" "}
-          <strong className="text-fg">Process Design</strong> tidak berdiri di luar kurva ini —
-          keduanya justru harus diarahkan dengan mempertimbangkannya, karena ketiga hubungan itu
-          melekat di dalam proses produksi. Pilihan moda (manual, near-site, far-supply),
-          urutan kerja, dan bentuk elemen struktur menentukan utilisasi, variabilitas, dan kebutuhan buffer
-          yang kemudian terbaca di kurva Little, Kingman, dan Fill Rate.
+          <strong className="text-fg">Process Design</strong> datang lebih dulu.
+          Pilihan moda (manual, near-site, far-supply), bentuk elemen struktur, dan urutan kerja
+          menentukan seberapa besar variabilitas yang masuk ke sistem, seberapa ketat kapasitas yang tersedia,
+          dan seberapa banyak inventory yang harus disediakan. Kedua tuas desain ini tidak berdiri di luar kurva —
+          justru harus diarahkan dengan mempertimbangkan hubungan kuantitatif yang terbaca di kurva.
+        </p>
+        <p className="text-sm text-muted leading-relaxed">
+          Setelah desain ditetapkan, tiga tuas operasional terbaca di tiga kurva:
+          <strong className="text-fg"> Little's Law</strong> mengikat Inventory (WIP) dengan Throughput dan Cycle Time;
+          <strong className="text-fg"> Kingman</strong> menunjukkan bagaimana Capacity (utilisasi) dan Variability
+          membuat CT meledak dekat kapasitas;
+          <strong className="text-fg"> Inventory &amp; Fill Rate</strong> menjelaskan berapa buffer stok yang dibutuhkan
+          agar permintaan tetap terpenuhi saat lead time dan permintaan tidak pasti.
         </p>
         <p className="text-sm text-muted leading-relaxed">
           Variability memaksa sistem punya <strong className="text-fg">buffer</strong> —

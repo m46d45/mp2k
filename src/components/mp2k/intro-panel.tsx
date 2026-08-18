@@ -52,6 +52,47 @@ export function IntroPanel({ onOpenLab }: Props) {
           Angka dan warna oranye mengikuti dari Little → Kingman → Inventory → Control.
         </p>
         <SystemChip />
+        <p className="text-sm text-muted leading-relaxed">
+          Di Project Production Management (PPM), kinerja aliran diatur lewat lima tuas:{" "}
+          <strong className="text-fg">Product Design</strong>,{" "}
+          <strong className="text-fg">Process Design</strong>,{" "}
+          <strong className="text-fg">Capacity</strong>,{" "}
+          <strong className="text-fg">Inventory</strong>, dan{" "}
+          <strong className="text-fg">Variability</strong>.
+        </p>
+        <p className="text-sm text-muted leading-relaxed">
+          <strong className="text-fg">Product Design</strong> dan{" "}
+          <strong className="text-fg">Process Design</strong> datang lebih dulu.
+          Pilihan moda (manual, near-site, far-supply), bentuk elemen struktur, dan urutan kerja
+          menentukan seberapa besar variabilitas yang masuk ke sistem, seberapa ketat kapasitas yang tersedia,
+          dan seberapa banyak inventory yang harus disediakan. Kedua tuas desain ini tidak berdiri di luar kurva —
+          justru harus diarahkan dengan mempertimbangkan hubungan kuantitatif yang terbaca di kurva.
+        </p>
+        <p className="text-sm text-muted leading-relaxed">
+          Setelah desain ditetapkan, tiga tuas operasional terbaca di tiga kurva:{" "}
+          <strong className="text-fg">Little's Law</strong> mengikat Inventory (WIP) dengan Throughput dan Cycle Time;{" "}
+          <strong className="text-fg">Kingman</strong> menunjukkan bagaimana Capacity (utilisasi) dan Variability
+          membuat CT meledak dekat kapasitas;{" "}
+          <strong className="text-fg">Inventory & Fill Rate</strong> menjelaskan berapa buffer stok yang dibutuhkan
+          agar permintaan tetap terpenuhi saat lead time dan permintaan tidak pasti.
+        </p>
+        <p className="text-sm text-muted leading-relaxed">
+          Variability memaksa sistem punya <strong className="text-fg">buffer</strong> —
+          perlindungan yang bisa berbentuk{" "}
+          <strong className="text-fg">capacity</strong> (utilisasi di bawah 100%),{" "}
+          <strong className="text-fg">time</strong> (slack jadwal / padding lead time), atau{" "}
+          <strong className="text-fg">stock</strong> (WIP, safety stock).
+          Ketiga kurva menunjukkan harga masing-masing pilihan:
+          Little mengikat inventory buffer (WIP) dengan CT;
+          Kingman menunjukkan betapa mahalnya CT bila capacity buffer dikurangi dekat utilisasi penuh;
+          Fill Rate menjelaskan berapa stock buffer yang dibutuhkan agar layanan tetap terjaga.
+        </p>
+        <p className="text-sm text-muted leading-relaxed">
+          Setelah memahami tiga kurva, langkah berikutnya adalah{" "}
+          <strong className="text-fg">Control</strong>: kebijakan yang mengatur berapa WIP yang boleh hidup di sistem.
+          Tab <strong className="text-fg">Control & CONWIP</strong> menjelaskan cara memilih batas itu dari kurva
+          operating WIP–TH–CT.
+        </p>
       </div>
 
       <nav

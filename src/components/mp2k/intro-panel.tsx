@@ -124,6 +124,17 @@ export function IntroPanel({ onOpenLab }: Props) {
           urutan kerja, dan bentuk elemen struktur menentukan utilisasi, variabilitas, dan kebutuhan buffer
           yang kemudian terbaca di kurva Little, Kingman, dan Fill Rate.
         </p>
+        <p className="text-sm text-muted leading-relaxed">
+          Variability memaksa sistem punya <strong className="text-fg">buffer</strong> —
+          perlindungan yang bisa berbentuk{" "}
+          <strong className="text-fg">capacity</strong> (utilisasi di bawah 100%),{" "}
+          <strong className="text-fg">time</strong> (slack jadwal / padding lead time), atau{" "}
+          <strong className="text-fg">stock</strong> (WIP, safety stock).
+          Ketiga kurva menunjukkan harga masing-masing pilihan:
+          Little mengikat inventory buffer (WIP) dengan CT;
+          Kingman menunjukkan betapa mahalnya CT bila capacity buffer dikurangi dekat utilisasi penuh;
+          Fill Rate menjelaskan berapa stock buffer yang dibutuhkan agar layanan tetap terjaga.
+        </p>
       </div>
 
       <nav
@@ -223,6 +234,10 @@ function LittleLesson({
         <>
           <p>WIP = TH × CT</p>
           <p className="text-muted">TH = WIP / CT · CT = WIP / TH — susunan yang sama.</p>
+          <p className="text-xs text-muted mt-1">
+            WIP di sistem adalah bentuk <span className="text-fg font-medium">inventory buffer</span>.
+            Menambah WIP (TH tetap) berarti menambah waktu di sistem (CT).
+          </p>
         </>
       }
       reverse="Kalau lawannya: WIP turun (TH tetap) — CT harus turun."
@@ -412,7 +427,8 @@ function KingmanLesson({
               </div>
             </div>
             <p className="mt-1.5 text-[11px] text-muted leading-snug">
-              Angka ini dikalikan V. Di ketiga kurva, makin tinggi V makin curam naiknya CT saat ū mendekati 1.
+              Angka ini dikalikan V. ū di bawah 1 = <span className="text-fg font-medium">capacity buffer</span>.
+              Tanpa buffer itu, CT meledak — terutama bila V tinggi.
             </p>
           </div>
         </div>
@@ -537,20 +553,26 @@ function InventoryLesson({
           </p>
           <p className="text-xs text-muted leading-relaxed">
             ES = expected shortfall, DDLT = demand during lead time.
-            Buffer (safety stock) = z · σ√L. Makin besar buffer relatif terhadap ketidakpastian, makin tinggi FR.
+            <span className="text-fg font-medium"> Stock buffer</span> (safety stock) = z · σ√L.
+            Lead time sendiri bisa berisi <span className="text-fg font-medium">time buffer</span>.
           </p>
-          <div className="grid gap-2 text-xs sm:grid-cols-2">
+          <div className="grid gap-2 text-xs sm:grid-cols-3">
             <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
-              <span className="font-semibold text-fg">FR (Fill Rate)</span>
-              <span className="text-muted"> — proporsi permintaan yang terpenuhi dari stok</span>
+              <span className="font-semibold text-fg">Capacity buffer</span>
+              <span className="text-muted"> — utilisasi < 100% (lihat Kingman)</span>
             </div>
             <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
-              <span className="font-semibold text-fg">Buffer</span>
-              <span className="text-muted"> — safety stock, stok ekstra untuk ketidakpastian</span>
+              <span className="font-semibold text-fg">Time buffer</span>
+              <span className="text-muted"> — slack jadwal / padding lead time</span>
+            </div>
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
+              <span className="font-semibold text-fg">Stock buffer</span>
+              <span className="text-muted"> — WIP, safety stock di staging</span>
             </div>
           </div>
           <p className="text-xs text-muted leading-relaxed">
-            Inventory di grafik = cycle stock + buffer. Target FR tinggi (mis. 95%) butuh buffer lebih besar, tapi dengan diminishing returns.
+            Inventory di grafik = cycle stock + stock buffer. Target FR tinggi (mis. 95%) butuh buffer lebih besar,
+            tapi dengan diminishing returns. Ketiga jenis buffer saling bisa ditukar menghadapi variability yang sama.
           </p>
         </div>
       }

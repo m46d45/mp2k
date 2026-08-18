@@ -148,6 +148,34 @@ function formulaReady(id: IntroCurve, seen: string[]): boolean {
   return need.every((s) => seen.includes(s.id));
 }
 
+/** Custom X mark for the invalid Little attempt */
+function ForbiddenX(props: { cx?: number; cy?: number }) {
+  const { cx = 0, cy = 0 } = props;
+  const s = 7;
+  return (
+    <g>
+      <line
+        x1={cx - s}
+        y1={cy - s}
+        x2={cx + s}
+        y2={cy + s}
+        stroke={POINT}
+        strokeWidth={2.25}
+        strokeLinecap="round"
+      />
+      <line
+        x1={cx + s}
+        y1={cy - s}
+        x2={cx - s}
+        y2={cy + s}
+        stroke={POINT}
+        strokeWidth={2.25}
+        strokeLinecap="round"
+      />
+    </g>
+  );
+}
+
 function LittleLesson({
   seen,
   onSee,
@@ -242,16 +270,13 @@ function LittleLesson({
                 strokeWidth={1.75}
               />
             ) : null}
-            {/* Percobaan invalid (dashed) */}
+            {/* Percobaan invalid — tandai dengan X */}
             {broken ? (
               <ReferenceDot
                 x={LITTLE_ATTEMPT.wip}
                 y={LITTLE_ATTEMPT.ct}
-                r={6}
-                fill="transparent"
-                stroke={POINT}
-                strokeDasharray="3 2"
-                strokeWidth={1.5}
+                r={8}
+                shape={ForbiddenX}
               />
             ) : null}
           </ComposedChart>

@@ -78,6 +78,31 @@ function InvalidX(props: {
   );
 }
 
+/** Clean tooltip for Inventory chart — explicit labels + limited decimals */
+function InvTooltip({ active, payload }: any) {
+  if (!active || !payload?.length) return null;
+  const row = payload[0]?.payload;
+  if (!row) return null;
+  const fr = typeof row.fr === "number" ? row.fr : null;
+  const inv = typeof row.inv === "number" ? row.inv : null;
+  return (
+    <div className="rounded border border-border bg-surface px-3 py-2 text-xs shadow-sm">
+      {fr != null && (
+        <p>
+          <span className="text-muted">FR: </span>
+          <span className="font-mono font-medium text-fg">{fr.toFixed(1)}%</span>
+        </p>
+      )}
+      {inv != null && (
+        <p>
+          <span className="text-muted">Inventory: </span>
+          <span className="font-mono font-medium text-fg">{inv.toFixed(2)}</span>
+        </p>
+      )}
+    </div>
+  );
+}
+
 type Props = {
   onOpenLab: () => void;
 };
@@ -509,7 +534,6 @@ function InventoryLesson({
 
   const steps = INV_Z_STEPS.map((z) => invPoint(INV_BASE.leadTime, INV_BASE.demandCv, z));
 
-  // Always show base reference point when a scenario is active
   const showBase = !!sc;
 
   return (
@@ -552,7 +576,6 @@ function InventoryLesson({
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={curveNow} margin={{ top: 12, right: 16, left: 4, bottom: 20 }}>
             <CartesianGrid stroke={GRID} strokeDasharray="3 3" />
-            {/* Axes swapped: X = FR, Y = Inventory */}
             <XAxis
               dataKey="fr"
               type="number"
@@ -567,12 +590,7 @@ function InventoryLesson({
               tick={{ fill: MUTED, fontSize: 11 }}
               label={{ value: "Inventory", angle: -90, position: "insideLeft", fill: MUTED, fontSize: 11 }}
             />
-            <Tooltip
-              formatter={(v: number, name: string) => [
-                formatNum(v),
-                name === "inv" || name === "Inventory" ? "Inventory" : "FR (%)",
-              ]}
-            />
+            <Tooltip content={<InvTooltip />} />
             {sameStock ? (
               <Line
                 data={curveBase}
@@ -609,7 +627,6 @@ function InventoryLesson({
                 ))
               : (
                 <>
-                  {/* Titik acuan (base) — hollow ○ selalu terlihat saat membandingkan */}
                   {showBase ? (
                     <ReferenceDot
                       x={basePt.fr}
@@ -620,7 +637,6 @@ function InventoryLesson({
                       strokeWidth={1.75}
                     />
                   ) : null}
-                  {/* Titik baru (solid ●) */}
                   <ReferenceDot x={pt.fr} y={pt.inv} r={7} fill={POINT} stroke="#fff" strokeWidth={2} />
                   {sameStock ? (
                     <ReferenceLine y={pt.inv} stroke="#a3a3a3" strokeDasharray="4 3" />

@@ -14,6 +14,7 @@ import {
 } from "@/lib/mp2k/intro-lessons";
 import { LittleLesson } from "@/components/mp2k/little-lesson";
 import { KingmanLesson } from "@/components/mp2k/kingman-lesson";
+import { CtwipLesson } from "@/components/mp2k/ctwip-lesson";
 import { InventoryLesson } from "@/components/mp2k/inventory-lesson";
 import { ControlLesson } from "@/components/mp2k/control-lesson";
 import { BridgeCard } from "@/components/mp2k/intro-shared";
@@ -47,8 +48,7 @@ export function IntroPanel({ onOpenLab }: Props) {
     return CONTROL_SCENARIOS;
   }
 
-  // Chart CT vs WIP belum ada — jangan blok jembatan lab
-  const allReady = INTRO_CURVES.filter((c) => c.id !== "ctwip").every((c) => {
+  const allReady = INTRO_CURVES.every((c) => {
     const seen = done[c.id] ?? [];
     return needFor(c.id).every((s) => seen.includes(s.id));
   });
@@ -102,12 +102,11 @@ export function IntroPanel({ onOpenLab }: Props) {
           justru harus diarahkan dengan mempertimbangkan hubungan kuantitatif yang terbaca di kurva.
         </p>
         <p className="text-sm text-muted leading-relaxed">
-          Setelah desain ditetapkan, tiga tuas operasional terbaca di tiga kurva:{" "}
-          <strong className="text-fg">Little's Law</strong> mengikat Inventory (WIP) dengan Throughput dan Cycle Time;{" "}
-          <strong className="text-fg">Kingman</strong> menunjukkan bagaimana Capacity (utilisasi) dan Variability
-          membuat CT meledak dekat kapasitas;{" "}
-          <strong className="text-fg">Inventory & Fill Rate</strong> menjelaskan berapa buffer stok yang dibutuhkan
-          agar permintaan tetap terpenuhi saat lead time dan permintaan tidak pasti.
+          Setelah desain ditetapkan, kinerja operasional terbaca di tiga kurva PPI:{" "}
+          <strong className="text-fg">CT vs Utilization</strong> (Kingman) — capacity & variability;{" "}
+          <strong className="text-fg">TH vs WIP</strong> (Little / operating) — throughput jenuh di rb;{" "}
+          <strong className="text-fg">CT vs WIP</strong> — cycle time naik seiring WIP, dengan W0 dan Wopt sebagai acuan.
+          Ditambah <strong className="text-fg">Inventory & Fill Rate</strong> untuk stock buffer.
         </p>
         <p className="text-sm text-muted leading-relaxed">
           Variability memaksa sistem punya <strong className="text-fg">buffer</strong> —
@@ -115,13 +114,10 @@ export function IntroPanel({ onOpenLab }: Props) {
           <strong className="text-fg">capacity</strong> (utilisasi di bawah 100%),{" "}
           <strong className="text-fg">time</strong> (slack jadwal / padding lead time), atau{" "}
           <strong className="text-fg">stock</strong> (WIP, safety stock).
-          Ketiga kurva menunjukkan harga masing-masing pilihan:
-          Little mengikat inventory buffer (WIP) dengan CT;
-          Kingman menunjukkan betapa mahalnya CT bila capacity buffer dikurangi dekat utilisasi penuh;
-          Fill Rate menjelaskan berapa stock buffer yang dibutuhkan agar layanan tetap terjaga.
+          Kurva menunjukkan harga masing-masing pilihan.
         </p>
         <p className="text-sm text-muted leading-relaxed">
-          Setelah memahami tiga kurva, langkah berikutnya adalah{" "}
+          Setelah memahami kurva, langkah berikutnya adalah{" "}
           <strong className="text-fg">Control</strong>: kebijakan yang mengatur berapa WIP yang boleh hidup di sistem.
           Tab <strong className="text-fg">Control & CONWIP</strong> menjelaskan cara memilih batas itu dari kurva
           operating WIP–TH–CT.
@@ -139,8 +135,7 @@ export function IntroPanel({ onOpenLab }: Props) {
       >
         {INTRO_CURVES.map((c) => {
           const seen = done[c.id] ?? [];
-          const ready =
-            c.id === "ctwip" ? false : needFor(c.id).every((s) => seen.includes(s.id));
+          const ready = needFor(c.id).every((s) => seen.includes(s.id));
           const active = curve === c.id;
           return (
             <button
@@ -181,23 +176,11 @@ export function IntroPanel({ onOpenLab }: Props) {
         />
       )}
       {curve === "ctwip" && (
-        <div className="rounded-[var(--radius-xl)] border border-dashed border-border bg-surface p-5">
-          <p className="text-xs font-medium uppercase tracking-wider text-faint">Grafik CT vs WIP</p>
-          <h3 className="mt-1 text-lg font-semibold tracking-tight">
-            Bagaimana CT berubah saat WIP naik — dan di mana W0 / Wopt?
-          </h3>
-          <p className="mt-3 text-sm text-muted leading-relaxed">
-            Modul chart (kurva ketiga PPI) akan ditambahkan di langkah berikutnya. Data dan skenario sudah
-            disiapkan dengan sistem demo yang sama (W0={DEMO_SYSTEM.W0}, Wopt≈{DEMO_SYSTEM.Wopt}).
-          </p>
-          <button
-            type="button"
-            onClick={() => setCurve("inventory")}
-            className="mt-4 min-h-11 rounded-[var(--radius-sm)] border border-border bg-elevated px-4 text-sm font-medium text-fg hover:bg-subtle"
-          >
-            Lanjut ke Inventory & Fill Rate →
-          </button>
-        </div>
+        <CtwipLesson
+          seen={done.ctwip}
+          onSee={(id) => mark("ctwip", id)}
+          onNext={() => setCurve("inventory")}
+        />
       )}
       {curve === "inventory" && (
         <InventoryLesson
@@ -214,7 +197,7 @@ export function IntroPanel({ onOpenLab }: Props) {
         <BridgeCard onOpenLab={onOpenLab} />
       ) : (
         <p className="text-xs text-faint">
-          Setelah skenario Little · Kingman · Inventory · Control dijelajahi, jembatan ke kasus muncul di sini.
+          Setelah semua skenario dijelajahi (termasuk CT vs WIP + Control), jembatan ke kasus muncul di sini.
         </p>
       )}
     </div>

@@ -75,16 +75,18 @@ export function KingmanLesson({
           <p>CT = PT + MT + ST + BT + QT</p>
           <p className="text-[11px] text-muted mt-1 leading-relaxed">
             PT proses · MT pindah · ST setup · BT batch ·{" "}
-            <strong className="text-fg">QT antrian</strong> (yang meledak saat ū tinggi)
+            <strong className="text-fg">QT antrian</strong>
           </p>
-          <p className="mt-2 text-xs text-muted">Kingman memodelkan QT:</p>
-          <p>CT ≈ te × (1 + ((ca²+ce²)/2) × (u/(1−u)))</p>
+          <p className="mt-2 text-xs text-muted">Kingman memperkirakan QT (bukan seluruh CT):</p>
+          <p>QT ≈ ((ca²+ce²)/2) × (u/(1−u)) × te</p>
+          <p className="mt-2 text-xs text-muted">Sehingga cycle time total:</p>
+          <p>CT ≈ te + QT = te × (1 + ((ca²+ce²)/2) × (u/(1−u)))</p>
           <p className="text-xs text-muted mt-1">
             Base ajar ū=0,80 · V=0,5 pada bottleneck rb=2 (sistem demo yang sama).
           </p>
         </>
       }
-      reverse="Kalau lawannya: u turun atau V turun — CT/te mendekati 1."
+      reverse="Kalau lawannya: u turun atau V turun — QT mengecil, CT/te mendekati 1."
       onNext={onNext}
       nextLabel="Lanjut ke Inventory"
     >

@@ -164,12 +164,8 @@ function LittleLesson({
   const line = useMemo(() => littleLine(point.th), [point.th]);
   const baseLine = useMemo(() => littleLine(LITTLE_BASE.th), []);
   const ready = formulaReady("little", seen);
-  const showBase =
-    !!sc &&
-    (point.wip !== LITTLE_BASE.wip ||
-      point.ct !== LITTLE_BASE.ct ||
-      point.th !== LITTLE_BASE.th ||
-      broken);
+  const showBaseDot =
+    !!sc && !broken && (point.wip !== LITTLE_BASE.wip || point.th !== LITTLE_BASE.th || point.ct !== LITTLE_BASE.ct);
 
   return (
     <LessonShell
@@ -233,19 +229,20 @@ function LittleLesson({
               dot={false}
               isAnimationActive={false}
             />
-            {/* Titik awal — tetap terlihat (hollow) agar perbandingan jelas */}
-            {showBase ? (
+            {/* Titik saat ini (solid) */}
+            <ReferenceDot x={point.wip} y={point.ct} r={7} fill={POINT} stroke="#fff" strokeWidth={2} />
+            {/* Titik awal (hollow) — tetap terlihat untuk perbandingan */}
+            {showBaseDot ? (
               <ReferenceDot
                 x={LITTLE_BASE.wip}
                 y={LITTLE_BASE.ct}
-                r={5}
+                r={6}
                 fill="#fff"
                 stroke={POINT}
-                strokeWidth={1.5}
+                strokeWidth={1.75}
               />
             ) : null}
-            {/* Titik baru / aktif */}
-            <ReferenceDot x={point.wip} y={point.ct} r={7} fill={POINT} stroke="#fff" strokeWidth={2} />
+            {/* Percobaan invalid (dashed) */}
             {broken ? (
               <ReferenceDot
                 x={LITTLE_ATTEMPT.wip}
@@ -260,12 +257,6 @@ function LittleLesson({
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-
-      {showBase ? (
-        <p className="text-[11px] text-faint">
-          ○ titik awal · ● titik baru
-        </p>
-      ) : null}
 
       <ScenarioButtons
         items={LITTLE_SCENARIOS.map((s) => ({ id: s.id, label: s.label }))}
@@ -381,17 +372,15 @@ function KingmanLesson({
                 isAnimationActive={false}
               />
             ))}
+            {/* Titik awal (hollow) */}
             {sc ? (
-              <ReferenceDot x={from.u} y={from.ratio} r={5} fill="#fff" stroke={POINT} strokeWidth={1.5} />
+              <ReferenceDot x={from.u} y={from.ratio} r={6} fill="#fff" stroke={POINT} strokeWidth={1.75} />
             ) : null}
+            {/* Titik baru (solid) */}
             <ReferenceDot x={to.u} y={to.ratio} r={7} fill={POINT} stroke="#fff" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </div>
-
-      {sc ? (
-        <p className="text-[11px] text-faint">○ titik awal · ● titik baru</p>
-      ) : null}
 
       <ScenarioButtons
         items={KINGMAN_SCENARIOS.map((s) => ({ id: s.id, label: s.label }))}
@@ -523,9 +512,11 @@ function InventoryLesson({
                 ))
               : (
                 <>
+                  {/* Titik awal (hollow) */}
                   {sc ? (
-                    <ReferenceDot x={basePt.inv} y={basePt.fr} r={5} fill="#fff" stroke={POINT} strokeWidth={1.5} />
+                    <ReferenceDot x={basePt.inv} y={basePt.fr} r={6} fill="#fff" stroke={POINT} strokeWidth={1.75} />
                   ) : null}
+                  {/* Titik baru (solid) */}
                   <ReferenceDot x={pt.inv} y={pt.fr} r={7} fill={POINT} stroke="#fff" strokeWidth={2} />
                   {sameStock ? (
                     <ReferenceLine x={pt.inv} stroke="#a3a3a3" strokeDasharray="4 3" />
@@ -535,12 +526,6 @@ function InventoryLesson({
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-
-      {sc ? (
-        <p className="text-[11px] text-faint">
-          {sc.id === "I1" ? "○ 1× · ○ 2× · ● 3×" : "○ titik awal · ● titik baru"}
-        </p>
-      ) : null}
 
       {sc?.id === "I1" ? (
         <div className="grid grid-cols-3 gap-2 text-center font-mono text-xs">

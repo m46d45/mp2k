@@ -100,16 +100,7 @@ export function IntroPanel({ onOpenLab }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="max-w-2xl">
-        <p className="text-xs font-medium uppercase tracking-wider text-faint">
-          Putaran 1 · Pengenalan
-        </p>
-        <h2 className="mt-1 text-xl font-semibold tracking-tight">Tiga kurva</h2>
-        <p className="mt-2 text-sm text-muted leading-relaxed">
-          Rumus ditampilkan dari awal agar kaitan if–then dengan persamaan jelas.
-          Ramalkan arah sebelum menekan tombol. Belum ada denah — itu putaran berikutnya.
-        </p>
-      </div>
+      <h2 className="text-xl font-semibold tracking-tight">Tiga kurva</h2>
 
       <nav
         aria-label="Tiga kurva"
@@ -136,7 +127,7 @@ export function IntroPanel({ onOpenLab }: Props) {
               >
                 {ready ? <Check className="size-3.5" strokeWidth={2.25} /> : c.n}
               </span>
-              <span className="text-sm font-medium">{c.label}</span>
+              <span className="text-sm font-medium text-center leading-snug">{c.label}</span>
             </button>
           );
         })}

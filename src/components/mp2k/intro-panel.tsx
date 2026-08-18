@@ -192,7 +192,7 @@ function LittleLesson({
 
   return (
     <LessonShell
-      kicker="Little"
+      kicker="Little's Law"
       question={INTRO_CURVES[0].question}
       ready={ready}
       formula={
@@ -205,6 +205,27 @@ function LittleLesson({
       onNext={onNext}
       nextLabel="Lanjut ke Kingman"
     >
+      {/* If–Then first, after formula */}
+      <ScenarioButtons
+        items={LITTLE_SCENARIOS.map((s) => ({ id: s.id, label: s.label }))}
+        active={active}
+        seen={seen}
+        onPick={(id) => {
+          setActive(id);
+          onSee(id);
+        }}
+      />
+      {sc ? (
+        <Say valid={sc.valid}>
+          {sc.say}{" "}
+          <span className="font-mono text-fg">
+            {broken ? `${formatTriple(LITTLE_BASE)}  ≠  WIP ${formatNum(LITTLE_ATTEMPT.wip)}` : formatTriple(point)}
+          </span>
+        </Say>
+      ) : (
+        <p className="text-sm text-muted">Titik awal: {formatTriple(LITTLE_BASE)}. Pilih satu if–then.</p>
+      )}
+
       <IdentityRow
         items={[
           ["WIP", point.wip],
@@ -274,26 +295,6 @@ function LittleLesson({
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-
-      <ScenarioButtons
-        items={LITTLE_SCENARIOS.map((s) => ({ id: s.id, label: s.label }))}
-        active={active}
-        seen={seen}
-        onPick={(id) => {
-          setActive(id);
-          onSee(id);
-        }}
-      />
-      {sc ? (
-        <Say valid={sc.valid}>
-          {sc.say}{" "}
-          <span className="font-mono text-fg">
-            {broken ? `${formatTriple(LITTLE_BASE)}  ≠  WIP ${formatNum(LITTLE_ATTEMPT.wip)}` : formatTriple(point)}
-          </span>
-        </Say>
-      ) : (
-        <p className="text-sm text-muted">Titik awal: {formatTriple(LITTLE_BASE)}. Pilih satu if–then.</p>
-      )}
     </LessonShell>
   );
 }
@@ -335,7 +336,7 @@ function KingmanLesson({
 
   return (
     <LessonShell
-      kicker="Kingman"
+      kicker="Kingman's Equation"
       question={INTRO_CURVES[1].question}
       ready={ready}
       formula={
@@ -397,6 +398,28 @@ function KingmanLesson({
       onNext={onNext}
       nextLabel="Lanjut ke Inventory / FR"
     >
+      <ScenarioButtons
+        items={KINGMAN_SCENARIOS.map((s) => ({ id: s.id, label: s.label }))}
+        active={active}
+        seen={seen}
+        onPick={(id) => {
+          setActive(id);
+          onSee(id);
+        }}
+      />
+      {sc ? (
+        <Say valid>
+          {sc.say}{" "}
+          <span className="font-mono text-fg">
+            {sc.id === "K1" || sc.id === "K3"
+              ? `${formatKingman(start)}  →  ${formatKingman(end)}`
+              : formatKingman(end)}
+          </span>
+        </Say>
+      ) : (
+        <p className="text-sm text-muted">Titik awal: {formatKingman(KINGMAN_BASE)}. Pilih satu if–then.</p>
+      )}
+
       <IdentityRow
         items={[
           ["ū", end.u, true],
@@ -445,28 +468,6 @@ function KingmanLesson({
           </LineChart>
         </ResponsiveContainer>
       </div>
-
-      <ScenarioButtons
-        items={KINGMAN_SCENARIOS.map((s) => ({ id: s.id, label: s.label }))}
-        active={active}
-        seen={seen}
-        onPick={(id) => {
-          setActive(id);
-          onSee(id);
-        }}
-      />
-      {sc ? (
-        <Say valid>
-          {sc.say}{" "}
-          <span className="font-mono text-fg">
-            {sc.id === "K1" || sc.id === "K3"
-              ? `${formatKingman(start)}  →  ${formatKingman(end)}`
-              : formatKingman(end)}
-          </span>
-        </Say>
-      ) : (
-        <p className="text-sm text-muted">Titik awal: {formatKingman(KINGMAN_BASE)}. Pilih satu if–then.</p>
-      )}
     </LessonShell>
   );
 }
@@ -503,7 +504,7 @@ function InventoryLesson({
 
   return (
     <LessonShell
-      kicker="Inventory / FR"
+      kicker="Inventory & Fill Rate"
       question={INTRO_CURVES[2].question}
       ready={ready}
       formula={
@@ -532,6 +533,29 @@ function InventoryLesson({
       }
       reverse="Kalau lawannya: buffer turun — FR jatuh, terutama di ekor kiri."
     >
+      <ScenarioButtons
+        items={INV_SCENARIOS.map((s) => ({ id: s.id, label: s.label }))}
+        active={active}
+        seen={seen}
+        onPick={(id) => {
+          setActive(id);
+          onSee(id);
+        }}
+      />
+      {sc ? (
+        <Say valid>
+          {sc.say}{" "}
+          <span className="font-mono text-fg">
+            FR {formatPct(pt.fr / 100)}
+            {sameStock ? ` · stok S tetap ≈ ${formatNum(pt.baseStock)}` : ""}
+          </span>
+        </Say>
+      ) : (
+        <p className="text-sm text-muted">
+          Titik acuan: FR {formatPct(basePt.fr / 100)} · Ī ≈ {formatNum(basePt.inv)}. Pilih satu if–then.
+        </p>
+      )}
+
       <IdentityRow
         items={[
           ["Ī", pt.inv],
@@ -627,29 +651,6 @@ function InventoryLesson({
           ))}
         </div>
       ) : null}
-
-      <ScenarioButtons
-        items={INV_SCENARIOS.map((s) => ({ id: s.id, label: s.label }))}
-        active={active}
-        seen={seen}
-        onPick={(id) => {
-          setActive(id);
-          onSee(id);
-        }}
-      />
-      {sc ? (
-        <Say valid>
-          {sc.say}{" "}
-          <span className="font-mono text-fg">
-            FR {formatPct(pt.fr / 100)}
-            {sameStock ? ` · stok S tetap ≈ ${formatNum(pt.baseStock)}` : ""}
-          </span>
-        </Say>
-      ) : (
-        <p className="text-sm text-muted">
-          Titik acuan: FR {formatPct(basePt.fr / 100)} · Ī ≈ {formatNum(basePt.inv)}. Pilih satu if–then.
-        </p>
-      )}
     </LessonShell>
   );
 }
@@ -675,26 +676,31 @@ function LessonShell({
 }) {
   return (
     <div className="space-y-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
+      {/* Title + formula first */}
       <div>
         <p className="text-xs font-medium uppercase tracking-wider text-faint">{kicker}</p>
         <h3 className="mt-1 text-lg font-semibold tracking-tight">{question}</h3>
       </div>
-      {children}
+
       <div className="space-y-2 rounded-[var(--radius-sm)] border border-border bg-elevated px-4 py-3">
         <p className="text-[11px] font-medium uppercase tracking-wide text-faint">Rumus</p>
         <div className="font-mono text-sm text-fg leading-relaxed">{formula}</div>
         <p className="text-sm text-muted">{reverse}</p>
-        {ready && onNext && nextLabel ? (
-          <button
-            type="button"
-            onClick={onNext}
-            className="mt-1 inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] bg-primary px-4 text-sm font-medium text-primary-fg"
-          >
-            {nextLabel}
-            <ArrowRight className="size-4" />
-          </button>
-        ) : null}
       </div>
+
+      {/* If–Then, chart, numbers */}
+      {children}
+
+      {ready && onNext && nextLabel ? (
+        <button
+          type="button"
+          onClick={onNext}
+          className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] bg-primary px-4 text-sm font-medium text-primary-fg"
+        >
+          {nextLabel}
+          <ArrowRight className="size-4" />
+        </button>
+      ) : null}
     </div>
   );
 }

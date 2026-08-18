@@ -70,41 +70,47 @@ function Mp2kApp() {
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="flex min-w-0 items-start gap-3">
               <Mp2kLogo />
-              <div className="min-w-0 border-l border-border pl-3">
+              <div className="min-w-0">
                 <h1 className="text-lg font-semibold tracking-tight sm:text-xl">
-                  Multi-Moda Produksi Proyek Konstruksi
+                  MP2K — Multi-Moda Produksi Proyek Konstruksi
                 </h1>
-                <p className="mt-1 max-w-xl text-sm text-muted leading-relaxed">
-                  Laboratorium Virtual Pengelolaan Produksi di Proyek Konstruksi dan Sains Operasi.
+                <p className="mt-0.5 text-sm text-muted">
+                  Lab interaktif: tiga kurva + DES + Control/CONWIP
                 </p>
               </div>
             </div>
-            <div className="flex shrink-0 flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
-                onClick={() => go("stats")}
+                onClick={() => {
+                  setStep("manual");
+                  goTop();
+                }}
                 className={cn(
-                  "inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-sm)] border px-3 text-sm font-medium",
-                  step === "stats"
-                    ? "border-fg bg-primary text-primary-fg"
-                    : "border-border bg-surface text-fg hover:bg-elevated",
+                  "inline-flex min-h-10 items-center gap-1.5 rounded-[var(--radius-sm)] border px-3 text-sm font-medium",
+                  step === "manual"
+                    ? "border-fg/30 bg-elevated text-fg"
+                    : "border-border bg-surface text-muted hover:text-fg",
                 )}
               >
-                <BarChart3 className="size-3.5" strokeWidth={1.75} />
-                Statistik
+                <ScrollText className="size-3.5" />
+                Manual
               </button>
               <button
                 type="button"
-                onClick={() => go("manual")}
+                onClick={() => {
+                  setStep("stats");
+                  goTop();
+                }}
                 className={cn(
-                  "inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-sm)] border px-3 text-sm font-medium",
-                  step === "manual"
-                    ? "border-fg bg-primary text-primary-fg"
-                    : "border-border bg-surface text-fg hover:bg-elevated",
+                  "inline-flex min-h-10 items-center gap-1.5 rounded-[var(--radius-sm)] border px-3 text-sm font-medium",
+                  step === "stats"
+                    ? "border-fg/30 bg-elevated text-fg"
+                    : "border-border bg-surface text-muted hover:text-fg",
                 )}
               >
-                <ScrollText className="size-3.5" strokeWidth={1.75} />
-                Manual
+                <BarChart3 className="size-3.5" />
+                Stats
               </button>
             </div>
           </div>
@@ -115,8 +121,8 @@ function Mp2kApp() {
           >
             {(
               [
-                { id: "intro" as const, label: "Pengenalan Tiga Kurva" },
-                { id: "lab" as const, label: "Penerapan di kasus Gedung" },
+                { id: "intro" as const, label: "Pengenalan" },
+                { id: "lab" as const, label: "Penerapan" },
               ] as const
             ).map((d) => {
               const active = !onUtility && door === d.id;
@@ -151,7 +157,7 @@ function Mp2kApp() {
                     type="button"
                     onClick={() => go(id)}
                     className={cn(
-                      "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-[calc(var(--radius-md)-2px)] px-1 py-2 text-center transition-colors sm:flex-row sm:gap-2 sm:px-3",
+                      "flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-[calc(var(--radius-md)-2px)] px-1 py-2 sm:flex-row sm:gap-2 sm:px-3",
                       active
                         ? "bg-primary text-primary-fg"
                         : "text-muted hover:bg-subtle/80 hover:text-fg",
@@ -165,14 +171,11 @@ function Mp2kApp() {
                     >
                       {n}
                     </span>
-                    <span className="min-w-0">
-                      <span className="flex items-center justify-center gap-1.5 text-sm font-medium">
-                        <Icon className="hidden size-3.5 sm:inline" strokeWidth={1.75} />
-                        {label}
-                      </span>
+                    <span className="flex flex-col items-center sm:items-start">
+                      <span className="text-xs font-medium sm:text-sm">{label}</span>
                       <span
                         className={cn(
-                          "hidden text-[11px] sm:block",
+                          "hidden text-[10px] sm:inline",
                           active ? "text-primary-fg/70" : "text-faint",
                         )}
                       >
@@ -187,128 +190,66 @@ function Mp2kApp() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
-        {step === "stats" && <StatsPanel />}
-        {step === "manual" && (
-          <ManualPanel onBack={() => (door === "intro" ? openIntro() : openLab("case"))} />
-        )}
-        {step !== "stats" && step !== "manual" && door === "intro" && (
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+        {step === "manual" ? (
+          <ManualPanel />
+        ) : step === "stats" ? (
+          <StatsPanel />
+        ) : door === "intro" ? (
           <IntroPanel onOpenLab={() => openLab("case")} />
-        )}
-        {step !== "stats" && step !== "manual" && door === "lab" && step === "case" && (
+        ) : step === "case" ? (
           <CasePanel onNext={() => go("sim")} />
-        )}
-        {step !== "stats" && step !== "manual" && door === "lab" && step === "sim" && (
-          <SimStep onNext={() => go("analytics")} />
-        )}
-        {step !== "stats" && step !== "manual" && door === "lab" && step === "analytics" && (
-          <AnalyticsStep onOpenIntro={openIntro} />
+        ) : step === "sim" ? (
+          <div className="space-y-6">
+            <div className="max-w-3xl">
+              <p className="text-xs font-medium uppercase tracking-wider text-faint">
+                Langkah 2 · Simulasi
+              </p>
+              <h2 className="mt-1 text-xl font-semibold tracking-tight">DES multi-moda</h2>
+              <p className="mt-2 text-sm text-muted leading-relaxed">
+                Atur Capacity · Variability · Inventory, jalankan, lalu bandingkan titik operasi ke
+                kurva di Analitik.
+              </p>
+            </div>
+            <DesLeversPanel />
+            <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+              <BuildingView live />
+              <div className="space-y-4">
+                <SimControls />
+                <MetricsPanel />
+                <StatsStrip />
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => go("analytics")}
+                className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] bg-primary px-4 text-sm font-medium text-primary-fg"
+              >
+                Lanjut ke Analitik
+                <ArrowRight className="size-4" />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <div className="max-w-3xl">
+              <p className="text-xs font-medium uppercase tracking-wider text-faint">
+                Langkah 3 · Analitik
+              </p>
+              <h2 className="mt-1 text-xl font-semibold tracking-tight">
+                Kurva teori + titik DES
+              </h2>
+              <p className="mt-2 text-sm text-muted leading-relaxed">
+                Little · Kingman · Inventory/FR · Kurva gabungan & CONWIP — titik oranye dari
+                simulasi.
+              </p>
+            </div>
+            <OpsPanel />
+            <GlossaryPanel />
+          </div>
         )}
       </main>
-
-      <footer className="border-t border-border py-6">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 text-center sm:px-6">
-          <Mp2kMarkFooter />
-          <p className="text-xs text-faint">
-            MP2K · Capacity · Variability · Inventory · Little · Kingman · FR · CONWIP
-          </p>
-          <StatsStrip onOpen={() => go("stats")} />
-          <button
-            type="button"
-            onClick={() => go("manual")}
-            className="text-xs font-medium text-muted underline underline-offset-2 hover:text-fg"
-          >
-            Manual
-          </button>
-        </div>
-      </footer>
-    </div>
-  );
-}
-
-function Mp2kMarkFooter() {
-  return (
-    <div className="flex items-center gap-2 text-muted">
-      <Mp2kLogo showWordmark={false} className="opacity-90" />
-      <span className="font-mono text-xs font-semibold tracking-wide text-fg">MP2K</span>
-    </div>
-  );
-}
-
-function SimStep({ onNext }: { onNext: () => void }) {
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="max-w-2xl">
-          <p className="text-xs font-medium uppercase tracking-wider text-faint">Langkah 2 · Simulasi DES</p>
-          <h2 className="mt-1 text-xl font-semibold tracking-tight">Simulasi DES · tiga tuas produksi</h2>
-          <p className="mt-2 text-sm text-muted leading-relaxed">
-            Product design dan Process design sudah ditetapkan. Ubah{" "}
-            <strong className="text-fg">Capacity</strong>,{" "}
-            <strong className="text-fg">Variability</strong>, dan{" "}
-            <strong className="text-fg">Inventory</strong> — mesin event menggerakkan denah dan
-            menghitung TH, CT, WIP, utilisasi, serta fill rate.
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={onNext}
-          className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] border border-border bg-surface px-4 text-sm font-medium text-fg hover:bg-elevated"
-        >
-          Lanjut ke Analitik
-          <ArrowRight className="size-4" />
-        </button>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="space-y-4">
-          <BuildingView />
-          <DesLeversPanel />
-          <GlossaryPanel />
-        </section>
-        <section className="space-y-4">
-          <MetricsPanel />
-          <div className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
-            <h2 className="mb-3 text-sm font-semibold tracking-tight">Kendali DES</h2>
-            <SimControls />
-          </div>
-          <button
-            type="button"
-            onClick={onNext}
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-primary px-4 text-sm font-medium text-primary-fg"
-          >
-            Bandingkan ke kurva Analitik
-            <ArrowRight className="size-4" />
-          </button>
-        </section>
-      </div>
-    </div>
-  );
-}
-
-function AnalyticsStep({ onOpenIntro }: { onOpenIntro: () => void }) {
-  return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="max-w-2xl">
-          <p className="text-xs font-medium uppercase tracking-wider text-faint">Langkah 3 · Analitik</p>
-          <h2 className="mt-1 text-xl font-semibold tracking-tight">Kurva sains operasi + CONWIP</h2>
-          <p className="mt-2 text-sm text-muted leading-relaxed">
-            Setelah Run DES, isi parameter dari hasil simulasi lalu hitung. Empat tampilan: Little,
-            Kingman, Inventory/FR, dan <strong className="text-fg">Kurva gabungan &amp; CONWIP</strong>
-            (WIP–TH–CT dengan batas CONWIP dari run).
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={onOpenIntro}
-          className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] border border-border bg-surface px-4 text-sm font-medium text-fg hover:bg-elevated"
-        >
-          Kembali ke pengenalan
-        </button>
-      </div>
-      <GlossaryPanel />
-      <OpsPanel />
     </div>
   );
 }

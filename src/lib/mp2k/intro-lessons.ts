@@ -8,7 +8,7 @@ import {
   buildWipThCtChart,
 } from "@/lib/mp2k/ops-science";
 
-export type IntroCurve = "little" | "kingman" | "inventory" | "control";
+export type IntroCurve = "little" | "kingman" | "ctwip" | "inventory" | "control";
 
 export const INTRO_CURVES: {
   id: IntroCurve;
@@ -29,20 +29,26 @@ export const INTRO_CURVES: {
     question: "Mengapa CT meledak dekat kapasitas, dan mengapa V memperparah?",
   },
   {
-    id: "inventory",
+    id: "ctwip",
     n: "3",
+    label: "Grafik CT vs WIP",
+    question: "Bagaimana CT berubah saat WIP naik — dan di mana W0 / Wopt?",
+  },
+  {
+    id: "inventory",
+    n: "4",
     label: "Grafik Inventory & Fill Rate",
     question: "Berapa stok supaya tidak kosong — dan kapan stok tambahan sia-sia?",
   },
   {
     id: "control",
-    n: "4",
+    n: "5",
     label: "Control & CONWIP",
     question: "Berapa WIP yang boleh hidup di sistem — dan apa akibatnya pada TH dan CT?",
   },
 ];
 
-/** Satu sistem demo bersama di empat tab — angka harus konsisten. */
+/** Satu sistem demo bersama di semua tab — angka harus konsisten. */
 export const DEMO_SYSTEM = {
   te: 1,
   m: 2,
@@ -157,6 +163,65 @@ export function kingmanFrom(p: KingmanPoint): { u: number; v: number; ratio: num
 }
 
 export { KINGMAN_V_LEVELS, KINGMAN_Y_MAX };
+
+/* ── CT vs WIP (PPI curve 3) ──
+   X = WIP, Y = CT. Best-case: CT=T0 sampai W0, lalu CT=WIP/rb.
+   +var: CT lebih tinggi (dari buildWipThCtChart). Angka = DEMO_SYSTEM.
+*/
+
+export type CtwipApply = { wip: number };
+
+/** Titik acuan di W0 (critical WIP) — CT best = T0. */
+export const CTWIP_BASE: CtwipApply = { wip: DEMO_SYSTEM.W0 };
+
+export const CTWIP_SCENARIOS: IntroScenario<CtwipApply>[] = [
+  {
+    id: "W1",
+    label: "WIP di bawah W₀",
+    say: "Di bawah critical WIP: CT dekat T0, tetapi TH belum penuh — sistem masih lapar.",
+    valid: true,
+    apply: { wip: 4 },
+  },
+  {
+    id: "W2",
+    label: "WIP ≈ Wopt",
+    say: "Dekat Wopt: zona praktis dengan variabilitas. CT terkendali, TH mendekati rb.",
+    valid: true,
+    apply: { wip: DEMO_SYSTEM.Wopt },
+  },
+  {
+    id: "W3",
+    label: "WIP jauh di atas W₀",
+    say: "WIP berlebih: CT naik tajam (best ≈ WIP/rb; +var lebih buruk). TH hampir tidak naik.",
+    valid: true,
+    apply: { wip: 28 },
+  },
+];
+
+/** Kurva CT vs WIP dari sistem demo yang sama (best + var). */
+export function ctwipChart() {
+  return buildWipThCtChart({
+    te: DEMO_SYSTEM.te,
+    m: DEMO_SYSTEM.m,
+    stations: DEMO_SYSTEM.stations,
+    thDemand: DEMO_SYSTEM.rb * 0.95,
+    ca: DEMO_SYSTEM.ca,
+    ce: DEMO_SYSTEM.ce,
+    conwip: DEMO_SYSTEM.Wopt,
+  });
+}
+
+/** CT best-case di WIP tertentu: T0 jika WIP≤W0, else WIP/rb. */
+export function ctwipBestAt(wip: number): number {
+  const { T0, W0, rb } = DEMO_SYSTEM;
+  if (wip <= 1e-12) return T0;
+  if (wip <= W0) return T0;
+  return wip / rb;
+}
+
+export function formatCtwip(wip: number, ct: number): string {
+  return `WIP=${formatNum(wip)} · CT≈${formatNum(ct)} · W0=${formatNum(DEMO_SYSTEM.W0)} · Wopt≈${formatNum(DEMO_SYSTEM.Wopt)}`;
+}
 
 /** demandRate = TH Little = 2; leadTime terkait T0/CT sistem demo. */
 export const INV_BASE = { demandRate: 2, leadTime: 4, demandCv: 0.35, z: 1 };

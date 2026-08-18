@@ -5,6 +5,12 @@ import {
   KINGMAN_SCENARIOS,
   INV_SCENARIOS,
   CONTROL_SCENARIOS,
+  LITTLE_BASE,
+  KINGMAN_BASE,
+  DEMO_SYSTEM,
+  DEMO_COLORS,
+  formatNum,
+  formatPct,
   type IntroCurve,
 } from "@/lib/mp2k/intro-lessons";
 import { ControlLesson } from "@/components/mp2k/control-lesson";
@@ -44,9 +50,10 @@ export function IntroPanel({ onOpenLab }: Props) {
       <div className="max-w-3xl space-y-3">
         <h2 className="text-xl font-semibold tracking-tight">Pengenalan</h2>
         <p className="text-sm text-muted leading-relaxed">
-          Empat modul: tiga kurva aliran (Little, Kingman, Inventory/FR) dan{" "}
-          <strong className="text-fg">Control & CONWIP</strong> — memilih batas WIP dari kurva operating.
+          Empat modul memakai <strong className="text-fg">satu sistem demo yang sama</strong>.
+          Angka dan warna oranye mengikuti Anda dari Little → Kingman → Inventory → Control.
         </p>
+        <SystemChip />
       </div>
 
       <nav
@@ -88,6 +95,7 @@ export function IntroPanel({ onOpenLab }: Props) {
             <p className="text-xs font-medium uppercase tracking-wider text-faint">{meta.label}</p>
             <h3 className="mt-1 text-lg font-semibold tracking-tight">{meta.question}</h3>
           </div>
+          <BridgeNote curve={curve} />
           <div className="grid gap-2 sm:grid-cols-3">
             {scenarios.map((s) => {
               const on = lastId === s.id;
@@ -113,7 +121,7 @@ export function IntroPanel({ onOpenLab }: Props) {
               {lastSay}
             </p>
           ) : (
-            <p className="text-sm text-muted">Pilih satu if-then. Grafik interaktif penuh untuk tab ini menyusul.</p>
+            <p className="text-sm text-muted">Pilih satu if-then. Angka oranye di chip sistem sama di semua tab.</p>
           )}
           {needFor(curve).every((s) => done[curve].includes(s.id)) ? (
             <button
@@ -137,8 +145,8 @@ export function IntroPanel({ onOpenLab }: Props) {
           <p className="text-xs font-medium uppercase tracking-wider text-faint">Menuju kasus Gedung</p>
           <h3 className="mt-1 text-lg font-semibold tracking-tight">Kurva yang sama, objek berganti</h3>
           <p className="mt-2 text-sm text-muted leading-relaxed">
-            Berikutnya: kasus kerangka beton, DES, dan marker oranye di Analitik. CONWIP dari modul Control dipakai
-            sebagai batas WIP di simulasi.
+            Angka demo (W0=8, TH=2, Wopt≈14) muncul lagi sebagai marker oranye di Analitik setelah DES.
+            CONWIP dari tab Control menjadi batas WIP di simulasi.
           </p>
           <button
             type="button"
@@ -154,4 +162,59 @@ export function IntroPanel({ onOpenLab }: Props) {
       )}
     </div>
   );
+}
+
+function SystemChip() {
+  return (
+    <div
+      className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[var(--radius-sm)] border px-3 py-2 text-xs font-mono"
+      style={{
+        borderColor: DEMO_COLORS.operating,
+        background: "color-mix(in srgb, " + DEMO_COLORS.operating + " 8%, transparent)",
+      }}
+    >
+      <span className="inline-flex items-center gap-1.5 font-sans font-medium" style={{ color: DEMO_COLORS.operating }}>
+        <span className="inline-block size-2.5 rounded-full" style={{ background: DEMO_COLORS.operating }} />
+        Sistem demo
+      </span>
+      <span className="text-muted">T0={DEMO_SYSTEM.T0}</span>
+      <span className="text-muted">rb={DEMO_SYSTEM.rb}</span>
+      <span className="text-fg font-semibold">W0={DEMO_SYSTEM.W0}</span>
+      <span className="text-muted">V={formatNum(DEMO_SYSTEM.V)}</span>
+      <span className="text-fg font-semibold">Wopt≈{DEMO_SYSTEM.Wopt}</span>
+      <span className="text-muted">
+        Little: WIP={LITTLE_BASE.wip}·TH={LITTLE_BASE.th}·CT={LITTLE_BASE.ct}
+      </span>
+    </div>
+  );
+}
+
+function BridgeNote({ curve }: { curve: IntroCurve }) {
+  if (curve === "little") {
+    return (
+      <p className="text-xs text-muted leading-relaxed rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2">
+        Titik acuan <span className="font-mono text-fg">WIP={LITTLE_BASE.wip}, TH={LITTLE_BASE.th}, CT={LITTLE_BASE.ct}</span> =
+        best-case di <strong className="text-fg">W0={DEMO_SYSTEM.W0}</strong> (lihat Control).
+        Identitas Little mengikat ketiga angka di sistem yang sama.
+      </p>
+    );
+  }
+  if (curve === "kingman") {
+    return (
+      <p className="text-xs text-muted leading-relaxed rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2">
+        Bottleneck sistem yang sama: rb={DEMO_SYSTEM.rb}. Base ajar{" "}
+        <span className="font-mono text-fg">ū={formatPct(KINGMAN_BASE.u)}, V={formatNum(KINGMAN_BASE.v)}</span> —
+        capacity buffer 20% agar CT tidak meledak. Di W0 tanpa V, ū→100% tidak stabil.
+      </p>
+    );
+  }
+  if (curve === "inventory") {
+    return (
+      <p className="text-xs text-muted leading-relaxed rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2">
+        Demand rate = TH Little = <span className="font-mono text-fg">2</span>, lead time acuan terkait CT/T0.
+        Stock buffer saudara inventory WIP di Little dan CONWIP di Control.
+      </p>
+    );
+  }
+  return null;
 }

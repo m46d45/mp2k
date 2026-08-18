@@ -6,16 +6,18 @@ import {
   INV_SCENARIOS,
   CONTROL_SCENARIOS,
   LITTLE_BASE,
-  KINGMAN_BASE,
   DEMO_SYSTEM,
   DEMO_COLORS,
   formatNum,
-  formatPct,
   type IntroCurve,
 } from "@/lib/mp2k/intro-lessons";
+import { LittleLesson } from "@/components/mp2k/little-lesson";
+import { KingmanLesson } from "@/components/mp2k/kingman-lesson";
+import { InventoryLesson } from "@/components/mp2k/inventory-lesson";
 import { ControlLesson } from "@/components/mp2k/control-lesson";
+import { BridgeCard } from "@/components/mp2k/intro-shared";
 import { cn } from "@/lib/utils";
-import { ArrowRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
 
 type Props = { onOpenLab: () => void };
 
@@ -40,10 +42,6 @@ export function IntroPanel({ onOpenLab }: Props) {
   }
 
   const allReady = INTRO_CURVES.every((c) => needFor(c.id).every((s) => done[c.id].includes(s.id)));
-  const scenarios = needFor(curve);
-  const meta = INTRO_CURVES.find((c) => c.id === curve)!;
-  const lastId = done[curve][done[curve].length - 1];
-  const lastSay = scenarios.find((s) => s.id === lastId)?.say;
 
   return (
     <div className="space-y-6">
@@ -51,7 +49,7 @@ export function IntroPanel({ onOpenLab }: Props) {
         <h2 className="text-xl font-semibold tracking-tight">Pengenalan</h2>
         <p className="text-sm text-muted leading-relaxed">
           Empat modul memakai <strong className="text-fg">satu sistem demo yang sama</strong>.
-          Angka oranye mengikuti dari Little → Kingman → Inventory → Control.
+          Angka dan warna oranye mengikuti dari Little → Kingman → Inventory → Control.
         </p>
         <SystemChip />
       </div>
@@ -87,76 +85,37 @@ export function IntroPanel({ onOpenLab }: Props) {
         })}
       </nav>
 
-      {curve === "control" ? (
+      {curve === "little" && (
+        <LittleLesson
+          seen={done.little}
+          onSee={(id) => mark("little", id)}
+          onNext={() => setCurve("kingman")}
+        />
+      )}
+      {curve === "kingman" && (
+        <KingmanLesson
+          seen={done.kingman}
+          onSee={(id) => mark("kingman", id)}
+          onNext={() => setCurve("inventory")}
+        />
+      )}
+      {curve === "inventory" && (
+        <InventoryLesson
+          seen={done.inventory}
+          onSee={(id) => mark("inventory", id)}
+          onNext={() => setCurve("control")}
+        />
+      )}
+      {curve === "control" && (
         <ControlLesson seen={done.control} onSee={(id) => mark("control", id)} />
-      ) : (
-        <div className="space-y-4 rounded-[var(--radius-xl)] border border-border bg-surface p-5">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-faint">{meta.label}</p>
-            <h3 className="mt-1 text-lg font-semibold tracking-tight">{meta.question}</h3>
-          </div>
-          <BridgeNote curve={curve} />
-          <div className="grid gap-2 sm:grid-cols-3">
-            {scenarios.map((s) => {
-              const on = lastId === s.id;
-              const was = done[curve].includes(s.id);
-              return (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => mark(curve, s.id)}
-                  className={cn(
-                    "flex min-h-12 items-center justify-center rounded-[var(--radius-sm)] border px-3 text-center text-sm font-medium leading-snug",
-                    on ? "border-fg bg-primary text-primary-fg" : "border-border bg-elevated text-fg hover:bg-subtle",
-                  )}
-                >
-                  {was && !on ? <Check className="mr-1.5 size-3.5 shrink-0 text-muted" strokeWidth={2} /> : null}
-                  {s.label}
-                </button>
-              );
-            })}
-          </div>
-          {lastSay ? (
-            <p className="rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2.5 text-sm leading-relaxed text-fg">
-              {lastSay}
-            </p>
-          ) : (
-            <p className="text-sm text-muted">
-              Pilih satu if-then. Grafik interaktif penuh tab 1–3 sedang dipulihkan; tab Control sudah lengkap.
-            </p>
-          )}
-          {needFor(curve).every((s) => done[curve].includes(s.id)) ? (
-            <button
-              type="button"
-              onClick={() => {
-                const order: IntroCurve[] = ["little", "kingman", "inventory", "control"];
-                const i = order.indexOf(curve);
-                if (i >= 0 && i < order.length - 1) setCurve(order[i + 1]);
-              }}
-              className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] bg-primary px-4 text-sm font-medium text-primary-fg"
-            >
-              Lanjut
-              <ArrowRight className="size-4" />
-            </button>
-          ) : null}
-        </div>
       )}
 
       {allReady ? (
-        <div className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
-          <p className="text-xs font-medium uppercase tracking-wider text-faint">Menuju kasus Gedung</p>
-          <h3 className="mt-1 text-lg font-semibold tracking-tight">Kurva yang sama, objek berganti</h3>
-          <button
-            type="button"
-            onClick={onOpenLab}
-            className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] bg-primary px-4 text-sm font-medium text-primary-fg"
-          >
-            Lanjut ke kasus
-            <ArrowRight className="size-4" />
-          </button>
-        </div>
+        <BridgeCard onOpenLab={onOpenLab} />
       ) : (
-        <p className="text-xs text-faint">Jelajahi semua skenario di empat tab agar jembatan muncul.</p>
+        <p className="text-xs text-faint">
+          Setelah semua skenario dijelajahi (tiga kurva + Control), jembatan ke kasus muncul di sini.
+        </p>
       )}
     </div>
   );
@@ -171,7 +130,10 @@ function SystemChip() {
         background: "color-mix(in srgb, " + DEMO_COLORS.operating + " 8%, transparent)",
       }}
     >
-      <span className="inline-flex items-center gap-1.5 font-sans font-medium" style={{ color: DEMO_COLORS.operating }}>
+      <span
+        className="inline-flex items-center gap-1.5 font-sans font-medium"
+        style={{ color: DEMO_COLORS.operating }}
+      >
         <span className="inline-block size-2.5 rounded-full" style={{ background: DEMO_COLORS.operating }} />
         Sistem demo
       </span>
@@ -185,31 +147,4 @@ function SystemChip() {
       </span>
     </div>
   );
-}
-
-function BridgeNote({ curve }: { curve: IntroCurve }) {
-  if (curve === "little") {
-    return (
-      <p className="text-xs text-muted leading-relaxed rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2">
-        Titik acuan <span className="font-mono text-fg">WIP={LITTLE_BASE.wip}, TH={LITTLE_BASE.th}, CT={LITTLE_BASE.ct}</span> =
-        best-case di <strong className="text-fg">W0={DEMO_SYSTEM.W0}</strong>.
-      </p>
-    );
-  }
-  if (curve === "kingman") {
-    return (
-      <p className="text-xs text-muted leading-relaxed rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2">
-        Bottleneck rb={DEMO_SYSTEM.rb}. Base{" "}
-        <span className="font-mono text-fg">ū={formatPct(KINGMAN_BASE.u)}, V={formatNum(KINGMAN_BASE.v)}</span>.
-      </p>
-    );
-  }
-  if (curve === "inventory") {
-    return (
-      <p className="text-xs text-muted leading-relaxed rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2">
-        Demand rate = TH Little = <span className="font-mono text-fg">2</span>.
-      </p>
-    );
-  }
-  return null;
 }

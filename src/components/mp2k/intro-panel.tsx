@@ -374,30 +374,29 @@ function KingmanLesson({
             </div>
             <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
               <span className="font-semibold text-fg">ū/(1−ū)</span>
-              <span className="text-muted"> — pengganda utilisasi</span>
+              <span className="text-muted"> — pengganda utilisasi (meledak dekat 1)</span>
             </div>
           </div>
-          {/* Angka mudah untuk melihat lonjakan pengganda utilisasi */}
-          <div className="rounded border border-border/60 bg-surface px-3 py-2">
-            <p className="text-[10px] font-medium uppercase tracking-wide text-faint mb-1.5">
-              Nilai pengganda utilisasi ū/(1−ū)
+          <div className="rounded border border-border bg-surface px-3 py-2">
+            <p className="text-[11px] font-medium uppercase tracking-wide text-faint mb-1.5">
+              Pengganda utilisasi ū/(1−ū)
             </p>
             <div className="grid grid-cols-3 gap-2 text-center font-mono text-sm">
               <div>
                 <p className="text-faint text-xs">ū = 80%</p>
-                <p className="font-semibold text-fg">4</p>
+                <p className="font-semibold text-fg">4×</p>
               </div>
               <div>
                 <p className="text-faint text-xs">ū = 85%</p>
-                <p className="font-semibold text-fg">≈ 5,7</p>
+                <p className="font-semibold text-fg">≈5,7×</p>
               </div>
               <div>
                 <p className="text-faint text-xs">ū = 90%</p>
-                <p className="font-semibold text-fg">9</p>
+                <p className="font-semibold text-fg">9×</p>
               </div>
             </div>
-            <p className="mt-1.5 text-[11px] text-muted leading-snug">
-              Semakin tinggi V, lonjakan ini makin tajam di ketiga kurva (lihat grafik).
+            <p className="mt-2 text-xs text-muted leading-relaxed">
+              Lonjakan tajam. Kalau V juga tinggi, ketiga kurva di grafik di atas makin curam — CT meledak.
             </p>
           </div>
         </div>

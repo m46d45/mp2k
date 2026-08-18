@@ -4,7 +4,7 @@ import { BuildingView } from "@/components/mp2k/building-view";
 import { Hammer, Factory, Truck, ArrowRight, Layers, GitBranch, CalendarClock, Workflow, UserRound, HardHat } from "lucide-react";
 
 /**
- * Step 1 — Introduce the MP2K case (before sim & analytics).
+ * Step 1 — Introduce the MP2k case (before sim & analytics).
  */
 export function CasePanel({ onNext }: { onNext: () => void }) {
   return (
@@ -57,6 +57,38 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
             bagaimana aliran di workface diatur agar TH, CT, WIP, dan fill rate terjaga — bukan hanya agar
             bar chart terlihat hijau. Owner membuat jadwal; builder membuat production system.
             (Tier-1 builder menjadi "owner" bagi tier-2 — rantai yang sama berulang.)
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Schedule ≠ Production system (PPI) */}
+      <Card className="border-fg/20">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Schedule ≠ sistem produksi</CardTitle>
+          <CardDescription>
+            Dua hal yang sering disamakan — padahal beda peran
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface p-3">
+              <p className="text-sm font-medium text-fg">Schedule</p>
+              <p className="mt-1 text-xs text-muted leading-relaxed">
+                <strong className="text-fg">Should happen</strong> — target tanggal, urutan, dan
+                progress yang diinginkan (sisi demand / owner).
+              </p>
+            </div>
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface p-3">
+              <p className="text-sm font-medium text-fg">Sistem produksi</p>
+              <p className="mt-1 text-xs text-muted leading-relaxed">
+                <strong className="text-fg">Can / will happen</strong> — kapasitas, inventory, dan
+                variabilitas yang menentukan TH, CT, WIP di workface (sisi supply / builder).
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-muted leading-relaxed">
+            Jadwal yang hijau tidak menjamin aliran lancar. Sistem produksi harus diatur agar
+            berperilaku sesuai yang diinginkan — bukan hanya agar bar chart terisi.
           </p>
         </CardContent>
       </Card>

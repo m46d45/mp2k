@@ -351,10 +351,35 @@ function KingmanLesson({
       question={INTRO_CURVES[1].question}
       ready={ready}
       formula={
-        <>
-          <p>CT/te ≈ 1 + V · ū / (1 − ū)</p>
-          <p className="text-muted">V ≈ (ca² + ce²) / 2 · suku ū/(1−ū) adalah pengganda dekat kapasitas.</p>
-        </>
+        <div className="space-y-3">
+          <p className="font-mono text-base">
+            <span className="font-semibold">CT</span>
+            <span className="text-muted"> / </span>
+            <span className="font-semibold">te</span>
+            <span className="text-muted"> ≈ 1 + </span>
+            <span className="font-semibold">V</span>
+            <span className="text-muted"> · </span>
+            <span className="font-semibold">ū/(1−ū)</span>
+          </p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface px-2.5 py-2">
+              <p className="text-[10px] font-medium uppercase tracking-wide text-faint">1 · CT</p>
+              <p className="mt-0.5 text-xs text-fg leading-snug">Cycle time — waktu alir di sistem</p>
+            </div>
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface px-2.5 py-2">
+              <p className="text-[10px] font-medium uppercase tracking-wide text-faint">2 · te</p>
+              <p className="mt-0.5 text-xs text-fg leading-snug">Effective process time</p>
+            </div>
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface px-2.5 py-2">
+              <p className="text-[10px] font-medium uppercase tracking-wide text-faint">3 · V</p>
+              <p className="mt-0.5 text-xs text-fg leading-snug">Variability ≈ (ca²+ce²)/2</p>
+            </div>
+            <div className="rounded-[var(--radius-sm)] border border-border bg-surface px-2.5 py-2">
+              <p className="text-[10px] font-medium uppercase tracking-wide text-faint">4 · ū/(1−ū)</p>
+              <p className="mt-0.5 text-xs text-fg leading-snug">Pengganda utilisasi — meledak dekat 1</p>
+            </div>
+          </div>
+        </div>
       }
       reverse="Kalau lawannya: V turun, atau ū mundur dari 1 — CT/te mereda."
       onNext={onNext}

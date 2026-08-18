@@ -48,11 +48,6 @@ export function IntroPanel({ onOpenLab }: Props) {
       <div className="max-w-3xl space-y-3">
         <h2 className="text-xl font-semibold tracking-tight">Pengenalan</h2>
         <p className="text-sm text-muted leading-relaxed">
-          Empat modul memakai <strong className="text-fg">satu sistem demo yang sama</strong>.
-          Angka dan warna oranye mengikuti dari Little → Kingman → Inventory → Control.
-        </p>
-        <SystemChip />
-        <p className="text-sm text-muted leading-relaxed">
           Di Project Production Management (PPM), kinerja aliran diatur lewat lima tuas:{" "}
           <strong className="text-fg">Product Design</strong>,{" "}
           <strong className="text-fg">Process Design</strong>,{" "}
@@ -93,6 +88,11 @@ export function IntroPanel({ onOpenLab }: Props) {
           Tab <strong className="text-fg">Control & CONWIP</strong> menjelaskan cara memilih batas itu dari kurva
           operating WIP–TH–CT.
         </p>
+        <p className="text-sm text-muted leading-relaxed">
+          Empat modul memakai <strong className="text-fg">satu sistem demo yang sama</strong>.
+          Angka dan warna oranye mengikuti dari Little → Kingman → Inventory → Control.
+        </p>
+        <SystemChip />
       </div>
 
       <nav

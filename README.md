@@ -2,13 +2,14 @@
 
 **Situs live:** [https://mp2k.vercel.app/](https://mp2k.vercel.app/)
 
-Pengelolaan produksi proyek konstruksi multi-moda (**PPM**) dan sains operasi. Alur: Kasus → Simulasi DES → Analitik.
+Pengelolaan produksi proyek konstruksi multi-moda (**PPM**) dan sains operasi. Alur: Pengenalan → Kasus → Simulasi DES → Analitik.
 
 | Langkah | Fokus |
 |--------|--------|
+| **0. Pengenalan** | 4 verbs · 5 levers · buffer · Little · Kingman · CT vs WIP · Inventory/FR · Control |
 | **1. Kasus** | Product & process design (sudah ditetapkan) |
 | **2. Simulasi** | DES pada 3 tuas: Capacity · Variability · Inventory |
-| **3. Analitik** | Tiga kurva + marker titik operasi DES |
+| **3. Analitik** | Kurva + marker DES · Kurva gabungan & CONWIP |
 
 Konsep diilhami **Project Production Institute (PPI)** dan Factory Physics (Little, Kingman/VUT, base-stock inventory).
 
@@ -21,7 +22,7 @@ Di MP2K dikerjakan:
 1. Membandingkan **CPM / bar chart** dengan **PPM** (aliran, antrian, stok).
 2. Mengenali **tiga moda produksi** dalam satu sistem: manual (M), near-site (N), far-supply (F).
 3. Mengoperasikan **tiga tuas** Capacity, Variability, Inventory lewat DES.
-4. Membaca **Little’s Law**, **Kingman (VUT)**, dan **fill rate vs inventory**, serta membandingkan empiris DES dengan prediksi teori.
+4. Membaca **tiga kurva PPI** (CT vs ū / Kingman, TH vs WIP, **CT vs WIP**), **Little’s Law**, **fill rate vs inventory**, dan **Control/CONWIP**, serta membandingkan empiris DES dengan prediksi teori.
 5. Menjelaskan mengapa angka DES dan teori bisa berbeda (multi-moda, urutan tangga, fase awal run, buffer diskrit).
 
 ---
@@ -54,6 +55,16 @@ Urutan workface harus **match**: kolom → balok (bertumpu minimal dua kolom) �
 
 ## 3. Cara memakai
 
+### Langkah 0 — Pengenalan
+
+Modul teori interaktif (satu sistem demo: T0=4, rb=2, W0=8, V=0,5, Wopt≈14):
+
+1. **Little's Law** — WIP = TH × CT.
+2. **Kingman** — CT vs utilisasi; V memperparah antrian.
+3. **CT vs WIP** — kurva ketiga PPI; acuan W0 dan Wopt.
+4. **Inventory & Fill Rate** — stock buffer vs layanan.
+5. **Control & CONWIP** — kebijakan batas WIP dari kurva operating.
+
 ### Langkah 1 — Kasus
 
 - Baca kartu **CPM vs PPM**.
@@ -85,10 +96,11 @@ Urutan workface harus **match**: kolom → balok (bertumpu minimal dua kolom) �
 
 1. Strip **Titik operasi DES** (varian penuh) menampilkan angka yang sama dengan notasi/warna di kurva.
 2. Opsional: **Isi dari DES** — menyalin bottleneck, TH, ca/ce, L, CONWIP dari run ke parameter Analitik.
-3. **Mulai perhitungan** → tiga grafik:
+3. **Mulai perhitungan** → empat grafik:
    - **Little’s Law (WIP–TH–CT)** — sumbu X = WIP; kiri TH; kanan CT. Titik biru/merah = prediksi parameter; **oranye = DES**.
    - **Kingman multi-V** — CT/te vs ū untuk beberapa tingkat V. Titik hitam = Analitik; **oranye = ū bottleneck & CT/te DES**.
    - **Inventory / Fill rate** — FR vs inventory (base-stock ideal). **Oranye = FR empiris DES**.
+   - **Kurva gabungan & CONWIP** — TH dan CT vs WIP; W0, Wopt, garis CONWIP; **absolute benchmarking** vs envelope teoritis.
 4. Diskusikan selisih marker oranye vs prediksi teori (lihat kotak “Mengapa angka DES bisa berbeda dari teori?” di strip).
 
 ### Statistik
@@ -112,9 +124,12 @@ Tombol **Statistik** menampilkan jumlah pengunjung unik, kunjungan, dan simulasi
 | **FR** | Fill rate (panel) | 0–1 (atau %) |
 | **L** | Lead time supply panel | hari |
 | **CONWIP** | Batas WIP sistem | job |
+| **W0** | Critical WIP (= rb × T0) | job |
+| **Wopt** | WIP praktis ≈ W0(1+√V) | job |
 
 **Little:** $\mathrm{WIP} = \mathrm{TH} \times \mathrm{CT}$ (sistem stabil).  
 **Kingman:** $\mathrm{CT}/t_e \approx 1 + V \cdot \bar{u}/(1-\bar{u})$.  
+**CT vs WIP (best):** CT = T0 jika WIP ≤ W0; CT = WIP/rb jika WIP > W0.  
 **FR:** mendekati $1 -$ (stockout / percobaan ambil stok) di DES; teori = model base-stock.
 
 ---
@@ -125,7 +140,8 @@ Tombol **Statistik** menampilkan jumlah pengunjung unik, kunjungan, dan simulasi
 2. **Variability tinggi** — preset yang sama. Apa yang terjadi pada CT dan Δ Kingman?
 3. **Inventory ketat** — preset Inventory ketat. Amati stockout & FR; longgarkan buffer/L sekali, Run ulang, bandingkan marker FR di Analitik.
 4. **Capacity** — preset Capacity longgar vs Dasar. Apakah TH naik proporsional? Di mana bottleneck bergeser?
-5. **Sinkronisasi** — Isi dari DES → Mulai perhitungan. Jelaskan dalam 5–7 kalimat mengapa titik oranye tidak selalu menempel prediksi tertutup.
+5. **CONWIP** — di Control / Kurva gabungan, tetapkan CONWIP di W0, Wopt, dan di atas Wopt; amati TH vs CT.
+6. **Sinkronisasi** — Isi dari DES → Mulai perhitungan. Jelaskan dalam 5–7 kalimat mengapa titik oranye tidak selalu menempel prediksi tertutup.
 
 ---
 

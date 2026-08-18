@@ -168,6 +168,12 @@ export function ControlLesson({ seen, onSee }: { seen: string[]; onSee: (id: str
             Dengan variabilitas: Wopt ≈ W0 (1 + √V). Level <strong className="text-fg">CONWIP</strong> yang
             Anda pilih = mekanisme Control.
           </p>
+          <p className="text-xs text-muted leading-relaxed">
+            <strong className="text-fg">Absolute benchmarking</strong>: kurva TH/CT best (tanpa var)
+            dan +var adalah <em>envelope teoritis sistem Anda sendiri</em> — bukan rata-rata industri
+            atau kompetitor. Titik operasi (dan nanti titik DES) dibandingkan ke envelope itu:
+            seberapa jauh dari best case, seberapa dekat ke batas praktis.
+          </p>
           <div className="grid gap-2 text-xs sm:grid-cols-3 font-mono">
             <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5 text-center">
               <p className="text-faint text-[11px]">W0</p>
@@ -282,6 +288,7 @@ export function ControlLesson({ seen, onSee }: { seen: string[]; onSee: (id: str
       <p className="text-xs text-muted leading-relaxed">
         Garis vertikal <strong className="text-fg">W0</strong> = critical WIP; <strong className="text-fg">Wopt</strong> =
         zona praktis dengan variabilitas; <strong className="text-fg">CONWIP</strong> = batas yang Anda tetapkan (Control).
+        Kurva best/+var = absolute benchmark; titik = posisi sistem relatif ke envelope itu.
       </p>
     </LessonShell>
   );

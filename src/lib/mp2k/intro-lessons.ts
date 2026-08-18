@@ -18,19 +18,19 @@ export const INTRO_CURVES: {
   {
     id: "little",
     n: "1",
-    label: "Little",
+    label: "Grafik Little's Law",
     question: "Di sistem yang stabil, dua diketahui — yang ketiga wajib berapa?",
   },
   {
     id: "kingman",
     n: "2",
-    label: "Kingman",
+    label: "Grafik Kingman's Equation",
     question: "Mengapa CT meledak dekat kapasitas, dan mengapa V memperparah?",
   },
   {
     id: "inventory",
     n: "3",
-    label: "Inventory / FR",
+    label: "Grafik Inventory & Fill Rate",
     question: "Berapa stok supaya tidak kosong — dan kapan stok tambahan sia-sia?",
   },
 ];

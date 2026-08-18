@@ -78,31 +78,6 @@ function InvalidX(props: {
   );
 }
 
-/** Clean tooltip for Inventory chart — explicit labels + limited decimals */
-function InvTooltip({ active, payload }: any) {
-  if (!active || !payload?.length) return null;
-  const row = payload[0]?.payload;
-  if (!row) return null;
-  const fr = typeof row.fr === "number" ? row.fr : null;
-  const inv = typeof row.inv === "number" ? row.inv : null;
-  return (
-    <div className="rounded border border-border bg-surface px-3 py-2 text-xs shadow-sm">
-      {fr != null && (
-        <p>
-          <span className="text-muted">FR: </span>
-          <span className="font-mono font-medium text-fg">{fr.toFixed(1)}%</span>
-        </p>
-      )}
-      {inv != null && (
-        <p>
-          <span className="text-muted">Inventory: </span>
-          <span className="font-mono font-medium text-fg">{inv.toFixed(2)}</span>
-        </p>
-      )}
-    </div>
-  );
-}
-
 type Props = {
   onOpenLab: () => void;
 };
@@ -590,7 +565,24 @@ function InventoryLesson({
               tick={{ fill: MUTED, fontSize: 11 }}
               label={{ value: "Inventory", angle: -90, position: "insideLeft", fill: MUTED, fontSize: 11 }}
             />
-            <Tooltip content={<InvTooltip />} />
+            <Tooltip
+              content={({ active, payload }) => {
+                if (!active || !payload || !payload.length) return null;
+                const d = payload[0].payload as { fr: number; inv: number };
+                return (
+                  <div className="rounded border border-border bg-surface px-3 py-2 text-sm shadow-sm">
+                    <p className="font-mono">
+                      <span className="text-faint">FR</span>{" "}
+                      <span className="font-semibold">{formatNum(d.fr)}%</span>
+                    </p>
+                    <p className="font-mono">
+                      <span className="text-faint">Inventory</span>{" "}
+                      <span className="font-semibold">{formatNum(d.inv)}</span>
+                    </p>
+                  </div>
+                );
+              }}
+            />
             {sameStock ? (
               <Line
                 data={curveBase}

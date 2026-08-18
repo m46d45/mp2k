@@ -70,12 +70,36 @@ export function InventoryLesson({
       question={INTRO_CURVES[2].question}
       ready={ready}
       formula={
-        <>
-          <p>FR = P(demand during L ≤ stock)</p>
-          <p className="text-xs text-muted mt-1">Demand rate = TH Little = 2. Stock buffer saudara WIP/CONWIP.</p>
-        </>
+        <div className="space-y-3">
+          <p className="font-mono text-base">
+            <span className="font-semibold">FR</span> ≈ 1 − ES / DDLT
+          </p>
+          <p className="text-xs text-muted leading-relaxed">
+            ES = expected shortfall, DDLT = demand during lead time.{" "}
+            <span className="text-fg font-medium">Stock buffer</span> (safety stock) = z · σ√L.
+            Lead time sendiri bisa berisi <span className="text-fg font-medium">time buffer</span>.
+          </p>
+          <div className="grid gap-2 text-xs sm:grid-cols-3">
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
+              <span className="font-semibold text-fg">Capacity buffer</span>
+              <span className="text-muted"> — utilisasi di bawah 100% (lihat Kingman)</span>
+            </div>
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
+              <span className="font-semibold text-fg">Time buffer</span>
+              <span className="text-muted"> — slack jadwal / padding lead time</span>
+            </div>
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
+              <span className="font-semibold text-fg">Stock buffer</span>
+              <span className="text-muted"> — WIP, safety stock di staging</span>
+            </div>
+          </div>
+          <p className="text-xs text-muted leading-relaxed">
+            Inventory di grafik = cycle stock + stock buffer. Target FR tinggi (mis. 95%) butuh buffer lebih besar,
+            tapi dengan diminishing returns. Ketiga jenis buffer saling bisa ditukar menghadapi variability yang sama.
+          </p>
+        </div>
       }
-      reverse="Kalau lawannya: buffer turun — FR jatuh."
+      reverse="Kalau lawannya: buffer turun — FR jatuh, terutama di ekor kiri."
       onNext={onNext}
       nextLabel="Lanjut ke Control & CONWIP"
     >

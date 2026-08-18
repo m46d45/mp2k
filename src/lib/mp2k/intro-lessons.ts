@@ -42,6 +42,40 @@ export const INTRO_CURVES: {
   },
 ];
 
+/** Satu sistem demo bersama di empat tab — angka harus konsisten. */
+export const DEMO_SYSTEM = {
+  te: 1,
+  m: 2,
+  stations: 4,
+  /** T0 = te × stations */
+  T0: 4,
+  /** rb = m / te */
+  rb: 2,
+  /** W0 = rb × T0 */
+  W0: 8,
+  /** V = (ca²+ce²)/2 dengan ca=ce=√0.5 */
+  V: 0.5,
+  /** Wopt ≈ W0 (1+√V) */
+  Wopt: 14,
+  ca: Math.sqrt(0.5),
+  ce: Math.sqrt(0.5),
+} as const;
+
+/** Warna identitas lintas tab (titik bisa dicek sama). */
+export const DEMO_COLORS = {
+  /** Titik operating / CONWIP / marker bersama */
+  operating: "#f97316",
+  /** Critical WIP W0 */
+  W0: "#64748b",
+  /** Wopt */
+  Wopt: "#94a3b8",
+  /** Skenario aktif */
+  active: "#141414",
+  /** Titik awal (hollow) */
+  baseFill: "#ffffff",
+  baseStroke: "#141414",
+} as const;
+
 export type LittlePoint = { wip: number; th: number; ct: number };
 
 export const LITTLE_BASE: LittlePoint = { wip: 8, th: 2, ct: 4 };
@@ -89,13 +123,14 @@ export function littleLine(th: number): { wip: number; ct: number }[] {
 
 export type KingmanPoint = { u: number; v: number };
 
-export const KINGMAN_BASE: KingmanPoint = { u: 0.7, v: 0.5 };
+/** Base ajar: ū=0.80 (capacity buffer 20%) pada bottleneck rb=2 yang sama. */
+export const KINGMAN_BASE: KingmanPoint = { u: 0.8, v: 0.5 };
 
 export const KINGMAN_SCENARIOS: IntroScenario<KingmanPoint>[] = [
   {
     id: "K1",
-    label: "ū 0,70 → 0,90 · V tetap 0,5",
-    say: "Mendekati 100% sibuk, antrian meledak — bukan linier.",
+    label: "ū 0,80 → 0,90 · V tetap 0,5",
+    say: "Mendekati 100% sibuk, antrian meledak — bukan linier. Capacity buffer menipis.",
     valid: true,
     apply: { u: 0.9, v: 0.5 },
   },
@@ -108,7 +143,7 @@ export const KINGMAN_SCENARIOS: IntroScenario<KingmanPoint>[] = [
   },
   {
     id: "K3",
-    label: "V = 0 · ū 0,70 → 0,90",
+    label: "V = 0 · ū 0,80 → 0,90",
     say: "Tanpa variability, utilisasi tinggi masih jinak. V yang membuatnya buas.",
     valid: true,
     apply: { u: 0.9, v: 0 },
@@ -123,6 +158,7 @@ export function kingmanFrom(p: KingmanPoint): { u: number; v: number; ratio: num
 
 export { KINGMAN_V_LEVELS, KINGMAN_Y_MAX };
 
+/** demandRate = TH Little = 2; leadTime terkait T0/CT sistem demo. */
 export const INV_BASE = { demandRate: 2, leadTime: 4, demandCv: 0.35, z: 1 };
 
 function stockOf(p: typeof INV_BASE): number {
@@ -214,18 +250,19 @@ export function invFixedStockPoint(leadTime: number, demandCv: number) {
 }
 
 /* ── Control & CONWIP ──
-   Demo line: 4 stasiun seimbang, te=2 → T0=8, rb=0.5 → W0=4
-   V=0.5 → W_opt ≈ 4·(1+√0.5) ≈ 6.83
+   Sistem demo bersama: te=1, m=2, stations=4 → T0=4, rb=2, W0=8
+   V=0.5 → Wopt ≈ 14  |  LITTLE_BASE (8,2,4) = best-case di W0
 */
 
 export const CONTROL_DEMO = {
-  te: 2,
-  m: 1,
-  stations: 4,
-  thDemand: 0.45,
-  ca: Math.sqrt(0.5),
-  ce: Math.sqrt(0.5),
-  conwipBase: 7,
+  te: DEMO_SYSTEM.te,
+  m: DEMO_SYSTEM.m,
+  stations: DEMO_SYSTEM.stations,
+  thDemand: 1.9,
+  ca: DEMO_SYSTEM.ca,
+  ce: DEMO_SYSTEM.ce,
+  /** ≈ Wopt */
+  conwipBase: DEMO_SYSTEM.Wopt,
 } as const;
 
 export type ControlApply = { conwip: number };
@@ -234,23 +271,23 @@ export const CONTROL_SCENARIOS: IntroScenario<ControlApply>[] = [
   {
     id: "C1",
     label: "CONWIP di bawah W₀",
-    say: "Sistem kelaparan — TH belum penuh, CT masih dekat T₀. Menambah WIP masih menambah output.",
+    say: "Sistem kelaparan — TH belum penuh, CT dekat T₀. Di Little, WIP kecil dengan TH rendah. Menambah WIP masih menambah output.",
     valid: true,
-    apply: { conwip: 2 },
+    apply: { conwip: 4 },
   },
   {
     id: "C2",
     label: "CONWIP ≈ W_opt",
-    say: "Zona kerja seimbang — TH mendekati kapasitas, CT masih terkendali. Ini Control yang baik.",
+    say: "Zona seimbang di Wopt≈14. TH mendekati rb=2 (kapasitas Little), CT terkendali. Ini Control yang baik.",
     valid: true,
-    apply: { conwip: 7 },
+    apply: { conwip: 14 },
   },
   {
     id: "C3",
     label: "CONWIP jauh di atas W₀",
-    say: "WIP berlebih hanya memperpanjang waktu tinggal. TH hampir tidak naik, CT naik tajam.",
+    say: "WIP berlebih hanya memanjangkan CT (lihat Little: WIP↑ → CT↑ bila TH tetap). TH hampir tidak naik.",
     valid: true,
-    apply: { conwip: 18 },
+    apply: { conwip: 28 },
   },
 ];
 

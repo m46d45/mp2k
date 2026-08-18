@@ -46,6 +46,34 @@ const GRID = "#e5e7eb";
 const MUTED = "#6b7280";
 const POINT = "#141414";
 
+/** Custom X marker for the invalid Little attempt */
+function InvalidX({ cx, cy }: { cx?: number; cy?: number }) {
+  if (cx == null || cy == null) return null;
+  const s = 7;
+  return (
+    <g>
+      <line
+        x1={cx - s}
+        y1={cy - s}
+        x2={cx + s}
+        y2={cy + s}
+        stroke={POINT}
+        strokeWidth={2.25}
+        strokeLinecap="round"
+      />
+      <line
+        x1={cx + s}
+        y1={cy - s}
+        x2={cx - s}
+        y2={cy + s}
+        stroke={POINT}
+        strokeWidth={2.25}
+        strokeLinecap="round"
+      />
+    </g>
+  );
+}
+
 type Props = {
   onOpenLab: () => void;
 };
@@ -148,34 +176,6 @@ function formulaReady(id: IntroCurve, seen: string[]): boolean {
   return need.every((s) => seen.includes(s.id));
 }
 
-/** Custom X mark for the invalid Little attempt */
-function ForbiddenX(props: { cx?: number; cy?: number }) {
-  const { cx = 0, cy = 0 } = props;
-  const s = 7;
-  return (
-    <g>
-      <line
-        x1={cx - s}
-        y1={cy - s}
-        x2={cx + s}
-        y2={cy + s}
-        stroke={POINT}
-        strokeWidth={2.25}
-        strokeLinecap="round"
-      />
-      <line
-        x1={cx + s}
-        y1={cy - s}
-        x2={cx - s}
-        y2={cy + s}
-        stroke={POINT}
-        strokeWidth={2.25}
-        strokeLinecap="round"
-      />
-    </g>
-  );
-}
-
 function LittleLesson({
   seen,
   onSee,
@@ -270,13 +270,13 @@ function LittleLesson({
                 strokeWidth={1.75}
               />
             ) : null}
-            {/* Percobaan invalid — tandai dengan X */}
+            {/* Percobaan invalid — ditandai X */}
             {broken ? (
               <ReferenceDot
                 x={LITTLE_ATTEMPT.wip}
                 y={LITTLE_ATTEMPT.ct}
-                r={8}
-                shape={ForbiddenX}
+                r={7}
+                shape={InvalidX}
               />
             ) : null}
           </ComposedChart>

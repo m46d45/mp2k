@@ -227,7 +227,20 @@ function LittleLesson({
               dot={false}
               isAnimationActive={false}
             />
+            {/* Titik baru (solid) */}
             <ReferenceDot x={point.wip} y={point.ct} r={7} fill={POINT} stroke="#fff" strokeWidth={2} />
+            {/* Titik awal tetap terlihat (hollow) saat if–then valid */}
+            {sc && !broken ? (
+              <ReferenceDot
+                x={LITTLE_BASE.wip}
+                y={LITTLE_BASE.ct}
+                r={5}
+                fill="#fff"
+                stroke={POINT}
+                strokeWidth={1.5}
+              />
+            ) : null}
+            {/* Titik percobaan yang gagal (dashed) untuk L3 */}
             {broken ? (
               <ReferenceDot
                 x={LITTLE_ATTEMPT.wip}
@@ -357,6 +370,7 @@ function KingmanLesson({
                 isAnimationActive={false}
               />
             ))}
+            {/* Titik awal (hollow) + titik baru (solid) agar perbandingan jelas */}
             {sc ? (
               <ReferenceDot x={from.u} y={from.ratio} r={5} fill="#fff" stroke={POINT} strokeWidth={1.5} />
             ) : null}
@@ -495,6 +509,7 @@ function InventoryLesson({
                 ))
               : (
                 <>
+                  {/* Titik awal (hollow) tetap terlihat untuk perbandingan */}
                   {sc ? (
                     <ReferenceDot x={basePt.inv} y={basePt.fr} r={5} fill="#fff" stroke={POINT} strokeWidth={1.5} />
                   ) : null}

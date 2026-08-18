@@ -116,8 +116,8 @@ function Mp2kApp() {
           >
             {(
               [
-                { id: "intro" as const, label: "Pengenalan", short: "Tiga kurva · if–then" },
-                { id: "lab" as const, label: "Kasus", short: "Gedung · DES · analitik" },
+                { id: "intro" as const, label: "Pengenalan Tiga Kurva" },
+                { id: "lab" as const, label: "Penerapan di kasus Gedung" },
               ] as const
             ).map((d) => {
               const active = !onUtility && door === d.id;
@@ -127,16 +127,13 @@ function Mp2kApp() {
                   type="button"
                   onClick={() => (d.id === "intro" ? openIntro() : openLab("case"))}
                   className={cn(
-                    "flex min-h-12 flex-col items-center justify-center rounded-[calc(var(--radius-md)-2px)] px-3 py-2 sm:flex-row sm:gap-2",
+                    "flex min-h-12 items-center justify-center rounded-[calc(var(--radius-md)-2px)] px-3 py-2",
                     active
                       ? "bg-primary text-primary-fg"
                       : "text-muted hover:bg-subtle/80 hover:text-fg",
                   )}
                 >
-                  <span className="text-sm font-medium">{d.label}</span>
-                  <span className={cn("hidden text-[11px] sm:inline", active ? "text-primary-fg/70" : "text-faint")}>
-                    {d.short}
-                  </span>
+                  <span className="text-sm font-medium text-center">{d.label}</span>
                 </button>
               );
             })}

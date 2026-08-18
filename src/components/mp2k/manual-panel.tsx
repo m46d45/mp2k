@@ -4,12 +4,13 @@ import { ArrowRight, BookOpen } from "lucide-react";
 
 const TOC = [
   { id: "tujuan", label: "1. Tujuan" },
-  { id: "putaran", label: "2. Dua putaran" },
-  { id: "kasus", label: "3. Kasus" },
-  { id: "pakai", label: "4. Cara memakai" },
-  { id: "notasi", label: "5. Notasi" },
-  { id: "latihan", label: "6. Latihan" },
-  { id: "batas", label: "7. Batasan" },
+  { id: "alur", label: "2. Alur lab" },
+  { id: "pengenalan", label: "3. Pengenalan" },
+  { id: "kasus", label: "4. Kasus" },
+  { id: "pakai", label: "5. Cara memakai" },
+  { id: "notasi", label: "6. Notasi" },
+  { id: "latihan", label: "7. Latihan" },
+  { id: "batas", label: "8. Batasan" },
 ] as const;
 
 export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => void; backLabel?: string }) {
@@ -18,12 +19,11 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="max-w-2xl">
           <p className="text-xs font-medium uppercase tracking-wider text-faint">Manual</p>
-          <h2 className="mt-1 text-xl font-semibold tracking-tight">
-            Panduan MP2K · PPM multi-moda
-          </h2>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight">Panduan MP2K · PPM multi-moda</h2>
           <p className="mt-2 text-sm text-muted leading-relaxed">
-            Pengelolaan produksi proyek konstruksi multi-moda (PPM) dan sains operasi. Dua
-            putaran: Pengenalan tiga kurva, lalu Kasus (DES dan analitik).
+            Pengelolaan produksi proyek konstruksi multi-moda (PPM) dan sains operasi. Dua pintu:
+            <strong className="text-fg"> Pengenalan</strong> (teori + if–then), lalu{" "}
+            <strong className="text-fg">Penerapan di kasus Gedung</strong> (DES + analitik + CONWIP).
           </p>
         </div>
         <button
@@ -61,48 +61,98 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
             <ol className="list-decimal space-y-2 pl-5 text-sm text-muted leading-relaxed">
               <li>
                 Membedakan <strong className="text-fg">CPM / scheduling</strong> vs{" "}
-                <strong className="text-fg">PPM / operations science</strong> (aliran, antrian,
-                stok).
+                <strong className="text-fg">PPM / operations science</strong> (aliran, antrian, stok).
               </li>
               <li>
-                Meramal arah pada Little, Kingman, dan fill rate (if–then dulu, rumus kemudian).
+                Meramal arah pada Little, Kingman, Inventory/FR, dan operating curve (if–then dulu,
+                rumus kemudian).
+              </li>
+              <li>
+                Mengenali <strong className="text-fg">Control</strong> (mekanisme arah sistem) vs{" "}
+                <em>controls</em> (pengukuran), termasuk <strong className="text-fg">CONWIP</strong>.
               </li>
               <li>
                 Mengenali tiga moda produksi: manual (M), near-site (N), far-supply (F).
               </li>
               <li>
-                Mengoperasikan tiga tuas terakhir PPM —{" "}
-                <strong className="text-fg">Capacity · Variability · Inventory</strong> — lewat DES.
+                Mengoperasikan tuas PPM — Capacity · Inventory · Variability — lewat DES, dengan
+                Product & Process design sudah ditetapkan di Kasus.
               </li>
               <li>
-                Menempelkan titik operasi DES pada kurva yang sama, lalu menjelaskan selisih
-                empiris vs teori (multi-moda, gate urutan, transient, buffer diskrit).
+                Menempelkan titik operasi DES pada kurva yang sama, lalu menjelaskan selisih empiris
+                vs teori.
               </li>
             </ol>
           </CardContent>
         </Card>
       </section>
 
-      <section id="manual-putaran" className="scroll-mt-6">
+      <section id="manual-alur" className="scroll-mt-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">2. Dua putaran</CardTitle>
+            <CardTitle className="text-base">2. Alur lab</CardTitle>
             <CardDescription>Pengenalan dulu, kasus kemudian</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted leading-relaxed">
             <p>
-              <strong className="text-fg">Putaran 1 · Pengenalan.</strong> Tanpa denah. Satu kurva,
-              dua–tiga if–then berangka tetap, ramalan arah, baru rumus. Little → Kingman →
-              Inventory/FR.
+              <strong className="text-fg">Pengenalan Tiga Kurva (+ Control).</strong> Tanpa denah.
+              Empat modul memakai <strong className="text-fg">satu sistem demo</strong> (angka oranye
+              sama di semua tab): Little → Kingman → Inventory/FR → Control & CONWIP.
             </p>
             <p>
-              <strong className="text-fg">Putaran 2 · Kasus.</strong> Kerangka beton 3×5, dua lantai,
-              tiga moda. Simulasi DES (Capacity, Variability, Inventory) lalu Analitik — kurva yang
-              sama, titik oranye = run DES. If–then tidak diulang kecuali kembali ke Pengenalan.
+              <strong className="text-fg">Penerapan di kasus Gedung.</strong> Tiga langkah:{" "}
+              <strong className="text-fg">Kasus</strong> (desain) → <strong className="text-fg">Simulasi</strong>{" "}
+              (DES, 3 tuas) → <strong className="text-fg">Analitik</strong> (empat sub-tab kurva +
+              marker DES). Manual tetap di header/footer, bukan di bar langkah kasus.
             </p>
-            <p>
-              Notasi dan rumus satu baris sama di kedua putaran: TH, CT, WIP, ū, V, FR.
+            <p className="rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2 text-xs font-mono text-fg">
+              Sistem demo: T0=4 · rb=2 · W0=8 · V=0.5 · Wopt≈14 · Little (WIP=8, TH=2, CT=4)
             </p>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section id="manual-pengenalan" className="scroll-mt-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">3. Pengenalan — empat modul</CardTitle>
+            <CardDescription>Teori dulu, angka sama, warna oranye menghubungkan</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 text-sm text-muted leading-relaxed">
+            <div>
+              <p className="font-medium text-fg">1 · Little&apos;s Law</p>
+              <p className="mt-1">WIP = TH × CT. If–then: naiknya WIP atau turunnya TH mengubah CT.</p>
+            </div>
+            <div>
+              <p className="font-medium text-fg">2 · Kingman</p>
+              <p className="mt-1">
+                CT/te ≈ 1 + V · ū/(1−ū). Perhatikan empat bagian: CT, te, I+V, utilisasi — terutama
+                lonjakan di ū tinggi.
+              </p>
+            </div>
+            <div>
+              <p className="font-medium text-fg">3 · Inventory & Fill Rate</p>
+              <p className="mt-1">
+                FR vs stock buffer. Inventory (WIP, buffer stok, time buffer) terkait fill rate
+                supply panel.
+              </p>
+            </div>
+            <div>
+              <p className="font-medium text-fg">4 · Control & CONWIP</p>
+              <p className="mt-1">
+                <strong className="text-fg">Control</strong> = mekanisme yang mengarahkan aliran
+                (bukan sekadar measurement). CONWIP membatasi total WIP: job baru masuk hanya jika
+                ada slot. Operating curve WIP–TH–CT menampilkan W0 (critical), Wopt, dan garis CONWIP.
+              </p>
+            </div>
+            <div className="rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2.5 text-xs space-y-1.5">
+              <p className="font-medium text-fg">Lima tuas PPM (urutan didaktik)</p>
+              <p>
+                Product design → Process design → Capacity → Inventory → Variability. Ketiga kurva +
+                operating curve membantu menilai dampak tuas. Buffer: capacity (ū di bawah 100%),
+                time, dan stock — ketiganya muncul di kurva.
+              </p>
+            </div>
           </CardContent>
         </Card>
       </section>
@@ -110,7 +160,7 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
       <section id="manual-kasus" className="scroll-mt-6 space-y-3">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">3. Kasus: frame beton 2 lantai</CardTitle>
+            <CardTitle className="text-base">4. Kasus: frame beton 2 lantai</CardTitle>
             <CardDescription>Product design dan Process design sudah ditetapkan</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-muted leading-relaxed">
@@ -162,11 +212,6 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
               (minimal dua kolom) → panel (bertumpu pada balok). Tangga Z6 menunggu kolom C3 + balok
               terkait selesai.
             </p>
-            <p>
-              Lima tuas PPM: <strong className="text-fg">Product</strong> &{" "}
-              <strong className="text-fg">Process design</strong> ditetapkan di Kasus.{" "}
-              <strong className="text-fg">Capacity, Variability, Inventory</strong> disimulasikan.
-            </p>
           </CardContent>
         </Card>
       </section>
@@ -174,17 +219,17 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
       <section id="manual-pakai" className="scroll-mt-6 space-y-3">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">4. Cara memakai</CardTitle>
+            <CardTitle className="text-base">5. Cara memakai</CardTitle>
             <CardDescription>Pengenalan → Kasus → Simulasi → Analitik</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5 text-sm text-muted leading-relaxed">
             <div>
-              <p className="font-medium text-fg">Putaran 1 — Pengenalan</p>
+              <p className="font-medium text-fg">Pengenalan</p>
               <ol className="mt-1.5 list-decimal space-y-1 pl-5">
-                <li>Buka pintu Pengenalan</li>
-                <li>Ramalkan arah, lalu tekan if–then (satu tombol, satu napas)</li>
-                <li>Setelah ketiga skenario, baca rumus</li>
-                <li>Ulangi untuk Kingman dan Inventory/FR</li>
+                <li>Buka pintu Pengenalan Tiga Kurva</li>
+                <li>Perhatikan chip sistem demo (angka oranye) di header</li>
+                <li>Per modul: baca rumus → if–then → amati grafik & titik oranye</li>
+                <li>Little → Kingman → Inventory/FR → Control & CONWIP (W0, Wopt, CONWIP)</li>
                 <li>Kartu jembatan → Lanjut ke kasus</li>
               </ol>
             </div>
@@ -239,11 +284,19 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
                   TH, ca/ce, L, CONWIP ke parameter Analitik
                 </li>
                 <li>
-                  <strong className="text-fg">Mulai perhitungan</strong> → Little (WIP–TH–CT),
-                  Kingman multi-V, Inventory/FR. Marker oranye = DES
+                  <strong className="text-fg">Mulai perhitungan</strong> → empat sub-tab:
                 </li>
-                <li>Diskusikan selisih marker vs prediksi teori</li>
               </ol>
+              <ul className="mt-1.5 list-disc space-y-1 pl-8 text-xs">
+                <li>Little&apos;s Law</li>
+                <li>Kingman</li>
+                <li>Inventory / FR</li>
+                <li>
+                  <strong className="text-fg">Kurva gabungan & CONWIP</strong> — operating curve
+                  WIP–TH–CT, W0, Wopt, garis CONWIP, titik oranye DES empiris
+                </li>
+              </ul>
+              <p className="mt-2">Diskusikan selisih marker vs prediksi teori dan zona CONWIP.</p>
             </div>
           </CardContent>
         </Card>
@@ -252,7 +305,7 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
       <section id="manual-notasi" className="scroll-mt-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">5. Notasi singkat</CardTitle>
+            <CardTitle className="text-base">6. Notasi singkat</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="overflow-x-auto">
@@ -276,7 +329,9 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
                     ["V", "(ca² + ce²) / 2", "—"],
                     ["FR", "Fill rate panel", "0–1"],
                     ["L", "Lead time supply panel", "hari"],
-                    ["CONWIP", "Batas WIP sistem", "job"],
+                    ["W0", "Critical WIP = rb × T0", "job"],
+                    ["Wopt", "≈ W0 (1 + √V)", "job"],
+                    ["CONWIP", "Batas WIP sistem (control)", "job"],
                   ].map(([s, a, u]) => (
                     <tr key={s} className="border-b border-border/60 last:border-0">
                       <td className="py-1.5 pr-3 font-mono font-medium text-fg">{s}</td>
@@ -290,6 +345,7 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
             <div className="space-y-1 rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2.5 font-mono text-xs text-fg">
               <p>Little: WIP = TH × CT (sistem stabil)</p>
               <p>Kingman: CT/te ≈ 1 + V · ū / (1 − ū)</p>
+              <p>W0 = rb × T0 · Wopt ≈ W0 (1 + √V)</p>
               <p>FR DES ≈ 1 − (stockout / percobaan ambil stok)</p>
             </div>
           </CardContent>
@@ -299,33 +355,38 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
       <section id="manual-latihan" className="scroll-mt-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">6. Saran latihan</CardTitle>
+            <CardTitle className="text-base">7. Saran latihan</CardTitle>
           </CardHeader>
           <CardContent>
             <ol className="list-decimal space-y-2.5 pl-5 text-sm text-muted leading-relaxed">
               <li>
-                <strong className="text-fg">Pengenalan</strong> — ketiga if–then tiap kurva. Yang
-                dinilai: arah (naik / turun / meledak / mendatar / tidak boleh), bukan angka.
+                <strong className="text-fg">Pengenalan</strong> — if–then tiap modul termasuk
+                Control (C1 di bawah W0, C2 ≈ Wopt, C3 berlebih). Yang dinilai: arah, bukan angka.
               </li>
               <li>
                 <strong className="text-fg">Baseline</strong> — preset Dasar, Run all. Catat TH, CT,
-                WIP, FR, ū. Cek konsistensi Little. Tempel titik oranye.
+                WIP, FR, ū. Cek Little. Tempel titik oranye di Analitik.
               </li>
               <li>
-                <strong className="text-fg">Variability tinggi</strong> — preset yang sama.
-                Apa yang terjadi pada CT dan Δ Kingman?
+                <strong className="text-fg">Variability tinggi</strong> — apa yang terjadi pada CT
+                dan Δ Kingman?
               </li>
               <li>
-                <strong className="text-fg">Inventory ketat</strong> — amati stockout & FR;
-                longgarkan buffer/L, Run ulang, bandingkan marker FR.
+                <strong className="text-fg">Inventory ketat</strong> — stockout & FR; longgarkan
+                buffer/L atau CONWIP, Run ulang, bandingkan marker.
               </li>
               <li>
-                <strong className="text-fg">Capacity</strong> — Capacity longgar vs Dasar. Apakah TH
-                naik proporsional? Di mana bottleneck bergeser?
+                <strong className="text-fg">Capacity</strong> — Capacity longgar vs Dasar. TH naik?
+                Bottleneck bergeser?
               </li>
               <li>
-                <strong className="text-fg">Sinkronisasi</strong> — Isi dari DES → Mulai perhitungan.
-                Jelaskan 5–7 kalimat mengapa titik oranye tidak selalu menempel prediksi tertutup.
+                <strong className="text-fg">Kurva gabungan & CONWIP</strong> — Isi dari DES → Mulai
+                perhitungan → tab ke-4. Apakah titik DES di zona lapar, seimbang, atau longgar?
+                Usulkan CONWIP baru dan uji ulang di Simulasi.
+              </li>
+              <li>
+                <strong className="text-fg">Sinkronisasi</strong> — jelaskan 5–7 kalimat mengapa
+                titik oranye tidak selalu menempel prediksi tertutup.
               </li>
             </ol>
           </CardContent>
@@ -336,20 +397,23 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
         <Card>
           <CardHeader>
             <div className="flex flex-wrap items-center gap-2">
-              <CardTitle className="text-base">7. Batasan model</CardTitle>
+              <CardTitle className="text-base">8. Batasan model</CardTitle>
               <Badge variant="default">penting untuk diskusi</Badge>
             </div>
           </CardHeader>
           <CardContent>
             <ul className="list-disc space-y-1.5 pl-5 text-sm text-muted leading-relaxed">
               <li>Frame 2 lantai, grid tetap, urutan zona & tangga disederhanakan.</li>
-              <li>Hasil DES dapat diulang dengan seed yang sama; run pendek masih membawa bias fase awal.</li>
+              <li>
+                Hasil DES dapat diulang dengan seed yang sama; run pendek masih membawa bias fase
+                awal.
+              </li>
               <li>
                 Prediksi teori memakai pendekatan bottleneck tunggal dan model base-stock.
               </li>
               <li>
-                Skor match visual <strong className="text-fg">bukan</strong> metrik produksi
-                — fokus pada TH, CT, WIP, FR, ū.
+                Skor match visual <strong className="text-fg">bukan</strong> metrik produksi — fokus
+                pada TH, CT, WIP, FR, ū, dan posisi relatif terhadap W0/Wopt/CONWIP.
               </li>
             </ul>
           </CardContent>
@@ -363,7 +427,7 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
           className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] bg-primary px-5 text-sm font-medium text-primary-fg"
         >
           <BookOpen className="size-4" />
-          Mulai dari Kasus
+          Kembali ke lab
         </button>
       </div>
     </div>

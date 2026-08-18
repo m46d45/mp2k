@@ -46,10 +46,14 @@ const GRID = "#e5e7eb";
 const MUTED = "#6b7280";
 const POINT = "#141414";
 
-/** Custom X marker for the invalid Little attempt */
-function InvalidX({ cx, cy }: { cx?: number; cy?: number }) {
-  if (cx == null || cy == null) return null;
-  const s = 7;
+/** Custom shape: X mark for the invalid (broken identity) attempt */
+function InvalidX(props: {
+  cx?: number;
+  cy?: number;
+  size?: number;
+}) {
+  const { cx = 0, cy = 0, size = 8 } = props;
+  const s = size;
   return (
     <g>
       <line
@@ -270,13 +274,13 @@ function LittleLesson({
                 strokeWidth={1.75}
               />
             ) : null}
-            {/* Percobaan invalid — ditandai X */}
+            {/* Percobaan invalid — diberi X */}
             {broken ? (
               <ReferenceDot
                 x={LITTLE_ATTEMPT.wip}
                 y={LITTLE_ATTEMPT.ct}
-                r={7}
-                shape={InvalidX}
+                r={0}
+                shape={<InvalidX size={8} />}
               />
             ) : null}
           </ComposedChart>

@@ -119,6 +119,9 @@ export function BridgeCard({ onOpenLab }: { onOpenLab: () => void }) {
           <strong className="text-fg">Kingman</strong> — ū resource tersibuk dan V kedatangan/pengerjaan.
         </li>
         <li>
+          <strong className="text-fg">CT vs WIP</strong> — di mana W0 dan Wopt; CT naik seiring WIP.
+        </li>
+        <li>
           <strong className="text-fg">FR</strong> — buffer panel vs lead time F.
         </li>
         <li>

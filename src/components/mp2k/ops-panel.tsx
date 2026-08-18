@@ -1,1 +1,1 @@
-FILE_FROM_DISK
+export { OpsPanel } from "@/components/mp2k/ops-panel-impl";

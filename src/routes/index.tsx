@@ -6,22 +6,20 @@ import { MetricsPanel } from "@/components/mp2k/metrics-panel";
 import { DesLeversPanel } from "@/components/mp2k/des-levers";
 import { OpsPanel } from "@/components/mp2k/ops-panel";
 import { CasePanel } from "@/components/mp2k/case-panel";
-import { CaseCurvesPanel } from "@/components/mp2k/case-curves";
-import { CaseConwipPanel } from "@/components/mp2k/case-conwip";
 import { GlossaryPanel } from "@/components/mp2k/glossary-panel";
 import { ManualPanel } from "@/components/mp2k/manual-panel";
 import { StatsPanel, StatsTracker, StatsStrip } from "@/components/mp2k/stats-panel";
 import { IntroPanel } from "@/components/mp2k/intro-panel";
 import { Mp2kLogo } from "@/components/mp2k/logo";
 import { cn } from "@/lib/utils";
-import { BookOpen, Box, Calculator, ArrowRight, ScrollText, BarChart3, GitBranch, Gauge } from "lucide-react";
+import { BookOpen, Box, Calculator, ArrowRight, ScrollText, BarChart3 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Mp2kApp,
 });
 
 type Door = "intro" | "lab";
-type StepId = "case" | "sim" | "analytics" | "curves" | "conwip" | "manual" | "stats";
+type StepId = "case" | "sim" | "analytics" | "manual" | "stats";
 
 const STEPS: {
   id: StepId;
@@ -32,9 +30,7 @@ const STEPS: {
 }[] = [
   { id: "case", n: "1", label: "Kasus", short: "Desain produk & proses", icon: BookOpen },
   { id: "sim", n: "2", label: "Simulasi", short: "DES · 3 tuas", icon: Box },
-  { id: "analytics", n: "3", label: "Analitik", short: "Tiga kurva", icon: Calculator },
-  { id: "curves", n: "4", label: "Kurva gabungan", short: "WIP–TH–CT", icon: GitBranch },
-  { id: "conwip", n: "5", label: "CONWIP", short: "Batas WIP", icon: Gauge },
+  { id: "analytics", n: "3", label: "Analitik", short: "Kurva + CONWIP", icon: Calculator },
 ];
 
 function goTop() {
@@ -145,7 +141,7 @@ function Mp2kApp() {
           {showLabNav ? (
             <nav
               aria-label="Alur kasus"
-              className="grid grid-cols-2 gap-1 rounded-[var(--radius-md)] border border-border bg-elevated p-1 sm:grid-cols-5"
+              className="grid grid-cols-3 gap-1 rounded-[var(--radius-md)] border border-border bg-elevated p-1"
             >
               {STEPS.map(({ id, n, label, short, icon: Icon }) => {
                 const active = step === id;
@@ -155,7 +151,7 @@ function Mp2kApp() {
                     type="button"
                     onClick={() => go(id)}
                     className={cn(
-                      "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-[calc(var(--radius-md)-2px)] px-1 py-2 text-center transition-colors sm:px-2",
+                      "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-[calc(var(--radius-md)-2px)] px-1 py-2 text-center transition-colors sm:flex-row sm:gap-2 sm:px-3",
                       active
                         ? "bg-primary text-primary-fg"
                         : "text-muted hover:bg-subtle/80 hover:text-fg",
@@ -170,13 +166,13 @@ function Mp2kApp() {
                       {n}
                     </span>
                     <span className="min-w-0">
-                      <span className="flex items-center justify-center gap-1 text-xs font-medium sm:text-sm">
-                        <Icon className="hidden size-3.5 lg:inline" strokeWidth={1.75} />
+                      <span className="flex items-center justify-center gap-1.5 text-sm font-medium">
+                        <Icon className="hidden size-3.5 sm:inline" strokeWidth={1.75} />
                         {label}
                       </span>
                       <span
                         className={cn(
-                          "hidden text-[10px] sm:block",
+                          "hidden text-[11px] sm:block",
                           active ? "text-primary-fg/70" : "text-faint",
                         )}
                       >
@@ -206,13 +202,7 @@ function Mp2kApp() {
           <SimStep onNext={() => go("analytics")} />
         )}
         {step !== "stats" && step !== "manual" && door === "lab" && step === "analytics" && (
-          <AnalyticsStep onOpenIntro={openIntro} onNext={() => go("curves")} />
-        )}
-        {step !== "stats" && step !== "manual" && door === "lab" && step === "curves" && (
-          <CaseCurvesPanel onNext={() => go("conwip")} />
-        )}
-        {step !== "stats" && step !== "manual" && door === "lab" && step === "conwip" && (
-          <CaseConwipPanel />
+          <AnalyticsStep onOpenIntro={openIntro} />
         )}
       </main>
 
@@ -296,41 +286,26 @@ function SimStep({ onNext }: { onNext: () => void }) {
   );
 }
 
-function AnalyticsStep({
-  onOpenIntro,
-  onNext,
-}: {
-  onOpenIntro: () => void;
-  onNext: () => void;
-}) {
+function AnalyticsStep({ onOpenIntro }: { onOpenIntro: () => void }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="max-w-2xl">
           <p className="text-xs font-medium uppercase tracking-wider text-faint">Langkah 3 · Analitik</p>
-          <h2 className="mt-1 text-xl font-semibold tracking-tight">Tiga kurva sains operasi</h2>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight">Kurva sains operasi + CONWIP</h2>
           <p className="mt-2 text-sm text-muted leading-relaxed">
-            Kurva yang sama dengan Pengenalan. Titik oranye = run DES.
-            Little (WIP–TH–CT), Kingman (variability × utilisasi), fill rate vs inventory.
+            Setelah Run DES, isi parameter dari hasil simulasi lalu hitung. Empat tampilan: Little,
+            Kingman, Inventory/FR, dan <strong className="text-fg">Kurva gabungan &amp; CONWIP</strong>
+            (WIP–TH–CT dengan batas CONWIP dari run).
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={onOpenIntro}
-            className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] border border-border bg-surface px-4 text-sm font-medium text-fg hover:bg-elevated"
-          >
-            Kembali ke pengenalan
-          </button>
-          <button
-            type="button"
-            onClick={onNext}
-            className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] bg-primary px-4 text-sm font-medium text-primary-fg"
-          >
-            Kurva gabungan
-            <ArrowRight className="size-4" />
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={onOpenIntro}
+          className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-sm)] border border-border bg-surface px-4 text-sm font-medium text-fg hover:bg-elevated"
+        >
+          Kembali ke pengenalan
+        </button>
       </div>
       <GlossaryPanel />
       <OpsPanel />

@@ -88,7 +88,7 @@ export function KingmanLesson({
       }
       reverse="Kalau lawannya: u turun atau V turun — QT mengecil, CT/te mendekati 1."
       onNext={onNext}
-      nextLabel="Lanjut ke Inventory"
+      nextLabel="Lanjut ke CT vs WIP"
     >
       <ScenarioButtons
         items={KINGMAN_SCENARIOS.map((s) => ({ id: s.id, label: s.label }))}

@@ -509,18 +509,37 @@ function InventoryLesson({
 
   const steps = INV_Z_STEPS.map((z) => invPoint(INV_BASE.leadTime, INV_BASE.demandCv, z));
 
+  // Always show base reference point when a scenario is active
+  const showBase = !!sc;
+
   return (
     <LessonShell
       kicker="Inventory / FR"
       question={INTRO_CURVES[2].question}
       ready={ready}
       formula={
-        <>
-          <p>FR naik jika S / (σ√L) naik</p>
-          <p className="text-muted">Stok efektif vs ketidakpastian selama lead time. Target contoh FR = 0,95.</p>
-        </>
+        <div className="space-y-3">
+          <p className="font-mono text-base">
+            <span className="font-semibold">FR</span> naik jika buffer / (σ√L) naik
+          </p>
+          <div className="grid gap-2 text-xs sm:grid-cols-2">
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
+              <span className="font-semibold text-fg">FR (Fill Rate)</span>
+              <span className="text-muted"> — proporsi permintaan yang terpenuhi dari stok (tanpa stockout)</span>
+            </div>
+            <div className="rounded border border-border/60 bg-surface px-2.5 py-1.5">
+              <span className="font-semibold text-fg">Buffer</span>
+              <span className="text-muted"> — safety stock, stok ekstra untuk melindungi dari ketidakpastian</span>
+            </div>
+          </div>
+          <p className="text-xs text-muted leading-relaxed">
+            Inventory di sini mencakup cycle stock + <strong className="text-fg">buffer (safety stock)</strong>.
+            Buffer melindungi terhadap variabilitas permintaan dan lead time.
+            Makin tinggi target FR, makin banyak buffer yang dibutuhkan — tapi dengan diminishing returns.
+          </p>
+        </div>
       }
-      reverse="Kalau lawannya: buffer turun — FR jatuh, lebih dulu di ekor kiri."
+      reverse="Kalau lawannya: buffer turun — FR jatuh, terutama di ekor kiri."
     >
       <IdentityRow
         items={[
@@ -531,28 +550,34 @@ function InventoryLesson({
 
       <div className="h-[280px] w-full sm:h-[320px]">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart margin={{ top: 12, right: 16, left: 4, bottom: 20 }}>
+          <ComposedChart data={curveNow} margin={{ top: 12, right: 16, left: 4, bottom: 20 }}>
             <CartesianGrid stroke={GRID} strokeDasharray="3 3" />
+            {/* Axes swapped: X = FR, Y = Inventory */}
             <XAxis
-              dataKey="inv"
-              type="number"
-              domain={[0, "auto"]}
-              tick={{ fill: MUTED, fontSize: 11 }}
-              label={{ value: "Inventory", position: "insideBottom", offset: -8, fill: MUTED, fontSize: 12 }}
-            />
-            <YAxis
               dataKey="fr"
               type="number"
               domain={[50, 100]}
               tick={{ fill: MUTED, fontSize: 11 }}
-              label={{ value: "FR (%)", angle: -90, position: "insideLeft", fill: MUTED, fontSize: 11 }}
+              label={{ value: "FR (%)", position: "insideBottom", offset: -8, fill: MUTED, fontSize: 12 }}
             />
-            <Tooltip formatter={(v: number) => formatNum(v)} />
+            <YAxis
+              dataKey="inv"
+              type="number"
+              domain={[0, "auto"]}
+              tick={{ fill: MUTED, fontSize: 11 }}
+              label={{ value: "Inventory", angle: -90, position: "insideLeft", fill: MUTED, fontSize: 11 }}
+            />
+            <Tooltip
+              formatter={(v: number, name: string) => [
+                formatNum(v),
+                name === "inv" || name === "Inventory" ? "Inventory" : "FR (%)",
+              ]}
+            />
             {sameStock ? (
               <Line
                 data={curveBase}
                 type="monotone"
-                dataKey="fr"
+                dataKey="inv"
                 name="semula"
                 stroke="#c4c4c4"
                 strokeDasharray="5 4"
@@ -562,9 +587,8 @@ function InventoryLesson({
               />
             ) : null}
             <Line
-              data={curveNow}
               type="monotone"
-              dataKey="fr"
+              dataKey="inv"
               name="kurva"
               stroke={POINT}
               strokeWidth={2.25}
@@ -575,8 +599,8 @@ function InventoryLesson({
               ? steps.map((s, i) => (
                   <ReferenceDot
                     key={INV_Z_STEPS[i]}
-                    x={s.inv}
-                    y={s.fr}
+                    x={s.fr}
+                    y={s.inv}
                     r={i === steps.length - 1 ? 7 : 5}
                     fill={i === steps.length - 1 ? POINT : "#fff"}
                     stroke={POINT}
@@ -585,12 +609,21 @@ function InventoryLesson({
                 ))
               : (
                 <>
-                  {sc ? (
-                    <ReferenceDot x={basePt.inv} y={basePt.fr} r={6} fill="#fff" stroke={POINT} strokeWidth={1.75} />
+                  {/* Titik acuan (base) — hollow ○ selalu terlihat saat membandingkan */}
+                  {showBase ? (
+                    <ReferenceDot
+                      x={basePt.fr}
+                      y={basePt.inv}
+                      r={6}
+                      fill="#fff"
+                      stroke={POINT}
+                      strokeWidth={1.75}
+                    />
                   ) : null}
-                  <ReferenceDot x={pt.inv} y={pt.fr} r={7} fill={POINT} stroke="#fff" strokeWidth={2} />
+                  {/* Titik baru (solid ●) */}
+                  <ReferenceDot x={pt.fr} y={pt.inv} r={7} fill={POINT} stroke="#fff" strokeWidth={2} />
                   {sameStock ? (
-                    <ReferenceLine x={pt.inv} stroke="#a3a3a3" strokeDasharray="4 3" />
+                    <ReferenceLine y={pt.inv} stroke="#a3a3a3" strokeDasharray="4 3" />
                   ) : null}
                 </>
               )}
@@ -627,7 +660,10 @@ function InventoryLesson({
           </span>
         </Say>
       ) : (
-        <p className="text-sm text-muted">Pilih satu if–then. Sumbu X = inventory, Y = fill rate.</p>
+        <p className="text-sm text-muted">
+          Titik acuan: FR {formatPct(basePt.fr / 100)} · Ī ≈ {formatNum(basePt.inv)}. Pilih satu if–then.
+          Sumbu X = FR (%), Y = Inventory.
+        </p>
       )}
     </LessonShell>
   );

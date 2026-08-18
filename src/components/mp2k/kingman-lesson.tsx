@@ -71,6 +71,13 @@ export function KingmanLesson({
       ready={ready}
       formula={
         <>
+          <p className="text-xs text-muted mb-1">Dekomposisi cycle time:</p>
+          <p>CT = PT + MT + ST + BT + QT</p>
+          <p className="text-[11px] text-muted mt-1 leading-relaxed">
+            PT proses · MT pindah · ST setup · BT batch ·{" "}
+            <strong className="text-fg">QT antrian</strong> (yang meledak saat ū tinggi)
+          </p>
+          <p className="mt-2 text-xs text-muted">Kingman memodelkan QT:</p>
           <p>CT ≈ te × (1 + ((ca²+ce²)/2) × (u/(1−u)))</p>
           <p className="text-xs text-muted mt-1">
             Base ajar ū=0,80 · V=0,5 pada bottleneck rb=2 (sistem demo yang sama).

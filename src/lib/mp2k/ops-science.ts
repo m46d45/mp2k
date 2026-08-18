@@ -414,7 +414,8 @@ export const KINGMAN_V_LEVELS = [
   { v: 1.0, key: "v100", label: "V=1,0 (sangat tinggi)", color: "#8b5cf6" },
 ] as const;
 
-export const KINGMAN_Y_MAX = 5.5;
+/** Higher ceiling so the asymptotic rise near ū→1 is visible (was 5.5). */
+export const KINGMAN_Y_MAX = 10;
 
 export function buildKingmanChart(params: {
   te: number;

@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { BuildingView } from "@/components/mp2k/building-view";
 import { SimControls } from "@/components/mp2k/sim-controls";
 import { MetricsPanel } from "@/components/mp2k/metrics-panel";
+import { DesTraceCharts } from "@/components/mp2k/des-trace-charts";
 import { DesLeversPanel } from "@/components/mp2k/des-levers";
 import { OpsPanel } from "@/components/mp2k/ops-panel";
 import { CasePanel } from "@/components/mp2k/case-panel";
@@ -271,6 +272,9 @@ function SimStep({ onNext }: { onNext: () => void }) {
           <div className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
             <h2 className="mb-3 text-sm font-semibold tracking-tight">Kendali DES</h2>
             <SimControls />
+            <div className="mt-4">
+              <DesTraceCharts />
+            </div>
           </div>
           <button
             type="button"

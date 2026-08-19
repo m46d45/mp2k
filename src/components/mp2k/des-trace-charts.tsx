@@ -10,6 +10,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ReferenceLine,
 } from "recharts";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useMp2k } from "@/lib/mp2k/store";
@@ -29,7 +30,14 @@ const MUTED = "#6b7280";
 export function DesTraceCharts() {
   const [open, setOpen] = useState(false);
   const trace = useMp2k((s) => s.desTrace ?? []);
+  const conwip = useMp2k((s) => s.desParams.conwip);
   const ready = trace.length > 1;
+  const maxWip = ready ? Math.max(...trace.map((p) => p.wip), 0) : 0;
+  /** Garis CONWIP hanya di domain jika dekat jejak — kalau jauh, catatan saja agar kurva tidak gepeng. */
+  const conwipInView = ready && conwip <= Math.max(maxWip * 1.35, maxWip + 2, 1);
+  const wipYMax = ready
+    ? Math.max(maxWip, conwipInView ? conwip : 0) * 1.12 + 0.5
+    : 4;
 
   return (
     <div className="rounded-[var(--radius-md)] border border-border bg-surface">
@@ -141,6 +149,8 @@ export function DesTraceCharts() {
                 </p>
                 <p className="mt-0.5 text-[11px] text-muted">
                   Job running di lab — bisa naik lalu stabil; bukan burn-down proyek sampai finish.
+                  {" "}
+                  Garis oranye = plafon <strong className="text-fg">CONWIP</strong> (Control).
                 </p>
                 <div className="mt-2 h-[180px] w-full sm:h-[200px]">
                   <ResponsiveContainer width="100%" height="100%">
@@ -160,6 +170,7 @@ export function DesTraceCharts() {
                         }}
                       />
                       <YAxis
+                        domain={[0, Math.ceil(wipYMax)]}
                         allowDecimals={false}
                         tick={{ fill: MUTED, fontSize: 11 }}
                         width={32}
@@ -168,6 +179,20 @@ export function DesTraceCharts() {
                         formatter={(v: number) => [formatNum(v), "WIP"]}
                         labelFormatter={(t: number) => `t ${formatNum(t)} hari`}
                       />
+                      {conwipInView ? (
+                        <ReferenceLine
+                          y={conwip}
+                          stroke="#f97316"
+                          strokeDasharray="4 3"
+                          strokeWidth={1.5}
+                          label={{
+                            value: `CONWIP=${conwip}`,
+                            position: "insideTopRight",
+                            fill: "#f97316",
+                            fontSize: 11,
+                          }}
+                        />
+                      ) : null}
                       <Line
                         type="monotone"
                         dataKey="wip"
@@ -180,6 +205,23 @@ export function DesTraceCharts() {
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
+                {!conwipInView && ready ? (
+                  <p className="mt-1.5 rounded-[var(--radius-sm)] border border-dashed border-orange-300/60 bg-orange-50/50 px-2.5 py-1.5 text-[11px] text-muted leading-relaxed">
+                    <strong className="text-fg">CONWIP = {conwip}</strong> di atas jejak WIP (max{" "}
+                    {formatNum(maxWip)}). Plafon Control praktis tidak mengikat — bandingkan preset{" "}
+                    <strong className="text-fg">CONWIP ketat</strong> (4) agar garis oranye muncul di
+                    grafik. Acuan: W0 = rb×T0 = 8 · Wopt ≈ 14.
+                  </p>
+                ) : (
+                  <p className="mt-1.5 text-[11px] text-muted leading-relaxed">
+                    Acuan teori: <span className="font-mono text-fg">W0 = rb×T0 = 8</span>
+                    {" · "}
+                    <span className="font-mono text-fg">Wopt ≈ 14</span>
+                    {" · "}
+                    CONWIP aktif = {conwip}. Preset <strong className="text-fg">WIP bebas</strong>{" "}
+                    (40) vs <strong className="text-fg">CONWIP ketat</strong> (4).
+                  </p>
+                )}
               </div>
 
               <ul className="list-disc space-y-1 pl-4 text-[11px] text-muted leading-relaxed">
@@ -188,6 +230,9 @@ export function DesTraceCharts() {
                 </li>
                 <li>
                   WIP lab bisa naik di awal run lalu mendatar — beda dengan sisa pekerjaan proyek yang turun ke nol di tanggal selesai.
+                </li>
+                <li>
+                  Garis CONWIP = batas Control. Jika WIP menempel ke garis, plafon mengikat; jika jauh di bawah, yang membatasi resource/kapasitas.
                 </li>
               </ul>
             </>

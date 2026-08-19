@@ -48,11 +48,11 @@ export function DesLeversPanel() {
         <CardHeader className="pb-2">
           <CardTitle className="text-sm">Eksperimen berpemandu</CardTitle>
           <CardDescription>
-            Empat skenario · pilih → Run all → bandingkan ke Dasar
+            Enam skenario · pilih → Run all → bandingkan ke Dasar
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {DES_PRESETS.map((preset) => {
               const on = activeId === preset.id;
               return (

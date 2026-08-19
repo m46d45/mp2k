@@ -1,13 +1,19 @@
 import { DEFAULT_DES_PARAMS, type DesParams } from "./engine";
 
-export type DesPresetId = "dasar" | "var_tinggi" | "inv_ketat" | "cap_longgar";
+export type DesPresetId =
+  | "dasar"
+  | "var_tinggi"
+  | "inv_ketat"
+  | "cap_longgar"
+  | "wip_bebas"
+  | "conwip_ketat";
 
 export type DesPreset = {
   id: DesPresetId;
   label: string;
   short: string;
   /** Which lever this scenario emphasizes */
-  lever: "baseline" | "variability" | "inventory" | "capacity";
+  lever: "baseline" | "variability" | "inventory" | "capacity" | "control";
   question: string;
   hint: string;
   params: DesParams;
@@ -15,7 +21,11 @@ export type DesPreset = {
 
 /**
  * Guided experiment presets for the Simulasi lab.
- * Product & process design stay fixed; only C / V / I change.
+ * Product & process design stay fixed; only C / V / I / Control change.
+ *
+ * CONWIP pedagogy (DEMO_SYSTEM):
+ *   T0 = te×stations = 4,  rb = m/te = 2,  W0 = rb×T0 = 8
+ *   V = 0.5,  Wopt ≈ W0(1+√V) ≈ 14
  */
 export const DES_PRESETS: DesPreset[] = [
   {
@@ -71,6 +81,36 @@ export const DES_PRESETS: DesPreset[] = [
       teColumn: 0.35,
       teBeam: 0.25,
       tePanel: 0.18,
+      seed: 42,
+    },
+  },
+  {
+    id: "wip_bebas",
+    label: "WIP bebas",
+    short: "Tanpa plafon CONWIP",
+    lever: "control",
+    question:
+      "CONWIP dimatikan (40): sejauh mana WIP naik di jejak waktu? Apa yang membatasi — resource atau Control?",
+    hint:
+      "Acuan teori: W0 = rb×T0 = 2×4 = 8; Wopt ≈ W0(1+√V) ≈ 14. CONWIP=40 ≫ Wopt → plafon Control praktis off; batas yang tersisa ≈ kapasitas resource.",
+    params: {
+      ...DEFAULT_DES_PARAMS,
+      conwip: 40,
+      seed: 42,
+    },
+  },
+  {
+    id: "conwip_ketat",
+    label: "CONWIP ketat",
+    short: "Plafon di bawah W0",
+    lever: "control",
+    question:
+      "CONWIP=4 (di bawah W0=8): apakah jejak WIP mendatar di 4? TH/CT dibanding WIP bebas bagaimana?",
+    hint:
+      "W0 = rb×T0 = 8; Wopt ≈ 14. CONWIP=4 di bawah W0 → sistem lapar (TH tertekan, CT dekat T0). Bandingkan garis oranye CONWIP di grafik WIP over Time.",
+    params: {
+      ...DEFAULT_DES_PARAMS,
+      conwip: 4,
       seed: 42,
     },
   },

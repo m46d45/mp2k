@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BuildingView } from "@/components/mp2k/building-view";
+import { CaseStrategies } from "@/components/mp2k/case-strategies";
 import { Hammer, Factory, Truck, ArrowRight, Layers, GitBranch, CalendarClock, Workflow, UserRound, HardHat } from "lucide-react";
 
 /**
@@ -171,6 +172,9 @@ export function CasePanel({ onNext }: { onNext: () => void }) {
           detail="Datang dari luar, tinggal pasang. Lead time panjang — inventory & FR kritis."
         />
       </div>
+
+      {/* Feature B: Cost & Schedule strategies (konseptual, given) */}
+      <CaseStrategies />
 
       {/* Process map notation (PPI) */}
       <Card className="border-fg/20">

@@ -415,7 +415,7 @@ export class DesEngine {
   }
 
   private tryStartJobs() {
-    // panel stock / CONWIP gate
+    // CONWIP + resource first; only then take panel stock (avoids stolen-buffer deadlock)
     for (const job of this.jobs) {
       if (job.status !== "pending" && job.status !== "ready") continue;
       const depsOk = job.deps.every(
@@ -424,9 +424,18 @@ export class DesEngine {
       if (!depsOk) continue;
       job.status = "ready";
 
+      const wip = this.jobs.filter((j) => j.status === "running").length;
+      if (wip >= this.params.conwip) continue;
+
+      const m = mFor(job.resource, this.params);
+      if (this.busy[job.resource] >= m) continue;
+
       if (job.kind === "panel") {
-        this.panelDemandAttempts++;
+        if (this.panelBuffer <= 0 && this.panelInTransit === 0) {
+          this.orderedPanels.delete(job.elementKey);
+        }
         if (this.panelBuffer <= 0) {
+          this.panelDemandAttempts++;
           this.panelStockouts++;
           if (!this.orderedPanels.has(job.elementKey)) {
             this.orderedPanels.add(job.elementKey);
@@ -446,14 +455,9 @@ export class DesEngine {
           }
           continue;
         }
+        this.panelDemandAttempts++;
         this.panelBuffer--;
       }
-
-      const wip = this.jobs.filter((j) => j.status === "running").length;
-      if (wip >= this.params.conwip) continue;
-
-      const m = mFor(job.resource, this.params);
-      if (this.busy[job.resource] >= m) continue;
 
       this.busy[job.resource]++;
       job.status = "running";
@@ -498,6 +502,7 @@ export class DesEngine {
         this.ctSum += job.ct;
         this.ctCount++;
         this.busy[job.resource] = Math.max(0, this.busy[job.resource] - 1);
+        this.pushLog(`END ${job.kind} t=${this.t.toFixed(2)}`);
         // visual updates
         if (job.kind === "column" && job.colKey && job.story) {
           this.visual.columnFloor[job.colKey] = job.story;

@@ -10,6 +10,7 @@ import {
   TOTALS,
   c3StructureReady,
   panelsForZone,
+  panelKey,
   hasStairVoid,
 } from "./model";
 import {
@@ -117,7 +118,8 @@ function deriveZones(
   for (const fl of [1, 2] as Floor[]) {
     for (let z = 1; z <= 8; z++) {
       const zid = z as ZoneId;
-      const pkeys = panelsForZone(fl, zid);
+      const n = panelsForZone(zid, fl);
+      const pkeys = Array.from({ length: n }, (_, i) => panelKey(fl, zid, i));
       const panelsReady =
         pkeys.length > 0 && pkeys.every((k) => panels[k] === "installed");
       const stairReady = fl === 1 && z === 6 ? stairs[stairKey()] === "installed" : true;

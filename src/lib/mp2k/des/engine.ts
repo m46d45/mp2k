@@ -240,12 +240,12 @@ function buildJobs(params: DesParams): Job[] {
   }
   jobs.push(...beamJobs);
 
-  // Panels per zone
+  // Panels per zone — panelsForZone returns COUNT, keys via panelKey
   for (let fl = 1; fl <= 2; fl++) {
     for (let z = 1; z <= 8; z++) {
-      const keys = panelsForZone(fl as Floor, z as ZoneId);
-      for (const pk of keys) {
-        // deps: beams on floor — simplified: all columns on floor
+      const n = panelsForZone(z as ZoneId, fl as Floor);
+      for (let i = 0; i < n; i++) {
+        const pk = panelKey(fl as Floor, z as ZoneId, i);
         const colDeps: string[] = [];
         for (let r = 0; r < COL_ROWS; r++) {
           for (let c = 0; c < COL_COLS; c++) {

@@ -133,7 +133,7 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
             <div>
               <p className="font-medium text-fg">3 · CT vs WIP</p>
               <p className="mt-1">
-                Kurva ketiga PPI. Best-case: CT = T0 jika WIP ≤ W0; CT = WIP/rb jika WIP > W0.
+                Kurva ketiga PPI. Best-case: CT = T0 jika WIP ≤ W0; CT = WIP/rb jika WIP {"\u003e"} W0.
                 Dengan variabilitas, CT naik lebih cepat. Acuan: W0 (critical) dan Wopt.
               </p>
             </div>
@@ -332,7 +332,7 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
                     ["TH", "Throughput", "job/hari"],
                     ["CT", "Cycle time", "hari"],
                     ["WIP", "Work-in-process", "job"],
-                    ["ū", "Utilisasi resource", "0–1"],
+                    ["\u016b", "Utilisasi resource", "0–1"],
                     ["te", "Waktu proses efektif", "hari/job"],
                     ["m", "Resource paralel", "—"],
                     ["ca, ce", "CV kedatangan & proses", "—"],
@@ -355,7 +355,7 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
             <div className="space-y-1 rounded-[var(--radius-sm)] border border-border bg-elevated px-3 py-2.5 font-mono text-xs text-fg">
               <p>Little: WIP = TH × CT (sistem stabil)</p>
               <p>Kingman: CT/te ≈ 1 + V · ū / (1 − ū)</p>
-              <p>CT vs WIP (best): CT = T0 jika WIP ≤ W0; CT = WIP/rb jika WIP > W0</p>
+              <p>CT vs WIP (best): CT = T0 jika WIP ≤ W0; CT = WIP/rb jika WIP {"\u003e"} W0</p>
               <p>W0 = rb × T0 · Wopt ≈ W0 (1 + √V)</p>
               <p>FR DES ≈ 1 − (stockout / percobaan ambil stok)</p>
             </div>

@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { formatNum, formatPct } from "@/lib/mp2k/ops-science";
 import { compareDesToTheory } from "@/lib/mp2k/des/compare";
 import { DesOperatingStrip } from "@/components/mp2k/des-operating-strip";
+import { DesTraceCharts } from "@/components/mp2k/des-trace-charts";
 
 export function MetricsPanel() {
   const metrics = useMp2k((s) => s.metrics);
@@ -69,6 +70,8 @@ export function MetricsPanel() {
       </div>
 
       <DesOperatingStrip variant="compact" />
+
+      <DesTraceCharts />
 
       {/* DES ops-science empirics */}
       <div className="rounded-[var(--radius-md)] border border-border bg-surface p-4">

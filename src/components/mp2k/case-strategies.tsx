@@ -17,11 +17,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { formatNum } from "@/lib/mp2k/ops-science";
 
 /**
  * Feature B — Costs & Schedules based Production Strategies (konseptual).
- * Angka given, bukan hasil Run DES. Tiga paket produk+proses untuk trade-off.
+ * Semua metrik = indeks 1–5 (given), bukan hari/biaya absolut atau output DES.
  */
 
 export type StrategyId = "tradisional" | "hibrid" | "industri";
@@ -30,21 +29,20 @@ export type ProductionStrategy = {
   id: StrategyId;
   label: string;
   short: string;
-  /** Product + process framing */
   product: string;
   process: string;
   moda: string;
-  /** Schedule — hari lab struktur (given) */
+  /** Indeks schedule 1=cepat … 5=lama */
   duration: number;
-  /** Cost index, Dasar tradisional = 100 */
+  /** Indeks biaya 1=rendah … 5=tinggi */
   cost: number;
-  /** Peak WIP (given, unit job) */
+  /** Indeks WIP puncak 1=rendah … 5=tinggi */
   peakWip: number;
   note: string;
   color: string;
 };
 
-/** Angka given untuk perbandingan — bukan output engine. */
+/** Indeks given 1–5 — perbandingan relatif, bukan satuan lab. */
 export const CASE_STRATEGIES: ProductionStrategy[] = [
   {
     id: "tradisional",
@@ -53,10 +51,10 @@ export const CASE_STRATEGIES: ProductionStrategy[] = [
     product: "Hampir semua elemen dicor di lokasi",
     process: "Sekuensial per zona; sedikit prerabrikasi",
     moda: "M >> N, F",
-    duration: 28,
-    cost: 100,
-    peakWip: 18,
-    note: "Schedule lebih panjang; biaya material relatif rendah, tenaga site dan CT tinggi.",
+    duration: 5,
+    cost: 2,
+    peakWip: 5,
+    note: "Schedule paling panjang; biaya material relatif rendah, tenaga site dan CT tinggi.",
     color: "#64748b",
   },
   {
@@ -66,9 +64,9 @@ export const CASE_STRATEGIES: ProductionStrategy[] = [
     product: "Kolom site · balok near-site · panel far-supply",
     process: "Gelombang zona; tiga moda harus match di workface",
     moda: "M · N · F",
-    duration: 18,
-    cost: 112,
-    peakWip: 12,
+    duration: 3,
+    cost: 3,
+    peakWip: 3,
     note: "Framing kasus lab saat ini. Titik tengah cost–schedule; inventory & CONWIP menjadi kritis.",
     color: "#f97316",
   },
@@ -79,9 +77,9 @@ export const CASE_STRATEGIES: ProductionStrategy[] = [
     product: "Panel dan elemen prerabrikasi lebih agresif",
     process: "Assembly-dominated; lead time supply lebih panjang",
     moda: "F >> M, N",
-    duration: 12,
-    cost: 130,
-    peakWip: 8,
+    duration: 2,
+    cost: 5,
+    peakWip: 2,
     note: "Schedule lebih pendek; biaya bergeser ke material/logistik. WIP puncak lebih terkendali jika pasokan stabil.",
     color: "#0f766e",
   },
@@ -116,14 +114,15 @@ export function CaseStrategies() {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Strategi produksi · cost & schedule</CardTitle>
         <CardDescription>
-          Tiga paket <strong className="text-fg">produk + proses</strong> (given) — bukan hasil Run
-          DES. Owner melihat cost & schedule; builder memilih sistem produksi.
+          Tiga paket <strong className="text-fg">produk + proses</strong> — metrik indeks 1–5
+          (konseptual), bukan hasil Run DES.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="rounded-[var(--radius-sm)] border border-dashed border-border bg-elevated px-3 py-2 text-[11px] text-muted leading-relaxed">
-          Angka konseptual untuk pembelajaran (indeks biaya: Tradisional = 100). Tidak dihitung dari
-          engine lab. Strategi <strong className="text-fg">Hibrid</strong> ≈ framing kasus Simulasi.
+          Skala <strong className="text-fg">1–5</strong>: Durasi 1=cepat · 5=lama; Biaya 1=rendah ·
+          5=tinggi; WIP puncak 1=rendah · 5=tinggi. Bukan hari atau rupiah absolut. Strategi{" "}
+          <strong className="text-fg">Hibrid</strong> ≈ framing kasus Simulasi.
         </p>
 
         <div className="grid gap-2 sm:grid-cols-3">
@@ -153,7 +152,7 @@ export function CaseStrategies() {
                     on ? "text-primary-fg/75" : "text-faint",
                   )}
                 >
-                  {s.duration} hari · biaya {s.cost}
+                  D{s.duration} · B{s.cost} · W{s.peakWip}
                 </span>
               </button>
             );
@@ -172,9 +171,9 @@ export function CaseStrategies() {
           </p>
           <p className="mt-1 text-xs text-muted leading-relaxed">{sc.note}</p>
           <div className="mt-2 grid grid-cols-3 gap-2">
-            <Metric k="Durasi" v={`${formatNum(sc.duration)} hari`} />
-            <Metric k="Biaya" v={formatNum(sc.cost)} />
-            <Metric k="WIP puncak" v={formatNum(sc.peakWip)} />
+            <Metric k="Durasi" v={`${sc.duration} / 5`} />
+            <Metric k="Biaya" v={`${sc.cost} / 5`} />
+            <Metric k="WIP puncak" v={`${sc.peakWip} / 5`} />
           </div>
         </div>
 
@@ -183,7 +182,7 @@ export function CaseStrategies() {
             Cost vs Schedule
           </p>
           <p className="mt-0.5 text-[11px] text-muted">
-            X = durasi (hari) · Y = indeks biaya. Tidak ada satu titik terbaik — ada trade-off.
+            X = indeks durasi (1 cepat → 5 lama) · Y = indeks biaya (1 rendah → 5 tinggi).
           </p>
           <div className="mt-2 h-[240px] w-full sm:h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -193,10 +192,11 @@ export function CaseStrategies() {
                   type="number"
                   dataKey="duration"
                   name="Durasi"
-                  domain={[8, 32]}
+                  domain={[1, 5]}
+                  ticks={[1, 2, 3, 4, 5]}
                   tick={{ fill: MUTED, fontSize: 11 }}
                   label={{
-                    value: "Durasi (hari)",
+                    value: "Durasi (indeks 1–5)",
                     position: "insideBottom",
                     offset: -6,
                     fill: MUTED,
@@ -207,17 +207,18 @@ export function CaseStrategies() {
                   type="number"
                   dataKey="cost"
                   name="Biaya"
-                  domain={[90, 140]}
+                  domain={[1, 5]}
+                  ticks={[1, 2, 3, 4, 5]}
                   tick={{ fill: MUTED, fontSize: 11 }}
                   label={{
-                    value: "Biaya (indeks)",
+                    value: "Biaya (indeks 1–5)",
                     angle: -90,
                     position: "insideLeft",
                     fill: MUTED,
                     fontSize: 11,
                   }}
                 />
-                <ZAxis range={[120, 120]} />
+                <ZAxis range={[140, 140]} />
                 <Tooltip
                   cursor={{ strokeDasharray: "3 3" }}
                   content={({ active: tipOn, payload }) => {
@@ -227,8 +228,7 @@ export function CaseStrategies() {
                       <div className="rounded border border-border bg-surface px-2.5 py-1.5 text-xs shadow-sm">
                         <p className="font-medium text-fg">{d.name}</p>
                         <p className="text-muted">
-                          Durasi {formatNum(d.duration)} hari · Biaya {formatNum(d.cost)} · WIP{" "}
-                          {formatNum(d.peakWip)}
+                          Durasi {d.duration}/5 · Biaya {d.cost}/5 · WIP {d.peakWip}/5
                         </p>
                       </div>
                     );
@@ -263,15 +263,15 @@ export function CaseStrategies() {
 
         <div>
           <p className="text-[11px] font-medium uppercase tracking-wide text-faint">
-            Bandingkan tiga metrik
+            Bandingkan tiga indeks (1–5)
           </p>
           <div className="mt-2 h-[200px] w-full sm:h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={bars} margin={{ top: 8, right: 8, left: 0, bottom: 4 }}>
                 <CartesianGrid stroke={GRID} strokeDasharray="3 3" />
                 <XAxis dataKey="name" tick={{ fill: MUTED, fontSize: 11 }} />
-                <YAxis tick={{ fill: MUTED, fontSize: 11 }} width={32} />
-                <Tooltip formatter={(v: number, name: string) => [formatNum(v), name]} />
+                <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} tick={{ fill: MUTED, fontSize: 11 }} width={28} />
+                <Tooltip formatter={(v: number, name: string) => [`${v} / 5`, name]} />
                 <Legend verticalAlign="top" height={28} wrapperStyle={{ fontSize: 11 }} />
                 <Bar dataKey="Durasi" fill="#64748b" radius={[3, 3, 0, 0]} isAnimationActive={false}>
                   <LabelList dataKey="Durasi" position="top" fill={MUTED} fontSize={10} />
@@ -294,8 +294,8 @@ export function CaseStrategies() {
 
         <ul className="list-disc space-y-1 pl-4 text-[11px] text-muted leading-relaxed">
           <li>
-            Schedule yang lebih pendek biasanya menggeser biaya (material, logistik, prerabrikasi) —
-            bukan gratis.
+            Indeks relatif: schedule lebih pendek biasanya menaikkan indeks biaya — trade-off, bukan
+            ranking tunggal.
           </li>
           <li>
             Memilih strategi = memilih <strong className="text-fg">produk + proses</strong> (tuas 1–2).

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   INTRO_CURVES,
   LITTLE_SCENARIOS,
@@ -18,26 +18,37 @@ import { CtwipLesson } from "@/components/mp2k/ctwip-lesson";
 import { InventoryLesson } from "@/components/mp2k/inventory-lesson";
 import { ControlLesson } from "@/components/mp2k/control-lesson";
 import { BridgeCard } from "@/components/mp2k/intro-shared";
+import { clearIntroDone, loadIntroDone, saveIntroDone } from "@/lib/mp2k/persist";
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
+import { Check, RotateCcw } from "lucide-react";
 
-type Props = { onOpenLab: () => void };
+type Props = {
+  onOpenLab: () => void;
+  curve: IntroCurve;
+  onCurveChange: (c: IntroCurve) => void;
+};
 
-export function IntroPanel({ onOpenLab }: Props) {
-  const [curve, setCurve] = useState<IntroCurve>("little");
-  const [done, setDone] = useState<Record<IntroCurve, string[]>>({
-    little: [],
-    kingman: [],
-    ctwip: [],
-    inventory: [],
-    control: [],
-  });
+export function IntroPanel({ onOpenLab, curve, onCurveChange }: Props) {
+  const [done, setDone] = useState(() =>
+    typeof window === "undefined"
+      ? { little: [] as string[], kingman: [], ctwip: [], inventory: [], control: [] }
+      : loadIntroDone(),
+  );
+
+  useEffect(() => {
+    saveIntroDone(done);
+  }, [done]);
 
   function mark(id: IntroCurve, sid: string) {
     setDone((prev) => {
       const list = prev[id] ?? [];
       return list.includes(sid) ? prev : { ...prev, [id]: [...list, sid] };
     });
+  }
+
+  function resetProgress() {
+    clearIntroDone();
+    setDone({ little: [], kingman: [], ctwip: [], inventory: [], control: [] });
   }
 
   function needFor(id: IntroCurve) {
@@ -56,7 +67,21 @@ export function IntroPanel({ onOpenLab }: Props) {
   return (
     <div className="space-y-6">
       <div className="max-w-3xl space-y-3">
-        <h2 className="text-xl font-semibold tracking-tight">Pengenalan</h2>
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <h2 className="text-xl font-semibold tracking-tight">Pengenalan</h2>
+          <button
+            type="button"
+            onClick={resetProgress}
+            className="inline-flex min-h-9 items-center gap-1.5 rounded-[var(--radius-sm)] border border-border bg-surface px-2.5 text-xs font-medium text-muted hover:text-fg"
+            title="Hapus centang skenario di perangkat ini"
+          >
+            <RotateCcw className="size-3.5" />
+            Reset progres
+          </button>
+        </div>
+        <p className="text-xs text-faint">
+          Progres skenario tersimpan di peramban (tetap setelah refresh).
+        </p>
 
         <p className="text-sm text-muted leading-relaxed">
           Apa yang mengalir di proyek? Empat verb produksi:{" "}
@@ -141,7 +166,7 @@ export function IntroPanel({ onOpenLab }: Props) {
             <button
               key={c.id}
               type="button"
-              onClick={() => setCurve(c.id)}
+              onClick={() => onCurveChange(c.id)}
               className={cn(
                 "flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-[calc(var(--radius-md)-2px)] px-1 py-2",
                 active ? "bg-primary text-primary-fg" : "text-muted hover:bg-subtle/80 hover:text-fg",
@@ -165,28 +190,28 @@ export function IntroPanel({ onOpenLab }: Props) {
         <LittleLesson
           seen={done.little}
           onSee={(id) => mark("little", id)}
-          onNext={() => setCurve("kingman")}
+          onNext={() => onCurveChange("kingman")}
         />
       )}
       {curve === "kingman" && (
         <KingmanLesson
           seen={done.kingman}
           onSee={(id) => mark("kingman", id)}
-          onNext={() => setCurve("ctwip")}
+          onNext={() => onCurveChange("ctwip")}
         />
       )}
       {curve === "ctwip" && (
         <CtwipLesson
           seen={done.ctwip}
           onSee={(id) => mark("ctwip", id)}
-          onNext={() => setCurve("inventory")}
+          onNext={() => onCurveChange("inventory")}
         />
       )}
       {curve === "inventory" && (
         <InventoryLesson
           seen={done.inventory}
           onSee={(id) => mark("inventory", id)}
-          onNext={() => setCurve("control")}
+          onNext={() => onCurveChange("control")}
         />
       )}
       {curve === "control" && (

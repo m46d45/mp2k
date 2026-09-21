@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 
 @theme {
-  /* Light, muted black & white */
+  /* Light, muted black & white + distinct mode accents for projector */
   --color-bg: #f7f7f6;
   --color-surface: #ffffff;
   --color-elevated: #f0f0ef;
@@ -15,16 +15,17 @@
   --color-primary: #1a1a1a;
   --color-primary-fg: #fafafa;
   --color-accent: #2e2e2e;
-  --color-mode-m: #3a3a3a;
-  --color-mode-n: #5a5a5a;
-  --color-mode-f: #7a7a7a;
-  --color-success: #2f2f2f;
-  --color-warn: #6b6b6b;
-  --color-danger: #4a4a4a;
+  /* Mode colors — distinct on projector (not grayscale) */
+  --color-mode-m: #b45309;
+  --color-mode-n: #1d4ed8;
+  --color-mode-f: #0f766e;
+  --color-success: #166534;
+  --color-warn: #a16207;
+  --color-danger: #b91c1c;
   --color-foundation: #9a9a98;
-  --color-column: #2c2c2c;
-  --color-beam: #4a4a4a;
-  --color-panel: #6e6e6e;
+  --color-column: #b45309;
+  --color-beam: #1d4ed8;
+  --color-panel: #0f766e;
   --color-stair: #1a1a1a;
   --color-empty: #e2e2e0;
   --color-void: #fafafa;

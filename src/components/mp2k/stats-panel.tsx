@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchStats, type Mp2kStats } from "@/lib/mp2k/stats-client";
+import { loadCohortLabel, saveCohortLabel } from "@/lib/mp2k/persist";
 import { Users, PlayCircle, RefreshCw, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -37,6 +38,12 @@ export function StatsPanel() {
   const [stats, setStats] = useState<Mp2kStats | null>(null);
   const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [cohort, setCohort] = useState("");
+  const [dayFilter, setDayFilter] = useState<"all" | "7" | "1">("all");
+
+  useEffect(() => {
+    setCohort(loadCohortLabel());
+  }, []);
 
   async function load() {
     setLoading(true);
@@ -50,7 +57,11 @@ export function StatsPanel() {
     void load();
   }, []);
 
-  const maxBar = Math.max(1, ...(stats?.daily ?? []).flatMap((d) => [d.visits, d.sims]));
+  const dailyAll = stats?.daily ?? [];
+  const dailyFiltered =
+    dayFilter === "all" ? dailyAll : dailyAll.slice(-(dayFilter === "1" ? 1 : 7));
+  const maxBar = Math.max(1, ...dailyFiltered.flatMap((d) => [d.visits, d.sims]), 1);
+  const cols = Math.max(dailyFiltered.length, 1);
 
   return (
     <div className="space-y-6">
@@ -59,10 +70,9 @@ export function StatsPanel() {
           <p className="text-xs font-medium uppercase tracking-wider text-faint">Statistik</p>
           <h2 className="mt-1 text-xl font-semibold tracking-tight">Pengunjung dan simulasi</h2>
           <p className="mt-2 text-sm text-muted leading-relaxed">
-            Angka agregat, tanpa nama. Setiap peramban mendapat identitas acak di perangkatnya.
-            Kunjungan dihitung ulang setelah 30 menit tidak aktif. Simulasi dihitung saat DES
-            selesai (Run all atau jalankan sampai akhir). Pencatatan dimulai ulang — data uji
-            sebelumnya sudah dihapus.
+            Angka agregat, tanpa nama. Identitas acak di peramban; kunjungan dihitung ulang setelah 30
+            menit tidak aktif. Label cohort hanya catatan lokal di perangkat ini. Tanpa Neon,
+            statistik bisa hilang saat server restart — lihat TEACHING.md.
           </p>
         </div>
         <button
@@ -73,6 +83,50 @@ export function StatsPanel() {
           <RefreshCw className={cn("size-3.5", loading && "animate-spin")} strokeWidth={1.75} />
           Muat ulang
         </button>
+      </div>
+
+      <div className="flex flex-wrap items-end gap-3 rounded-[var(--radius-md)] border border-border bg-elevated/50 p-3">
+        <label className="flex min-w-[12rem] flex-1 flex-col gap-1 text-sm">
+          <span className="text-[10px] font-medium uppercase tracking-wide text-faint">
+            Label cohort (lokal)
+          </span>
+          <input
+            className="min-h-10 rounded-[var(--radius-sm)] border border-border bg-bg px-3 text-fg outline-none focus:border-fg"
+            value={cohort}
+            placeholder="mis. Kelas A · 21 Sep 2026"
+            onChange={(e) => {
+              setCohort(e.target.value);
+              saveCohortLabel(e.target.value);
+            }}
+          />
+        </label>
+        <div
+          className="inline-flex rounded-[var(--radius-sm)] border border-border bg-surface p-1"
+          role="group"
+          aria-label="Filter hari grafik"
+        >
+          {(
+            [
+              ["1", "Hari ini"],
+              ["7", "7 hari"],
+              ["all", "Semua"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setDayFilter(id)}
+              className={cn(
+                "min-h-9 px-2.5 text-xs font-medium",
+                dayFilter === id
+                  ? "rounded-[calc(var(--radius-sm)-2px)] bg-primary text-primary-fg"
+                  : "text-muted",
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {err ? (
@@ -104,19 +158,23 @@ export function StatsPanel() {
           icon={PlayCircle}
           label="Rata-rata / pengunjung"
           value={
-            stats && stats.visitors > 0
-              ? (stats.simulations / stats.visitors).toFixed(1)
-              : "—"
+            stats && stats.visitors > 0 ? (stats.simulations / stats.visitors).toFixed(1) : "—"
           }
           hint="jumlah simulasi selesai"
         />
       </div>
 
       <div className="rounded-[var(--radius-xl)] border border-border bg-surface p-5">
-        <h3 className="text-sm font-semibold tracking-tight">14 hari terakhir</h3>
+        <h3 className="text-sm font-semibold tracking-tight">Grafik harian</h3>
         <p className="mt-1 text-xs text-muted">Batang gelap = kunjungan · batang penuh = simulasi</p>
-        <div className="mt-4 grid items-end gap-1.5" style={{ gridTemplateColumns: "repeat(14, minmax(0, 1fr))" }}>
-          {(stats?.daily ?? Array.from({ length: 14 }, () => ({ day: "", visits: 0, sims: 0 }))).map((d, i) => (
+        <div
+          className="mt-4 grid items-end gap-1.5"
+          style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+        >
+          {(dailyFiltered.length
+            ? dailyFiltered
+            : Array.from({ length: 7 }, () => ({ day: "", visits: 0, sims: 0 }))
+          ).map((d, i) => (
             <div key={d.day || i} className="flex flex-col items-center gap-1">
               <div className="flex h-24 w-full items-end justify-center gap-0.5">
                 <div
@@ -130,9 +188,7 @@ export function StatsPanel() {
                   title={`${d.day} · ${d.sims} simulasi`}
                 />
               </div>
-              <span className="text-[10px] text-faint">
-                {d.day ? d.day.slice(8) : "—"}
-              </span>
+              <span className="text-[10px] text-faint">{d.day ? d.day.slice(8) : "—"}</span>
             </div>
           ))}
         </div>
@@ -145,7 +201,10 @@ export function StatsPanel() {
         ) : (
           <ul className="mt-3 divide-y divide-border">
             {stats.recent.map((e, i) => (
-              <li key={`${e.createdAt}-${i}`} className="flex flex-wrap items-baseline justify-between gap-2 py-2.5 text-sm">
+              <li
+                key={`${e.createdAt}-${i}`}
+                className="flex flex-wrap items-baseline justify-between gap-2 py-2.5 text-sm"
+              >
                 <span className="text-fg">{kindLabel(e.kind, e.how)}</span>
                 <span className="font-mono text-xs text-faint">
                   {e.visitorShort} · {formatWhen(e.createdAt)}
@@ -206,11 +265,7 @@ export function StatsStrip({ onOpen }: { onOpen: () => void }) {
   }
 
   return (
-    <button
-      type="button"
-      onClick={onOpen}
-      className="text-xs text-faint hover:text-muted"
-    >
+    <button type="button" onClick={onOpen} className="text-xs text-faint hover:text-muted">
       {stats.visitors} pengunjung · {stats.simulations} simulasi
     </button>
   );

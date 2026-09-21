@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   DEFAULT_OPS,
   type OpId,
@@ -12,6 +12,7 @@ import {
 } from "@/lib/mp2k/ops-science";
 import { DES_METRIC_COLORS } from "@/lib/mp2k/des/operating-point";
 import { DesOperatingStrip, useDesOperatingPoint } from "@/components/mp2k/des-operating-strip";
+import { LabExportBar } from "@/components/mp2k/lab-export";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -51,6 +52,8 @@ export function OpsPanel() {
   const [littleOverride, setLittleOverride] = useState({ wip: "", th: "", ct: "" });
   const [snapshot, setSnapshot] = useState<CalcSnapshot | null>(null);
   const [dirty, setDirty] = useState(true);
+  const [autoNote, setAutoNote] = useState(false);
+  const lastSeedKey = useRef<string>("");
   const op = ops.find((o) => o.id === opId) ?? ops[0];
 
   function markDirty() {
@@ -65,55 +68,92 @@ export function OpsPanel() {
     setLittleOverride({ wip: "", th: "", ct: "" });
     setSnapshot(null);
     setDirty(true);
+    lastSeedKey.current = "";
+    setAutoNote(false);
   }
+
+  function applyDesSeed() {
+    if (!desPoint.ready) return null;
+    const p = desPoint.params;
+    const nextOps = DEFAULT_OPS.map((o) =>
+      o.id === "system"
+        ? {
+            ...o,
+            te: desPoint.teBot,
+            th: Math.max(desPoint.th, 0.01),
+            m: desPoint.mBot,
+            stations: 3,
+            ca: p.ca,
+            ce: p.ce,
+            demandCv: Math.max(p.ca, p.ce, 0.2),
+            leadTime: p.panelLeadTime,
+            conwip: p.conwip,
+            serviceLevel: 0.95,
+          }
+        : { ...o },
+    );
+    const override = {
+      wip: String(Number(desPoint.wip.toFixed(3))),
+      th: String(Number(desPoint.th.toFixed(3))),
+      ct: String(Number(desPoint.ct.toFixed(3))),
+    };
+    return { nextOps, override, systemOp: nextOps.find((o) => o.id === "system")! };
+  }
+
+  function seedFromDes() {
+    const seeded = applyDesSeed();
+    if (!seeded) return;
+    setOps(seeded.nextOps);
+    setOpId("system");
+    setLittleOverride(seeded.override);
+    setDirty(true);
+    setAutoNote(false);
+  }
+
   function startCalculation() {
-    setSnapshot(runCalculation(op, solveFor, littleOverride));
+    const current = ops.find((o) => o.id === opId) ?? ops[0];
+    setSnapshot(runCalculation(current, solveFor, littleOverride));
     setDirty(false);
     requestAnimationFrame(() => {
       document.getElementById("ops-charts")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
-  function seedFromDes() {
-    if (!desPoint.ready) return;
-    const p = desPoint.params;
-    setOps((prev) =>
-      prev.map((o) =>
-        o.id === "system"
-          ? {
-              ...o,
-              te: desPoint.teBot,
-              th: Math.max(desPoint.th, 0.01),
-              m: desPoint.mBot,
-              stations: 3,
-              ca: p.ca,
-              ce: p.ce,
-              demandCv: Math.max(p.ca, p.ce, 0.2),
-              leadTime: p.panelLeadTime,
-              conwip: p.conwip,
-              serviceLevel: 0.95,
-            }
-          : o,
-      ),
-    );
+
+  /** Auto-isi + hitung saat DES siap / run baru selesai. */
+  useEffect(() => {
+    if (!desPoint.ready || !desPoint.complete) return;
+    const key = `${desPoint.simTime.toFixed(4)}|${desPoint.th.toFixed(4)}|${desPoint.wip.toFixed(4)}`;
+    if (key === lastSeedKey.current) return;
+    lastSeedKey.current = key;
+    const seeded = applyDesSeed();
+    if (!seeded) return;
+    setOps(seeded.nextOps);
     setOpId("system");
-    setLittleOverride({
-      wip: String(Number(desPoint.wip.toFixed(3))),
-      th: String(Number(desPoint.th.toFixed(3))),
-      ct: String(Number(desPoint.ct.toFixed(3))),
-    });
-    setDirty(true);
-  }
+    setLittleOverride(seeded.override);
+    setSnapshot(runCalculation(seeded.systemOp, "wip", seeded.override));
+    setDirty(false);
+    setAutoNote(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-seed when DES operating point changes
+  }, [desPoint.ready, desPoint.complete, desPoint.simTime, desPoint.th, desPoint.wip]);
 
   return (
     <div className="space-y-5">
       <DesOperatingStrip variant="full" />
+      <LabExportBar />
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold tracking-tight">Hitung sistem produksi</h2>
           <p className="mt-1 max-w-2xl text-sm text-muted leading-relaxed">
-            Alur: Run DES → <strong className="text-fg">Isi dari DES</strong> →{" "}
-            <strong className="text-fg">Mulai perhitungan</strong>. Marker oranye = posisi DES.
+            Setelah Run DES selesai, parameter dan kurva{" "}
+            <strong className="text-fg">otomatis diisi</strong> dari titik operasi. Marker oranye =
+            posisi DES. Tombol di bawah untuk isi ulang manual atau hitung ulang.
           </p>
+          {autoNote ? (
+            <p className="mt-1 text-xs text-teal-800">
+              Terisi otomatis dari DES terakhir. Ubah parameter lalu tekan Mulai perhitungan jika
+              perlu.
+            </p>
+          ) : null}
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={resetOps}>

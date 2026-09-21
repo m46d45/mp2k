@@ -114,15 +114,17 @@ export function CaseStrategies() {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Strategi produksi · cost & schedule</CardTitle>
         <CardDescription>
-          Tiga paket <strong className="text-fg">produk + proses</strong> — metrik indeks 1–5
-          (konseptual), bukan hasil Run DES.
+          Perbandingan <strong className="text-fg">konseptual</strong> (indeks 1–5) —{" "}
+          <strong className="text-fg">bukan parameter mesin DES</strong>. Memilih kartu di sini tidak
+          mengubah Simulasi.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="rounded-[var(--radius-sm)] border border-dashed border-border bg-elevated px-3 py-2 text-[11px] text-muted leading-relaxed">
+        <p className="rounded-[var(--radius-sm)] border border-amber-600/30 bg-amber-50 px-3 py-2 text-[11px] text-muted leading-relaxed">
           Skala <strong className="text-fg">1–5</strong>: Durasi 1=cepat · 5=lama; Biaya 1=rendah ·
-          5=tinggi; WIP puncak 1=rendah · 5=tinggi. Bukan hari atau rupiah absolut. Strategi{" "}
-          <strong className="text-fg">Hibrid</strong> ≈ framing kasus Simulasi.
+          5=tinggi; WIP puncak 1=rendah · 5=tinggi. Framing lab DES = strategi{" "}
+          <strong className="text-fg">Hibrid</strong> (kolom M · balok N · panel F). Untuk mengubah
+          perilaku sistem, pakai preset di langkah <strong className="text-fg">Simulasi</strong>.
         </p>
 
         <div className="grid gap-2 sm:grid-cols-3">

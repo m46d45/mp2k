@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { BuildingView } from "@/components/mp2k/building-view";
 import { SimControls } from "@/components/mp2k/sim-controls";
@@ -11,16 +11,25 @@ import { GlossaryPanel } from "@/components/mp2k/glossary-panel";
 import { ManualPanel } from "@/components/mp2k/manual-panel";
 import { StatsPanel, StatsTracker, StatsStrip } from "@/components/mp2k/stats-panel";
 import { IntroPanel } from "@/components/mp2k/intro-panel";
+import { WorksheetPanel } from "@/components/mp2k/worksheet-panel";
+import { LabExportBar } from "@/components/mp2k/lab-export";
 import { Mp2kLogo } from "@/components/mp2k/logo";
 import { cn } from "@/lib/utils";
-import { BookOpen, Box, Calculator, ArrowRight, ScrollText, BarChart3 } from "lucide-react";
+import {
+  type Door,
+  type IntroCurve,
+  type StepId,
+  readLabNavFromLocation,
+  writeLabNav,
+} from "@/lib/mp2k/nav";
+import { loadCaseMode, saveCaseMode, type CaseMode } from "@/lib/mp2k/persist";
+import { useMp2k } from "@/lib/mp2k/store";
+import { DES_PRESETS, type DesPresetId } from "@/lib/mp2k/des/presets";
+import { BookOpen, Box, Calculator, ArrowRight, ScrollText, BarChart3, ClipboardList } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Mp2kApp,
 });
-
-type Door = "intro" | "lab";
-type StepId = "case" | "sim" | "analytics" | "manual" | "stats";
 
 const STEPS: {
   id: StepId;
@@ -39,28 +48,98 @@ function goTop() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+function initialFromUrl(): {
+  door: Door;
+  step: StepId;
+  curve: IntroCurve;
+  caseMode: CaseMode;
+} {
+  const nav = typeof window !== "undefined" ? readLabNavFromLocation() : {};
+  const step = nav.step ?? "case";
+  let door: Door = nav.door ?? "intro";
+  if (step === "manual" || step === "stats" || step === "worksheet") {
+    door = nav.door ?? "lab";
+  } else if (nav.door) {
+    door = nav.door;
+  }
+  return {
+    door,
+    step,
+    curve: nav.curve ?? "little",
+    caseMode: nav.caseMode ?? (typeof window !== "undefined" ? loadCaseMode() : "lengkap"),
+  };
+}
+
 function Mp2kApp() {
   const [door, setDoor] = useState<Door>("intro");
   const [step, setStep] = useState<StepId>("case");
+  const [curve, setCurve] = useState<IntroCurve>("little");
+  const [caseMode, setCaseMode] = useState<CaseMode>("lengkap");
+  const [hydrated, setHydrated] = useState(false);
+  const setDesParams = useMp2k((s) => s.setDesParams);
+  const desParams = useMp2k((s) => s.desParams);
+  const activePreset = DES_PRESETS.find((p) => {
+    const keys = Object.keys(p.params) as (keyof typeof p.params)[];
+    return keys.every((k) => Math.abs(Number(desParams[k]) - Number(p.params[k])) < 1e-6);
+  })?.id;
+
+  // Apply deep link after mount (avoid SSR hydration mismatch)
+  useEffect(() => {
+    const boot = initialFromUrl();
+    setDoor(boot.door);
+    setStep(boot.step);
+    setCurve(boot.curve);
+    setCaseMode(boot.caseMode);
+    const nav = readLabNavFromLocation();
+    if (nav.preset && DES_PRESETS.some((p) => p.id === nav.preset)) {
+      const p = DES_PRESETS.find((x) => x.id === nav.preset)!;
+      setDesParams({ ...p.params });
+    }
+    setHydrated(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    writeLabNav({
+      door,
+      step,
+      curve: door === "intro" ? curve : undefined,
+      caseMode: door === "lab" && step === "case" ? caseMode : undefined,
+      preset: door === "lab" && step === "sim" ? activePreset : undefined,
+    });
+  }, [door, step, curve, caseMode, activePreset, hydrated]);
 
   function go(next: StepId) {
     setStep(next);
+    if (next === "case" || next === "sim" || next === "analytics") setDoor("lab");
     goTop();
   }
 
-  function openIntro() {
+  function openIntro(nextCurve: IntroCurve = "little") {
     setDoor("intro");
     setStep("case");
+    setCurve(nextCurve);
     goTop();
   }
 
-  function openLab(id: StepId = "case") {
+  function openLab(id: StepId = "case", presetId?: DesPresetId) {
     setDoor("lab");
     setStep(id);
+    if (presetId) {
+      const p = DES_PRESETS.find((x) => x.id === presetId);
+      if (p) setDesParams({ ...p.params });
+      writeLabNav({ door: "lab", step: id, preset: presetId });
+    }
     goTop();
   }
 
-  const onUtility = step === "manual" || step === "stats";
+  function onCaseModeChange(m: CaseMode) {
+    setCaseMode(m);
+    saveCaseMode(m);
+  }
+
+  const onUtility = step === "manual" || step === "stats" || step === "worksheet";
   const showLabNav = door === "lab" && !onUtility;
 
   return (
@@ -81,6 +160,19 @@ function Mp2kApp() {
               </div>
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => go("worksheet")}
+                className={cn(
+                  "inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-sm)] border px-3 text-sm font-medium",
+                  step === "worksheet"
+                    ? "border-fg bg-primary text-primary-fg"
+                    : "border-border bg-surface text-fg hover:bg-elevated",
+                )}
+              >
+                <ClipboardList className="size-3.5" strokeWidth={1.75} />
+                Lembar kerja
+              </button>
               <button
                 type="button"
                 onClick={() => go("stats")}
@@ -190,21 +282,37 @@ function Mp2kApp() {
 
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
         {step === "stats" && <StatsPanel />}
+        {step === "worksheet" && (
+          <WorksheetPanel
+            onBack={() => (door === "intro" ? openIntro() : openLab("case"))}
+            onOpenSim={(presetId) => openLab("sim", presetId as DesPresetId | undefined)}
+          />
+        )}
         {step === "manual" && (
           <ManualPanel onBack={() => (door === "intro" ? openIntro() : openLab("case"))} />
         )}
-        {step !== "stats" && step !== "manual" && door === "intro" && (
-          <IntroPanel onOpenLab={() => openLab("case")} />
+        {step !== "stats" && step !== "manual" && step !== "worksheet" && door === "intro" && (
+          <IntroPanel
+            onOpenLab={() => openLab("case")}
+            curve={curve}
+            onCurveChange={setCurve}
+          />
         )}
-        {step !== "stats" && step !== "manual" && door === "lab" && step === "case" && (
-          <CasePanel onNext={() => go("sim")} />
+        {step !== "stats" && step !== "manual" && step !== "worksheet" && door === "lab" && step === "case" && (
+          <CasePanel
+            onNext={() => go("sim")}
+            caseMode={caseMode}
+            onCaseModeChange={onCaseModeChange}
+          />
         )}
-        {step !== "stats" && step !== "manual" && door === "lab" && step === "sim" && (
+        {step !== "stats" && step !== "manual" && step !== "worksheet" && door === "lab" && step === "sim" && (
           <SimStep onNext={() => go("analytics")} />
         )}
-        {step !== "stats" && step !== "manual" && door === "lab" && step === "analytics" && (
-          <AnalyticsStep onOpenIntro={openIntro} />
-        )}
+        {step !== "stats" &&
+          step !== "manual" &&
+          step !== "worksheet" &&
+          door === "lab" &&
+          step === "analytics" && <AnalyticsStep onOpenIntro={() => openIntro()} />}
       </main>
 
       <footer className="border-t border-border py-6">
@@ -214,13 +322,22 @@ function Mp2kApp() {
             MP2K · Capacity · Variability · Inventory · Little · Kingman · FR · CONWIP
           </p>
           <StatsStrip onOpen={() => go("stats")} />
-          <button
-            type="button"
-            onClick={() => go("manual")}
-            className="text-xs font-medium text-muted underline underline-offset-2 hover:text-fg"
-          >
-            Manual
-          </button>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => go("worksheet")}
+              className="text-xs font-medium text-muted underline underline-offset-2 hover:text-fg"
+            >
+              Lembar kerja
+            </button>
+            <button
+              type="button"
+              onClick={() => go("manual")}
+              className="text-xs font-medium text-muted underline underline-offset-2 hover:text-fg"
+            >
+              Manual
+            </button>
+          </div>
         </div>
       </footer>
     </div>
@@ -261,6 +378,8 @@ function SimStep({ onNext }: { onNext: () => void }) {
         </button>
       </div>
 
+      <LabExportBar />
+
       <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
         <section className="space-y-4">
           <BuildingView />
@@ -298,9 +417,8 @@ function AnalyticsStep({ onOpenIntro }: { onOpenIntro: () => void }) {
           <p className="text-xs font-medium uppercase tracking-wider text-faint">Langkah 3 · Analitik</p>
           <h2 className="mt-1 text-xl font-semibold tracking-tight">Kurva sains operasi + CONWIP</h2>
           <p className="mt-2 text-sm text-muted leading-relaxed">
-            Setelah Run DES, isi parameter dari hasil simulasi lalu hitung. Empat tampilan: Little,
-            Kingman, Inventory/FR, dan <strong className="text-fg">Kurva gabungan & CONWIP</strong>
-            (WIP–TH–CT dengan batas CONWIP dari run).
+            Setelah Run DES, parameter diisi otomatis dari hasil simulasi. Empat tampilan: Little,
+            Kingman, Inventory/FR, dan <strong className="text-fg">Kurva gabungan & CONWIP</strong>.
           </p>
         </div>
         <button

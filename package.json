@@ -1,5 +1,5 @@
 {
-  "name": "app-builder-workspace",
+  "name": "mp2k",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -14,7 +14,8 @@
     "preview": "vite preview --host 0.0.0.0 --port 8080",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "verify:des": "node scripts/verify-des-presets.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.3",

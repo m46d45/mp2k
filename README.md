@@ -73,17 +73,16 @@ Modul teori interaktif (satu sistem demo: T0=4, rb=2, W0=8, V=0,5, Wopt≈14):
 
 ### Langkah 2 — Simulasi (DES)
 
-1. Pilih **preset eksperimen** (atau atur tuas manual):
+1. Pilih **preset eksperimen** (atau atur tuas manual) — enam skenario:
    - **Dasar** — kondisi referensi seimbang.
    - **Variability tinggi** — ca/ce besar → antrian & CT naik.
    - **Inventory ketat** — buffer/L/CONWIP ketat → risiko stockout panel, FR turun.
    - **Capacity longgar** — m lebih besar / te lebih kecil → utilisasi turun, CT cenderung membaik.
+   - **WIP bebas** — CONWIP=40 (plafon Control praktis off).
+   - **CONWIP ketat** — CONWIP=4 di bawah W0 → sistem lapar.
 2. Baca **pertanyaan/hint** di bawah preset (panduan diskusi).
 3. Tekan **Run all** (jalankan DES sampai selesai atau sesuai kontrol).
-4. Amati:
-   - Progress instalasi (kolom, balok, panel, zona).
-   - **Strip titik operasi DES** (TH, CT, WIP, FR, ū bottleneck).
-   - Tabel **Banding DES ↔ teori** (Little WIP, Kingman CT bottleneck, FR panel) beserta **Δ** dan catatan.
+4. Amati progress, strip titik operasi, tabel **Banding DES ↔ teori**, lalu **Ekspor** CSV/JSON bila perlu dikumpulkan.
 5. Buka **Glosarium** jika istilah belum familiar.
 
 **Cara membaca Δ**
@@ -94,18 +93,21 @@ Modul teori interaktif (satu sistem demo: T0=4, rb=2, W0=8, V=0,5, Wopt≈14):
 
 ### Langkah 3 — Analitik
 
-1. Strip **Titik operasi DES** (varian penuh) menampilkan angka yang sama dengan notasi/warna di kurva.
-2. Opsional: **Isi dari DES** — menyalin bottleneck, TH, ca/ce, L, CONWIP dari run ke parameter Analitik.
-3. **Mulai perhitungan** → empat grafik:
-   - **Little’s Law (WIP–TH–CT)** — sumbu X = WIP; kiri TH; kanan CT. Titik biru/merah = prediksi parameter; **oranye = DES**.
-   - **Kingman multi-V** — CT/te vs ū untuk beberapa tingkat V. Titik hitam = Analitik; **oranye = ū bottleneck & CT/te DES**.
-   - **Inventory / Fill rate** — FR vs inventory (base-stock ideal). **Oranye = FR empiris DES**.
-   - **Kurva gabungan & CONWIP** — TH dan CT vs WIP; W0, Wopt, garis CONWIP; **absolute benchmarking** vs envelope teoritis.
-4. Diskusikan selisih marker oranye vs prediksi teori (lihat kotak “Mengapa angka DES bisa berbeda dari teori?” di strip).
+1. Strip **Titik operasi DES** menampilkan angka yang sama dengan notasi/warna di kurva.
+2. Setelah Run selesai, parameter Analitik **otomatis diisi** dari DES (tombol **Isi dari DES** tetap ada untuk ulang manual).
+3. Empat grafik: Little, Kingman multi-V, Inventory/FR, Kurva gabungan & CONWIP — marker **oranye = DES**.
+4. Diskusikan selisih marker oranye vs prediksi teori.
+
+### Lembar kerja & kelas
+
+- Tombol **Lembar kerja**: isi catatan per preset + penjelasan Δ, lalu **Salin jawaban**.
+- Deep link untuk dosen: lihat **`TEACHING.md`** (kunci rentang, skrip 45/90 menit, URL `?door=&step=&preset=`).
+- Mode Kasus **Ringkas / Lengkap** untuk menyesuaikan waktu sesi.
+- Progres Pengenalan tersimpan di peramban (tetap setelah refresh).
 
 ### Statistik
 
-Tombol **Statistik** menampilkan jumlah pengunjung unik, kunjungan, dan simulasi DES yang selesai. Identitas acak disimpan di peramban (tanpa nama). Kunjungan dihitung ulang setelah 30 menit tidak aktif.
+Tombol **Statistik** menampilkan jumlah pengunjung unik, kunjungan, dan simulasi DES yang selesai. Identitas acak disimpan di peramban (tanpa nama). Kunjungan dihitung ulang setelah 30 menit tidak aktif. Label cohort di halaman Statistik hanya catatan lokal di perangkat.
 
 ---
 
@@ -137,11 +139,13 @@ Tombol **Statistik** menampilkan jumlah pengunjung unik, kunjungan, dan simulasi
 ## 5. Saran latihan (30–90 menit)
 
 1. **Dasar** — preset Dasar, Run all. Catat TH, CT, WIP, FR, ū. Cek konsistensi Little.
-2. **Variability tinggi** — preset yang sama. Apa yang terjadi pada CT dan Δ Kingman?
-3. **Inventory ketat** — preset Inventory ketat. Amati stockout & FR; longgarkan buffer/L sekali, Run ulang, bandingkan marker FR di Analitik.
-4. **Capacity** — preset Capacity longgar vs Dasar. Apakah TH naik proporsional? Di mana bottleneck bergeser?
-5. **CONWIP** — di Control / Kurva gabungan, tetapkan CONWIP di W0, Wopt, dan di atas Wopt; amati TH vs CT.
-6. **Sinkronisasi** — Isi dari DES → Mulai perhitungan. Jelaskan dalam 5–7 kalimat mengapa titik oranye tidak selalu menempel prediksi tertutup.
+2. **Variability tinggi** — Apa yang terjadi pada CT dan Δ Kingman?
+3. **Inventory ketat** — Amati stockout & FR; longgarkan buffer/L sekali, Run ulang.
+4. **Capacity** — Capacity longgar vs Dasar. Apakah TH naik? Bottleneck bergeser?
+5. **Control** — WIP bebas lalu CONWIP ketat. Apakah jejak WIP menempel plafon=4?
+6. **Sinkronisasi** — Buka Analitik (otomatis terisi). Jelaskan 5–7 kalimat mengapa titik oranye tidak selalu menempel. Isi **Lembar kerja** dan salin.
+
+Detail fasilitasi & kunci rentang: **`TEACHING.md`**.
 
 ---
 
@@ -168,8 +172,11 @@ Tombol **Statistik** menampilkan jumlah pengunjung unik, kunjungan, dan simulasi
 npm install
 npm run dev      # http://localhost:8080
 npm run typecheck
+npm run verify:des   # regresi angka preset (seed 42)
 npm run build
 ```
+
+Lihat juga **`TEACHING.md`** untuk panduan dosen.
 
 ### Deploy (Vercel)
 

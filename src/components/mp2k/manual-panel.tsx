@@ -11,6 +11,7 @@ const TOC = [
   { id: "notasi", label: "6. Notasi" },
   { id: "latihan", label: "7. Latihan" },
   { id: "batas", label: "8. Batasan" },
+  { id: "kelas", label: "9. Untuk kelas" },
 ] as const;
 
 export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => void; backLabel?: string }) {
@@ -524,6 +525,36 @@ export function ManualPanel({ onBack, backLabel = "Kembali" }: { onBack: () => v
               </li>
               <li>
                 Jejak waktu = run lab produktivitas, bukan kalender proyek sampai finish owner.
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section id="manual-kelas" className="scroll-mt-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">9. Untuk kelas</CardTitle>
+            <CardDescription>Deep link · lembar kerja · ekspor · panduan dosen</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm text-muted leading-relaxed">
+            <ul className="list-disc space-y-1.5 pl-5">
+              <li>
+                URL mendukung <strong className="text-fg">?door=</strong>,{" "}
+                <strong className="text-fg">step=</strong>, <strong className="text-fg">preset=</strong>,{" "}
+                <strong className="text-fg">curve=</strong>, <strong className="text-fg">case=ringkas|lengkap</strong>.
+              </li>
+              <li>
+                Progres Pengenalan dan isian <strong className="text-fg">Lembar kerja</strong> tersimpan
+                di peramban.
+              </li>
+              <li>
+                Setelah Run all: <strong className="text-fg">Ekspor</strong> CSV/JSON atau salin teks;
+                Analitik terisi otomatis dari DES.
+              </li>
+              <li>
+                Fasilitasi & kunci rentang angka: berkas <strong className="text-fg">TEACHING.md</strong>{" "}
+                di repositori.
               </li>
             </ul>
           </CardContent>
